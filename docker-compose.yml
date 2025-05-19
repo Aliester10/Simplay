@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_container
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"  # Izinkan MySQL tanpa password
+      MYSQL_DATABASE: my_database  # Ganti dengan nama database yang diinginkan
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    environment:
+      PMA_HOST: mysql  # Nama service MySQL dalam docker-compose
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+
+volumes:
+  mysql_data:
+    driver: local
+
