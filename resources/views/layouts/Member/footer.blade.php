@@ -49,6 +49,7 @@
 }
 
 .newsletter-form {
+    text-align: center;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -57,6 +58,7 @@
 }
 
 .newsletter-form input {
+    text-align: center;
     height: 45px;
     border-radius: 50px;
     padding: 0 20px;
@@ -424,7 +426,7 @@
             <div class="newsletter-content">
                 <h2 class="newsletter-title">STAY UPTO DATE ABOUT<br>OUR LATEST OFFERS</h2>
                 <div class="newsletter-form">
-                    <input type="email" placeholder="Enter your email address">
+                    <input type="email" placeholder="Enter your message">
                     <button type="submit">Submit Your Email</button>
                 </div>
             </div>

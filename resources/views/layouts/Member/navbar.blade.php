@@ -10,8 +10,8 @@
 @endphp
 
 <!-- Top Dark Bar -->
-<div class="container-fluid top-dark-bar py-1">
-    <div class="container d-flex justify-content-center align-items-center flex-wrap">
+<div class="container-fluid top-dark-bar">
+    <div class="container d-flex justify-content-center align-items-center flex-wrap h-100">
         @if(!empty($compro->maps))
             <a href="{{ $compro->maps }}" class="text-light me-md-4 me-2 mb-1 mb-md-0" target="_blank">
                 <img src="{{ asset('assets/icons/topbar-icons/location.svg') }}" alt="Location" class="topbar-icon">
@@ -174,13 +174,14 @@
     font-size: 0.85rem;
     position: relative;
     z-index: 1030;
+    height: 50px; /* Set fixed height to 50px */
 }
 
 .top-dark-bar a {
     text-decoration: none;
     color: #fff;
     transition: all 0.3s ease;
-    font-size: 0.75rem;
+    font-size: 12px;
     display: flex;
     align-items: center;
 }
@@ -190,7 +191,7 @@
 }
 
 .topbar-icon {
-    height: 14px;
+    height: 17px;
     width: auto;
     margin-right: 5px;
     filter: brightness(0) invert(1);
@@ -203,7 +204,7 @@
     z-index: 1020;
     position: absolute;
     width: 100%;
-    top: 31px; /* Height of the top dark bar */
+    top: 50px; /* Updated to match top bar height */
 }
 
 .navbar-brand img.logo-img {
@@ -361,11 +362,11 @@
 
 /* Adjust header carousel to work with transparent navbar */
 .header-carousel {
-    margin-top: -31px; /* Negative margin to pull carousel up */
+    margin-top: -50px; /* Updated to match top bar height */
 }
 
 .header-carousel-item {
-    padding-top: 31px; /* Add padding to make space for the top bar */
+    padding-top: 50px; /* Updated to match top bar height */
 }
 
 /* Responsive adjustments */
