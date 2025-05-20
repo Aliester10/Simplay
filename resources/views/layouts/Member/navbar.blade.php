@@ -36,7 +36,7 @@
 </div>
 
 <!-- Main Navigation Bar -->
-<nav class="navbar navbar-expand-lg fixed-top">
+<nav class="navbar navbar-expand-lg">
     <div class="container">
         <!-- Logo Section -->
         <a href="{{ route('home') }}" class="navbar-brand">
@@ -199,22 +199,16 @@
 /* Main navigation bar styling - Transparent */
 .navbar {
     background-color: transparent;
-    transition: all 0.3s ease;
     padding: 1rem 0;
     z-index: 1020;
+    position: absolute;
+    width: 100%;
     top: 31px; /* Height of the top dark bar */
-}
-
-.navbar.scrolled {
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 0;
 }
 
 .navbar-brand img.logo-img {
     height: 34px;
     width: auto;
-    transition: all 0.3s ease;
 }
 
 /* Navigation links */
@@ -228,10 +222,6 @@
     font-size: 0.9rem;
 }
 
-.navbar.scrolled .nav-link {
-    color: #333;
-}
-
 .navbar .nav-link:hover,
 .navbar .nav-link.active {
     color: #6196FF;
@@ -242,10 +232,6 @@
     color: #fff;
     padding: 0.4rem 0.6rem;
     font-size: 1.2rem;
-}
-
-.navbar.scrolled .navbar-toggler {
-    color: #333;
 }
 
 /* Updated Search bar styling */
@@ -263,12 +249,6 @@
     height: 36px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
-.navbar.scrolled .search-wrapper {
-    background-color: white;
-    border: 1px solid #f0f0f0;
 }
 
 .search-input {
@@ -282,16 +262,8 @@
     color: #fff;
 }
 
-.navbar.scrolled .search-input {
-    color: #555;
-}
-
 .search-input::placeholder {
     color: rgba(255, 255, 255, 0.7);
-}
-
-.navbar.scrolled .search-input::placeholder {
-    color: #aaa;
 }
 
 .search-btn {
@@ -314,21 +286,11 @@
     filter: brightness(0) invert(1);
 }
 
-.navbar.scrolled .search-icon {
-    opacity: 0.6;
-    filter: none;
-}
-
 /* Navbar icons styling */
 .navbar-icon {
     height: 22px;
     width: auto;
     filter: brightness(0) invert(1);
-    transition: all 0.3s ease;
-}
-
-.navbar.scrolled .navbar-icon {
-    filter: none;
 }
 
 .nav-icon-link {
@@ -376,10 +338,6 @@
     background-color: #fff;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     display: none;
-    position: fixed;
-    top: 80px;
-    left: 0;
-    right: 0;
     z-index: 1010;
 }
 
@@ -414,6 +372,8 @@
 @media (max-width: 991.98px) {
     .navbar {
         background-color: rgba(255, 255, 255, 0.95);
+        position: relative;
+        top: 0;
         padding: 0.5rem 0;
     }
     
@@ -474,6 +434,14 @@
         border-top: 1px solid #f0f0f0;
         justify-content: center;
     }
+    
+    .header-carousel {
+        margin-top: 0; /* Reset margin for mobile */
+    }
+    
+    .header-carousel-item {
+        padding-top: 0; /* Reset padding for mobile */
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -529,22 +497,6 @@
 <!-- Embedded JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Handle scroll effects for navbar
-    function handleScroll() {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 30) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    }
-    
-    // Initial check in case the page loads scrolled
-    handleScroll();
-    
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    
     // Mobile navbar toggle handling
     const navbarToggler = document.querySelector('.navbar-toggler');
     const mobileSearch = document.querySelector('.mobile-search');
