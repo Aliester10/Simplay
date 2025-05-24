@@ -13,7 +13,7 @@ class Produk extends Model
     protected $table = 'produk';
 
 
-    protected $fillable = ['nama', 'merk', 'link', 'deskripsi', 'spesifikasi', 'user_manual','kategori_id'];
+    protected $fillable = ['nama', 'merk', 'link', 'deskripsi', 'spesifikasi', 'harga', 'user_manual', 'kategori_id'];
 
     public function images()
     {
@@ -58,6 +58,4 @@ class Produk extends Model
     {
         return $this->hasMany(QuotationProduct::class, 'produk_id'); // Sesuaikan jika kolomnya adalah 'product_id'
     }
-
-
 }

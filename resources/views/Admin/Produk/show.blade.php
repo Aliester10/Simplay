@@ -29,6 +29,10 @@
                                 <td>{{ $produk->link }}</td>
                             </tr>
                             <tr>
+                                <th scope="row">Harga</th>
+                                <td>Rp {{ number_format($produk->harga, 0, ',', '.') }}</td>
+                            </tr>
+                            <tr>
                                 <th scope="row">Kategori</th>
                                 <td>{{ $produk->kategori->nama }}</td>
                             </tr>

@@ -11,6 +11,15 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
+    /**
+     * Mengarahkan default register ke form distributor
+     * Method ini diperlukan untuk kompatibilitas dengan Auth::routes()
+     */
+    public function showRegistrationForm()
+    {
+        return redirect()->route('distributors.register');
+    }
+    
     public function showDistributorRegistrationForm()
     {
         return view('auth.distributor_register');
@@ -65,4 +74,3 @@ class RegisterController extends Controller
         return redirect()->route('distributors.waiting')->with('success', 'Registration successful. Please wait for admin approval.');
     }
 }
-

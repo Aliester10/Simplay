@@ -115,6 +115,10 @@
                             <h6 class="product-title">
                                 <a href="{{ route('product.show', $produk->id) }}">{{ $limitedName }}</a>
                             </h6>
+                            <!-- Menampilkan harga produk -->
+                            <div class="product-price">
+                                Rp {{ number_format($produk->harga, 0, ',', '.') }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -547,6 +551,14 @@ body {
 
 .product-title a:hover {
     color: var(--accent-color);
+}
+
+/* Style untuk harga produk */
+.product-price {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-top: 0.5rem;
 }
 
 /* Pagination */

@@ -59,14 +59,13 @@ class ProdukController extends Controller
             'link' => 'required|string|max:255',
             'deskripsi' => 'required',
             'spesifikasi' => 'required',
+            'harga' => 'required|numeric', // Menambahkan validasi harga yang wajib diisi dan berupa angka
             'kategori_id' => 'required|exists:kategori,id',
             'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:15000',
             'video.*' => 'nullable|file|mimes:mp4,avi,mkv|max:50000',
             'user_manual' => 'nullable|file|mimes:pdf,doc,docx|max:20000',
             'document_certification_pdf.*' => 'nullable|file|mimes:pdf|max:20000',
             'file.*' => 'nullable|mimes:pdf,jpeg,png,jpg,gif|max:20000', // Optional for editing
-
-
         ]);
 
         // Create a new Produk instance and fill it with the validated data
@@ -176,6 +175,7 @@ class ProdukController extends Controller
             'link' => 'required|string|max:255',
             'deskripsi' => 'required',
             'spesifikasi' => 'required',
+            'harga' => 'required|numeric', // Menambahkan validasi harga yang wajib diisi dan berupa angka
             'kategori_id' => 'required|exists:kategori,id',
             'gambar.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:15000',
             'video.*' => 'nullable|file|mimes:mp4,avi,mkv|max:50000',

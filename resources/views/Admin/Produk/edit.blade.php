@@ -69,6 +69,16 @@
                                     </div>
 
                                     <div class="form-group mb-3">
+    <label for="harga">Harga Produk :</label>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Rp</span>
+        </div>
+        <input type="number" name="harga" class="form-control" value="{{ old('harga', $produk->harga) }}" required>
+    </div>
+</div>
+
+                                    <div class="form-group mb-3">
                                         <label for="kategori_id">Kategori :</label>
                                         <select name="kategori_id" class="form-control" required>
                                             @foreach ($kategori as $kategoris)
@@ -191,5 +201,4 @@
         </div>
     </div>
 </div>
-
 @endsection

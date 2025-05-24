@@ -146,9 +146,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
     Route::get('/admin/guest-messages', [GuestMessageController::class, 'index'])->name('admin.guest-messages.index');
     Route::post('/guest-messages', [GuestMessageController::class, 'store'])->name('guest-messages.store');
 
-    // Distributor Registration
+    // Distributor Registration - Perbaikan rute distributor
     Route::get('/distributors/register', [RegisterController::class, 'showDistributorRegistrationForm'])->name('distributors.register');
-    Route::post('/distributors/register', [RegisterController::class, 'registerDistributor']);
+    Route::post('/distributors/register', [RegisterController::class, 'registerDistributor'])->name('distributors.register.submit');
     Route::get('/distributors/waiting', function () {
         return view('auth.distributor_waiting');
     })->name('distributors.waiting');
@@ -158,7 +158,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
         Route::resource('qnaguest', QnaGuestController::class);
     });
 
-    Auth::routes();
+    // Menonaktifkan register default dari Auth::routes() dan hanya menggunakan yang lainnya
+    Auth::routes(['register' => false]);
+    
+    // Redirect dari /register ke halaman distributor register
+    Route::get('/register', function () {
+        return redirect()->route('distributors.register');
+    });
 });
 
 

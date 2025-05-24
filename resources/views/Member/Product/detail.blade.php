@@ -68,6 +68,11 @@
                     
                     <h1 class="product-title">{{ $produk->nama }}</h1>
                     
+                    <!-- Menampilkan harga produk -->
+                    <div class="product-price mb-3">
+                        Rp {{ number_format($produk->harga, 0, ',', '.') }}
+                    </div>
+                    
                     <div class="product-meta d-flex align-items-center mt-2 mb-4">
                         <div class="product-brand">
                             <span class="meta-label">Brand:</span>
@@ -234,6 +239,10 @@
                                         <a href="{{ route('product.show', $similarProduct->id) }}">{{ $similarProduct->nama }}</a>
                                     </h5>
                                     <div class="product-brand">{{ $similarProduct->merk }}</div>
+                                    <!-- Menampilkan harga produk serupa -->
+                                    <div class="product-price">
+                                        Rp {{ number_format($similarProduct->harga, 0, ',', '.') }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -331,6 +340,14 @@
             margin-bottom: 15px;
             letter-spacing: -0.5px;
             line-height: 1.2;
+        }
+        
+        /* Product Price */
+        .product-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 10px;
         }
         
         /* Product Meta */
@@ -980,6 +997,14 @@
             font-size: 14px;
         }
         
+        /* Style untuk harga produk dalam kartu produk serupa */
+        .product-card .product-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-top: 8px;
+        }
+        
         /* Lightbox Styles */
         .lightbox-container {
             position: relative;
@@ -1064,6 +1089,10 @@
                 font-size: 28px;
             }
             
+            .product-price {
+                font-size: 24px;
+            }
+            
             .main-image-container {
                 aspect-ratio: 4/3;
             }
@@ -1081,6 +1110,10 @@
             
             .product-title {
                 font-size: 24px;
+            }
+            
+            .product-price {
+                font-size: 20px;
             }
             
             .action-buttons .row {

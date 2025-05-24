@@ -72,16 +72,29 @@
                                         <textarea name="spesifikasi" class="form-control" required>{{ old('spesifikasi') }}</textarea>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="kategori_id">Kategori :</label>
-                                            <select name="kategori_id" class="form-control" required>
-                                                @foreach ($kategori as $kategoris)
-                                                    <option value="{{ $kategoris->id }}" {{ old('kategori_id') == $kategoris->id ? 'selected' : '' }}>
-                                                        {{ $kategoris->nama }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+    <label for="harga">Harga Produk :</label>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Rp</span>
+        </div>
+        <input type="number" name="harga" class="form-control" value="{{ old('harga') }}" required>
+    </div>
+</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="kategori_id">Kategori :</label>
+                                                <select name="kategori_id" class="form-control" required>
+                                                    @foreach ($kategori as $kategoris)
+                                                        <option value="{{ $kategoris->id }}" {{ old('kategori_id') == $kategoris->id ? 'selected' : '' }}>
+                                                            {{ $kategoris->nama }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 

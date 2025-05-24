@@ -59,6 +59,7 @@
                                         <th>Nama Produk</th>
                                         <th>Merk</th>
                                         <th>Kategori</th>
+                                        <th>Harga</th>
                                         <th>Gambar</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -70,6 +71,7 @@
                                             <td class="text-truncate" style="max-width: 150px;">{{ $produk->nama }}</td>
                                             <td class="text-truncate" style="max-width: 100px;">{{ $produk->merk }}</td>
                                             <td>{{ $produk->kategori->nama }}</td>
+                                            <td>Rp {{ number_format($produk->harga, 0, ',', '.') }}</td>
                                             <td>
                                                 @foreach ($produk->images as $image)
                                                     <img src="{{ asset($image->gambar) }}" class="img-fluid w-100"
@@ -92,7 +94,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center">Tidak ada produk ditemukan.</td>
+                                            <td colspan="8" class="text-center">Tidak ada produk ditemukan.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

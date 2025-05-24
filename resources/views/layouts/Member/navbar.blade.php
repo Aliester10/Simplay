@@ -107,11 +107,11 @@
                 <!-- User Icon -->
                 <div class="me-3">
                     @if (auth()->check())
-                        <div class="dropdown">
+                        <div class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle nav-icon-link" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="{{ asset('assets/icons/navbar-icons/login.svg') }}" alt="User" class="navbar-icon">
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" aria-labelledby="userDropdown">
                                 <li class="dropdown-item user-info">
                                     <strong>{{ auth()->user()->nama_perusahaan }}</strong>
                                 </li>
@@ -369,6 +369,43 @@
     padding-top: 50px; /* Updated to match top bar height */
 }
 
+/* User dropdown specific styling - NEW */
+.user-dropdown {
+    position: relative;
+}
+
+.user-dropdown-menu {
+    padding: 0.75rem 0;
+    min-width: 220px;
+    transition: all 0.3s ease;
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    margin-top: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.user-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.user-dropdown .dropdown-item {
+    padding: 0.75rem 1.5rem;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.user-dropdown .dropdown-item:hover {
+    background-color: #f2f7ff;
+}
+
+.user-dropdown .user-info {
+    padding: 0.75rem 1.5rem;
+    background-color: #f8f9fa;
+    font-weight: 500;
+}
+
 /* Responsive adjustments */
 @media (max-width: 991.98px) {
     .navbar {
@@ -521,6 +558,67 @@ document.addEventListener('DOMContentLoaded', function () {
         profileLink.addEventListener('click', function(event) {
             event.preventDefault();
             window.open(this.href, '_blank');
+        });
+    }
+    
+    // Improved dropdown menu behavior
+    const userDropdownContainer = document.querySelector('.user-dropdown');
+    const userDropdownToggle = document.getElementById('userDropdown');
+    const userDropdownMenu = document.querySelector('.user-dropdown-menu');
+    
+    if (userDropdownContainer && userDropdownToggle && userDropdownMenu) {
+        let dropdownTimeout;
+        
+        // Show dropdown on hover
+        userDropdownContainer.addEventListener('mouseenter', function() {
+            clearTimeout(dropdownTimeout);
+            
+            // Use Bootstrap's dropdown API to show the dropdown
+            const bsDropdown = new bootstrap.Dropdown(userDropdownToggle);
+            bsDropdown.show();
+            
+            // Add show class manually for better styling control
+            userDropdownMenu.classList.add('show');
+        });
+        
+        // Hide dropdown with delay when mouse leaves
+        userDropdownContainer.addEventListener('mouseleave', function() {
+            dropdownTimeout = setTimeout(() => {
+                // Use Bootstrap's dropdown API to hide the dropdown
+                const bsDropdown = bootstrap.Dropdown.getInstance(userDropdownToggle);
+                if (bsDropdown) {
+                    bsDropdown.hide();
+                }
+                
+                // Remove show class manually
+                userDropdownMenu.classList.remove('show');
+            }, 300); // 300ms delay before closing
+        });
+        
+        // Keep dropdown open when clicking inside the menu
+        userDropdownMenu.addEventListener('click', function(e) {
+            // Prevent closing when clicking inside the dropdown menu (except links)
+            if (!e.target.closest('a[href]')) {
+                e.stopPropagation();
+            }
+        });
+        
+        // Handle touch devices
+        userDropdownToggle.addEventListener('touchstart', function(e) {
+            // Toggle dropdown on touch for mobile
+            const isOpen = userDropdownMenu.classList.contains('show');
+            if (isOpen) {
+                const bsDropdown = bootstrap.Dropdown.getInstance(userDropdownToggle);
+                if (bsDropdown) {
+                    bsDropdown.hide();
+                }
+                userDropdownMenu.classList.remove('show');
+            } else {
+                const bsDropdown = new bootstrap.Dropdown(userDropdownToggle);
+                bsDropdown.show();
+                userDropdownMenu.classList.add('show');
+            }
+            e.preventDefault();
         });
     }
 });

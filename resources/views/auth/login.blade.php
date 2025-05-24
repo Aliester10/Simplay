@@ -118,12 +118,23 @@
                     </div>
 
                     <!-- Password recovery link -->
-                    <div class="text-center mb-5">
+                    <div class="text-center mb-3">
                         @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" class="password-help">
                                 Having issues with your Password?
                             </a>
                         @endif
+                    </div>
+                    
+                    <!-- Registration option -->
+                    <div class="text-center mb-5 registration-section">
+                        <p class="mb-2">Don't have an account yet?</p>
+                        <a href="{{ route('distributors.register') }}" class="btn register-btn">
+                            <span>Create an Account</span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0ZM8 2.4C9.328 2.4 10.4 3.472 10.4 4.8C10.4 6.128 9.328 7.2 8 7.2C6.672 7.2 5.6 6.128 5.6 4.8C5.6 3.472 6.672 2.4 8 2.4ZM8 13.76C6 13.76 4.232 12.728 3.2 11.184C3.224 9.592 6.4 8.72 8 8.72C9.592 8.72 12.776 9.592 12.8 11.184C11.768 12.728 10 13.76 8 13.76Z" fill="#1E293B"/>
+                            </svg>
+                        </a>
                     </div>
                 </form>
             </div>
@@ -138,9 +149,9 @@
     }
 
     .box-area {
-        width: 950px;
-        max-width: 100%;
-        height: 650px;
+        width: 100%;
+        max-width: 950px;
+        min-height: 500px;
         border-radius: 8px !important;
         overflow: hidden;
         border: none !important;
@@ -159,17 +170,21 @@
     }
 
     .logo-container {
-        margin-top: 50px; /* Added 50px more to move logo down */
+        margin-top: 40px;
+        z-index: 2;
     }
 
     .logo-image {
         width: 180px;
+        max-width: 80%;
         height: auto;
     }
 
     /* Handshake container styling */
     .partnership-content {
         overflow: hidden;
+        position: relative;
+        flex: 1;
     }
 
     .handshake-container {
@@ -178,7 +193,7 @@
         height: 100%;
         display: flex;
         justify-content: center;
-        top: -130px; /* Move handshake image higher */
+        top: -130px;
     }
 
     .handshake-img {
@@ -191,7 +206,7 @@
     .partnership-text-overlay {
         position: absolute;
         z-index: 10;
-        bottom: 50px; /* Position text at bottom */
+        bottom: 50px;
         width: 100%;
         text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
     }
@@ -220,6 +235,7 @@
         display: flex;
         align-items: center;
         font-size: 14px;
+        margin-bottom: 2rem;
     }
 
     .return-text {
@@ -290,25 +306,165 @@
         text-decoration: none;
     }
 
+    /* Registration section styling */
+    .registration-section p {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .register-btn {
+        background-color: #ffffff;
+        color: #1e293b;
+        border: 1px solid #1e293b;
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+    .register-btn:hover {
+        background-color: #f8fafc;
+        color: #1e293b;
+    }
+
     .footer-content {
         margin-top: auto;
         color: #999;
         font-size: 12px;
     }
 
-    /* Responsive design */
-    @media only screen and (max-width: 768px) {
+    /* Responsive design - Tablet */
+    @media only screen and (max-width: 991px) {
         .box-area {
-            flex-direction: column;
-            height: auto;
+            width: 90%;
+            margin: 0 auto;
         }
-
-        .left-box {
-            height: 300px;
+        
+        .login-container {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
         }
-
+        
         .partnership-title {
             font-size: 24px;
+        }
+    }
+
+    /* Responsive design - Mobile */
+    @media only screen and (max-width: 767px) {
+        .container {
+            padding: 15px;
+        }
+        
+        .box-area {
+            width: 100%;
+            height: auto;
+            flex-direction: column;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px !important;
+        }
+        
+        .left-box {
+            height: 300px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .right-box {
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .logo-container {
+            margin-top: 30px;
+        }
+        
+        .back-button {
+            margin-top: 20px !important;
+            margin-left: 15px !important;
+        }
+        
+        .handshake-container {
+            top: -80px;
+        }
+        
+        .partnership-text-overlay {
+            bottom: 20px;
+        }
+        
+        .partnership-title {
+            font-size: 22px;
+        }
+        
+        .partnership-desc {
+            font-size: 12px;
+            max-width: 260px;
+        }
+        
+        .login-container {
+            height: auto !important;
+            padding: 20px 15px 30px 15px !important;
+        }
+        
+        .header-text {
+            margin-bottom: 25px !important;
+        }
+        
+        .welcome-text {
+            font-size: 18px;
+        }
+        
+        .login-subtitle {
+            font-size: 12px;
+        }
+        
+        .custom-input {
+            height: 45px;
+            font-size: 14px;
+        }
+        
+        .proceed-btn {
+            height: 45px;
+            font-size: 14px;
+        }
+        
+        .register-btn {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+    }
+
+    /* Extra small devices */
+    @media only screen and (max-width: 480px) {
+        .box-area {
+            border-radius: 8px !important;
+        }
+        
+        .left-box {
+            height: 250px;
+        }
+        
+        .logo-image {
+            width: 150px;
+        }
+        
+        .partnership-title {
+            font-size: 20px;
+        }
+        
+        .partnership-desc {
+            font-size: 11px;
+            max-width: 230px;
+        }
+        
+        .welcome-text {
+            font-size: 16px;
+        }
+        
+        .handshake-container {
+            top: -60px;
         }
     }
 </style>
