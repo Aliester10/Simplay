@@ -29,7 +29,7 @@ class User extends Authenticatable
         'bidang_perusahaan',
         'no_telp',
         'alamat',
-        'bidang_id',
+        'bidang_id', // Pastikan bidang_id ada dalam fillable
         'location_id',
         'pic',
         'nomor_telp_pic',
