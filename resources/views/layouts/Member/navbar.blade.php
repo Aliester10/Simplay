@@ -80,12 +80,8 @@
                 @endforeach
                 
                 @auth
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Portal</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ route('portal') }}" class="dropdown-item">{{ __('messages.portal_member') }}</a></li>
-                            <li><a href="{{ route('distribution') }}" class="dropdown-item">{{ __('messages.portal_distribution') }}</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a href="{{ auth()->user()->type == 'member' ? route('portal') : route('distribution') }}" class="nav-link">Portal</a>
                     </li>
                 @endauth
             </ul>
@@ -138,16 +134,38 @@
                     @endif
                 </div>
                 
-                <!-- Cart Icon -->
+                <!-- Cart Icon - Updated for Animation -->
                 <div>
-                    <a href="{{ auth()->check() && auth()->user()->type === 'distributor' ? route('quotations.cart') : '#' }}" class="nav-icon-link">
-                        <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon">
-                        @if(auth()->check() && auth()->user()->type === 'distributor' && session('quotation_cart'))
-                            <span class="badge bg-primary rounded-pill position-absolute translate-middle">
-                                {{ count(session('quotation_cart')) }}
-                            </span>
+                    @if(auth()->check())
+                        @if(auth()->user()->type === 'distributor')
+                            <a href="{{ route('quotations.cart') }}" class="nav-icon-link position-relative">
+                                <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                                @if(session('quotation_cart'))
+                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
+                                        {{ count(session('quotation_cart')) }}
+                                    </span>
+                                @endif
+                            </a>
+                        @elseif(auth()->user()->type === 'member')
+                            <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                                <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                                @if(session('member_cart'))
+                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
+                                        {{ count(session('member_cart')) }}
+                                    </span>
+                                @endif
+                            </a>
                         @endif
-                    </a>
+                    @else
+                        <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                            <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                            @if(session('cart'))
+                                <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
+                                    {{ count(session('cart')) }}
+                                </span>
+                            @endif
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -404,6 +422,33 @@
     padding: 0.75rem 1.5rem;
     background-color: #f8f9fa;
     font-weight: 500;
+}
+
+/* Animasi Cart - NEW */
+.flying-image {
+    z-index: 9999;
+    pointer-events: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    transform-origin: center center;
+}
+
+.cart-bump {
+    animation: cartBump 0.5s ease;
+}
+
+@keyframes cartBump {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+}
+
+.count-update {
+    animation: countBounce 0.5s ease;
+}
+
+@keyframes countBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.5); background-color: #28a745; }
+    100% { transform: scale(1); }
 }
 
 /* Responsive adjustments */

@@ -80,12 +80,8 @@
                 @endforeach
                 
                 @auth
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Portal</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ route('portal') }}" class="dropdown-item">{{ __('messages.portal_member') }}</a></li>
-                            <li><a href="{{ route('distribution') }}" class="dropdown-item">{{ __('messages.portal_distribution') }}</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a href="{{ auth()->user()->type == 'member' ? route('portal') : route('distribution') }}" class="nav-link">Portal</a>
                     </li>
                 @endauth
             </ul>
@@ -107,11 +103,11 @@
                 <!-- User Icon -->
                 <div class="me-3">
                     @if (auth()->check())
-                        <div class="dropdown">
+                        <div class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle nav-icon-link" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="{{ asset('assets/icons/navbar-icons/login.svg') }}" alt="User" class="navbar-icon">
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" aria-labelledby="userDropdown">
                                 <li class="dropdown-item user-info">
                                     <strong>{{ auth()->user()->nama_perusahaan }}</strong>
                                 </li>
@@ -138,16 +134,38 @@
                     @endif
                 </div>
                 
-                <!-- Cart Icon -->
+                <!-- Cart Icon - Updated for Animation -->
                 <div>
-                    <a href="{{ auth()->check() && auth()->user()->type === 'distributor' ? route('quotations.cart') : '#' }}" class="nav-icon-link">
-                        <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon">
-                        @if(auth()->check() && auth()->user()->type === 'distributor' && session('quotation_cart'))
-                            <span class="badge bg-primary rounded-pill position-absolute translate-middle">
-                                {{ count(session('quotation_cart')) }}
-                            </span>
+                    @if(auth()->check())
+                        @if(auth()->user()->type === 'distributor')
+                            <a href="{{ route('quotations.cart') }}" class="nav-icon-link position-relative">
+                                <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                                @if(session('quotation_cart'))
+                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
+                                        {{ count(session('quotation_cart')) }}
+                                    </span>
+                                @endif
+                            </a>
+                        @elseif(auth()->user()->type === 'member')
+                            <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                                <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                                @if(session('member_cart'))
+                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
+                                        {{ count(session('member_cart')) }}
+                                    </span>
+                                @endif
+                            </a>
                         @endif
-                    </a>
+                    @else
+                        <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                            <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                            @if(session('cart'))
+                                <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
+                                    {{ count(session('cart')) }}
+                                </span>
+                            @endif
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -212,9 +230,9 @@
     width: auto;
 }
 
-/* Navigation links */
+/* Navigation links - UPDATED to black */
 .navbar .nav-link {
-    color: #000; /* Changed from #fff to #000 for black text */
+    color: #000; /* Changed from #fff to #000 */
     font-weight: 500;
     padding: 0.5rem 1rem;
     margin-right: 0.5rem;
@@ -245,11 +263,11 @@
     position: relative;
     display: flex;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.7); /* Made background more opaque */
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 30px;
     height: 36px;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.2); /* Changed border color */
+    border: 1px solid rgba(0, 0, 0, 0.3); /* Changed border color */
 }
 
 .search-input {
@@ -264,7 +282,7 @@
 }
 
 .search-input::placeholder {
-    color: rgba(0, 0, 0, 0.7); /* Changed from white to black with opacity */
+    color: rgba(0, 0, 0, 0.7); /* Changed placeholder color */
 }
 
 .search-btn {
@@ -284,14 +302,14 @@
     width: 18px;
     height: 18px;
     opacity: 0.8;
-    filter: none; /* Removed filter to keep icon in original color */
+    filter: none; /* Removed filter that was making icon white */
 }
 
-/* Navbar icons styling */
+/* Navbar icons styling - UPDATED */
 .navbar-icon {
     height: 22px;
     width: auto;
-    filter: none; /* Removed filter to keep icons black */
+    filter: none; /* Removed filter that was making icons white */
 }
 
 .nav-icon-link {
@@ -367,6 +385,70 @@
 
 .header-carousel-item {
     padding-top: 50px; /* Updated to match top bar height */
+}
+
+/* User dropdown specific styling - NEW */
+.user-dropdown {
+    position: relative;
+}
+
+.user-dropdown-menu {
+    padding: 0.75rem 0;
+    min-width: 220px;
+    transition: all 0.3s ease;
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    margin-top: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.user-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.user-dropdown .dropdown-item {
+    padding: 0.75rem 1.5rem;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.user-dropdown .dropdown-item:hover {
+    background-color: #f2f7ff;
+}
+
+.user-dropdown .user-info {
+    padding: 0.75rem 1.5rem;
+    background-color: #f8f9fa;
+    font-weight: 500;
+}
+
+/* Animasi Cart - NEW */
+.flying-image {
+    z-index: 9999;
+    pointer-events: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    transform-origin: center center;
+}
+
+.cart-bump {
+    animation: cartBump 0.5s ease;
+}
+
+@keyframes cartBump {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+}
+
+.count-update {
+    animation: countBounce 0.5s ease;
+}
+
+@keyframes countBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.5); background-color: #28a745; }
+    100% { transform: scale(1); }
 }
 
 /* Responsive adjustments */
@@ -521,6 +603,67 @@ document.addEventListener('DOMContentLoaded', function () {
         profileLink.addEventListener('click', function(event) {
             event.preventDefault();
             window.open(this.href, '_blank');
+        });
+    }
+    
+    // Improved dropdown menu behavior
+    const userDropdownContainer = document.querySelector('.user-dropdown');
+    const userDropdownToggle = document.getElementById('userDropdown');
+    const userDropdownMenu = document.querySelector('.user-dropdown-menu');
+    
+    if (userDropdownContainer && userDropdownToggle && userDropdownMenu) {
+        let dropdownTimeout;
+        
+        // Show dropdown on hover
+        userDropdownContainer.addEventListener('mouseenter', function() {
+            clearTimeout(dropdownTimeout);
+            
+            // Use Bootstrap's dropdown API to show the dropdown
+            const bsDropdown = new bootstrap.Dropdown(userDropdownToggle);
+            bsDropdown.show();
+            
+            // Add show class manually for better styling control
+            userDropdownMenu.classList.add('show');
+        });
+        
+        // Hide dropdown with delay when mouse leaves
+        userDropdownContainer.addEventListener('mouseleave', function() {
+            dropdownTimeout = setTimeout(() => {
+                // Use Bootstrap's dropdown API to hide the dropdown
+                const bsDropdown = bootstrap.Dropdown.getInstance(userDropdownToggle);
+                if (bsDropdown) {
+                    bsDropdown.hide();
+                }
+                
+                // Remove show class manually
+                userDropdownMenu.classList.remove('show');
+            }, 300); // 300ms delay before closing
+        });
+        
+        // Keep dropdown open when clicking inside the menu
+        userDropdownMenu.addEventListener('click', function(e) {
+            // Prevent closing when clicking inside the dropdown menu (except links)
+            if (!e.target.closest('a[href]')) {
+                e.stopPropagation();
+            }
+        });
+        
+        // Handle touch devices
+        userDropdownToggle.addEventListener('touchstart', function(e) {
+            // Toggle dropdown on touch for mobile
+            const isOpen = userDropdownMenu.classList.contains('show');
+            if (isOpen) {
+                const bsDropdown = bootstrap.Dropdown.getInstance(userDropdownToggle);
+                if (bsDropdown) {
+                    bsDropdown.hide();
+                }
+                userDropdownMenu.classList.remove('show');
+            } else {
+                const bsDropdown = new bootstrap.Dropdown(userDropdownToggle);
+                bsDropdown.show();
+                userDropdownMenu.classList.add('show');
+            }
+            e.preventDefault();
         });
     }
 });

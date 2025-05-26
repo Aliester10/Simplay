@@ -115,12 +115,12 @@
                     <!-- Action Buttons -->
                     <div class="action-buttons mb-4">
                         <div class="row g-2">
-                            <div class="col-6">
+                            <div class="col-md-6 col-6">
                                 <button class="btn btn-outline-dark btn-action w-100">
                                     <i class="fas fa-file-download me-2"></i> E-Katalog
                                 </button>
                             </div>
-                            <div class="col-6">
+                            <div class="col-md-6 col-6">
                                 <button class="btn btn-outline-dark btn-action w-100">
                                     <i class="fas fa-info-circle me-2"></i> Read More
                                 </button>
@@ -130,24 +130,55 @@
                     
                     <!-- Quantity Controls and Add to Cart -->
                     <div class="cart-section">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="quantity-control me-3">
-                                <button class="quantity-btn minus" aria-label="Decrease quantity">−</button>
-                                <input type="text" value="1" class="quantity-input" readonly>
-                                <button class="quantity-btn plus" aria-label="Increase quantity">+</button>
+                        <form id="addToCartForm">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $produk->id }}">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="quantity-control me-3">
+                                    <button type="button" class="quantity-btn minus" aria-label="Decrease quantity">−</button>
+                                    <input type="text" name="quantity" value="1" class="quantity-input" readonly>
+                                    <button type="button" class="quantity-btn plus" aria-label="Increase quantity">+</button>
+                                </div>
+                                <button type="button" class="btn btn-light add-to-wishlist" aria-label="Add to wishlist">
+                                    <i class="far fa-heart"></i>
+                                </button>
                             </div>
-                            <button class="btn btn-light add-to-wishlist" aria-label="Add to wishlist">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="cta-buttons">
-                            <button class="btn btn-dark add-to-cart-btn">
-                                <i class="fas fa-shopping-cart me-2"></i> Add to Cart
-                            </button>
-                            <button class="btn btn-success buy-now-btn mt-2">
-                                <i class="fas fa-bolt me-2"></i> Buy Now
-                            </button>
+                            
+                            <div class="cta-buttons">
+                                <button type="button" class="btn btn-dark add-to-cart-btn" data-product-id="{{ $produk->id }}">
+                                    <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                                </button>
+                                <button type="button" class="btn btn-success buy-now-btn mt-2">
+                                    <i class="fas fa-bolt me-2"></i> Buy Now
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Toast notification for Add to Cart success -->
+                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+                        <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="toast-header bg-dark text-white">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                <strong class="me-auto">Shopping Cart</strong>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="toast-img me-3">
+                                        <img src="{{ asset($produk->images->first()->gambar ?? 'assets/img/default.jpg') }}" 
+                                            alt="{{ $produk->nama }}" class="rounded" width="50">
+                                    </div>
+                                    <div class="toast-text">
+                                        <p class="mb-0 fw-bold">Product added to your cart!</p>
+                                        <p class="mb-0 small text-muted">{{ $produk->nama }}</p>
+                                    </div>
+                                </div>
+                                <div class="mt-2 pt-2 border-top d-flex justify-content-between">
+                                    <a href="{{ route('cart.index') }}" class="btn btn-dark btn-sm">View Cart</a>
+                                    <a href="#" class="btn btn-outline-dark btn-sm" data-bs-dismiss="toast">Continue Shopping</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -679,6 +710,7 @@
             flex-direction: column;
         }
         
+        /* ENHANCED: Add to Cart and Buy Now buttons with improved styling */
         .add-to-cart-btn, .buy-now-btn {
             padding: 15px;
             font-size: 16px;
@@ -688,7 +720,9 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
         
         .add-to-cart-btn {
@@ -699,8 +733,8 @@
         
         .add-to-cart-btn:hover {
             background: #222;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         
         .buy-now-btn {
@@ -711,8 +745,45 @@
         
         .buy-now-btn:hover {
             background: #218838;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* Button click effect */
+        .add-to-cart-btn:active, .buy-now-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* ENHANCED: Button ripple effect */
+        .add-to-cart-btn::after, .buy-now-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+        
+        .add-to-cart-btn:focus:not(:active)::after,
+        .buy-now-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
         }
         
         /* Social Share */
@@ -1073,8 +1144,148 @@
         .image-auto-scroll {
             animation: fadeImage 1s ease;
         }
+
+        /* ENHANCED: Improved Add to Cart Animation */
+        .flying-image {
+            z-index: 9999;
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            transform-origin: center center;
+            border-radius: 50%;
+            transition: all 0.8s cubic-bezier(0.21, 0.98, 0.6, 0.99) !important;
+            animation: flyingImageSpin 1.2s ease-in-out;
+        }
         
-        /* Responsive Adjustments */
+        @keyframes flyingImageSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(15deg) scale(0.9); }
+            50% { transform: rotate(-10deg) scale(0.8); }
+            75% { transform: rotate(5deg) scale(0.7); }
+            100% { transform: rotate(0deg) scale(0.6); }
+        }
+
+        .cart-bump {
+            animation: cartBump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes cartBump {
+            0%, 100% { transform: scale(1); }
+            40% { transform: scale(1.5); }
+            60% { transform: scale(1.2); }
+        }
+
+        .pulse-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            animation: pulse 1.2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        .count-update {
+            animation: countBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes countBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.5); color: #28a745; }
+        }
+
+        /* ENHANCED: Improved loader */
+        .loader-circle {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ENHANCED: Toast animation */
+        .toast-slide-in {
+            animation: slideInToast 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+
+        @keyframes slideInToast {
+            0% { transform: translateX(100%); opacity: 0; }
+            70% { transform: translateX(-5%); }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        /* ENHANCED: Toast styling */
+        #cartToast {
+            min-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            border: none;
+            overflow: hidden;
+        }
+        
+        #cartToast .toast-header {
+            padding: 12px 15px;
+        }
+        
+        #cartToast .toast-body {
+            padding: 15px;
+        }
+        
+        #cartToast .toast-img img {
+            object-fit: cover;
+            width: 50px;
+            height: 50px;
+        }
+        
+        /* Button states for Add to Cart */
+        .add-to-cart-btn.adding {
+            cursor: progress;
+            opacity: 0.9;
+        }
+        
+        .add-to-cart-btn.btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            transition: all 0.3s ease;
+        }
+        
+        .add-to-cart-btn.btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            transition: all 0.3s ease;
+        }
+        
+        /* ENHANCED: Responsive Adjustments */
+        @media (max-width: 1199px) {
+            .product-title {
+                font-size: 28px;
+            }
+            
+            .product-price {
+                font-size: 24px;
+            }
+            
+            .add-to-cart-btn, .buy-now-btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+        
         @media (max-width: 992px) {
             .product-detail-wrapper {
                 padding: 30px 20px;
@@ -1085,14 +1296,6 @@
                 margin-top: 40px;
             }
             
-            .product-title {
-                font-size: 28px;
-            }
-            
-            .product-price {
-                font-size: 24px;
-            }
-            
             .main-image-container {
                 aspect-ratio: 4/3;
             }
@@ -1100,12 +1303,34 @@
             .nav-tabs .nav-item {
                 margin-right: 20px;
             }
+            
+            .nav-tabs .nav-link {
+                font-size: 15px;
+            }
+            
+            .tab-content-inner h4 {
+                font-size: 20px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .product-actions .action-btn {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .thumbnails-slider {
+                gap: 10px;
+            }
         }
         
         @media (max-width: 768px) {
             .product-detail-wrapper {
-                padding: 20px 15px;
-                border-radius: 10px;
+                padding: 25px 15px;
+                border-radius: 12px;
+                margin-top: 4rem;
             }
             
             .product-title {
@@ -1113,7 +1338,7 @@
             }
             
             .product-price {
-                font-size: 20px;
+                font-size: 22px;
             }
             
             .action-buttons .row {
@@ -1163,12 +1388,145 @@
             .lightbox-container {
                 height: 60vh;
             }
+            
+            .thumbnail-item {
+                width: 60px;
+                height: 60px;
+            }
+            
+            /* Improve mobile toast experience */
+            #cartToast {
+                min-width: auto;
+                width: 90%;
+                max-width: 350px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .product-detail-wrapper {
+                padding: 20px 12px;
+                margin-top: 3rem;
+            }
+            
+            .product-title {
+                font-size: 20px;
+            }
+            
+            .product-price {
+                font-size: 18px;
+            }
+            
+            .product-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .product-id {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+            
+            .quantity-btn, .quantity-input, .add-to-wishlist {
+                height: 36px;
+            }
+            
+            .quantity-btn {
+                width: 36px;
+                font-size: 16px;
+            }
+            
+            .quantity-input {
+                width: 40px;
+                font-size: 16px;
+            }
+            
+            .add-to-cart-btn, .buy-now-btn {
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            .social-share {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .share-label {
+                margin-bottom: 10px;
+            }
+            
+            .nav-tabs .nav-item {
+                margin-right: 10px;
+            }
+            
+            .nav-tabs .nav-link {
+                font-size: 13px;
+            }
+            
+            .nav-tabs .nav-link i {
+                font-size: 16px;
+            }
+            
+            .tab-content-inner h4 {
+                font-size: 18px;
+            }
+            
+            .image-controls {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .control-btn {
+                width: 32px;
+                height: 32px;
+                margin-left: 6px;
+            }
+            
+            .thumbnail-item {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .thumbnails-slider {
+                gap: 8px;
+            }
+            
+            /* Better mobile product actions */
+            .product-actions {
+                padding: 8px;
+            }
+            
+            .product-actions .action-btn {
+                width: 32px;
+                height: 32px;
+            }
+            
+            /* Make lightbox more mobile-friendly */
+            .lightbox-control {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .lightbox-controls {
+                padding: 0 15px;
+            }
+            
+            /* Optimize toast for very small screens */
+            #cartToast {
+                width: 95%;
+            }
+            
+            #cartToast .toast-img img {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
 
-    <!-- Make sure to include FontAwesome and Swiper JS in your main layout or add them here -->
+    <!-- Make sure to include FontAwesome, Swiper JS, and jQuery in your main layout or add them here -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
     <script>
@@ -1387,6 +1745,344 @@
                     }
                 });
             }
+
+            // ENHANCED: Add to Cart functionality with improved animations
+            const addToCartBtn = document.querySelector('.add-to-cart-btn');
+            const toastElement = document.getElementById('cartToast');
+            
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const quantity = document.querySelector('.quantity-input').value;
+                    
+                    // Prevent multiple clicks
+                    if (this.classList.contains('adding')) return;
+                    
+                    // Get positions for animation
+                    const productImage = document.getElementById('mainImage');
+                    const navbarCart = document.querySelector('.navbar-cart') || document.querySelector('.fa-shopping-cart'); // Find cart icon in navbar
+                    
+                    // Add loading state to button
+                    this.classList.add('adding');
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<div class="pulse-overlay"></div><span class="loader-circle"></span> Adding...';
+                    
+                    // Create flying image animation
+                    if (productImage && navbarCart) {
+                        // Create flying image element
+                        const flyingImage = document.createElement('img');
+                        flyingImage.src = productImage.src;
+                        flyingImage.className = 'flying-image';
+                        document.body.appendChild(flyingImage);
+                        
+                        // Get positions and dimensions for animation
+                        const prodRect = productImage.getBoundingClientRect();
+                        const cartRect = navbarCart.getBoundingClientRect();
+                        
+                        // Position the flying image at the source
+                        flyingImage.style.cssText = `
+                            position: fixed;
+                            z-index: 9999;
+                            width: 100px;
+                            height: 100px;
+                            object-fit: contain;
+                            top: ${prodRect.top + window.scrollY}px;
+                            left: ${prodRect.left + prodRect.width/2 - 50}px;
+                            opacity: 0.9;
+                            pointer-events: none;
+                            border-radius: 50%;
+                            box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+                        `;
+                        
+                        // Add a small delay before animation for better visual effect
+                        setTimeout(() => {
+                            // Calculate a curved path (bezier-like motion)
+                            const controlX = window.innerWidth / 2;
+                            const controlY = Math.min(prodRect.top, cartRect.top) - 100;
+                            
+                            // Animate along the curved path
+                            flyingImage.style.transition = 'all 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+                            
+                            // Use a combination of transform and position for curved effect
+                            flyingImage.style.top = `${cartRect.top + window.scrollY}px`;
+                            flyingImage.style.left = `${cartRect.left}px`;
+                            flyingImage.style.width = '20px';
+                            flyingImage.style.height = '20px';
+                            flyingImage.style.opacity = '0';
+                            
+                            // Animate cart icon
+                            setTimeout(() => {
+                                navbarCart.classList.add('cart-bump');
+                            }, 600);
+                            
+                            // Remove flying image and cart animation class after completion
+                            setTimeout(() => {
+                                if (document.body.contains(flyingImage)) {
+                                    document.body.removeChild(flyingImage);
+                                }
+                                navbarCart.classList.remove('cart-bump');
+                            }, 900);
+                        }, 100);
+                    }
+                    
+                    // AJAX request to add to cart
+                    $.ajax({
+                        url: "{{ route('cart.add') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            product_id: productId,
+                            quantity: quantity
+                        },
+                        success: function(response) {
+                            // Reset button with success animation
+                            addToCartBtn.classList.remove('adding');
+                            addToCartBtn.innerHTML = '<i class="fas fa-check me-2"></i> Added to Cart!';
+                            addToCartBtn.classList.add('btn-success');
+                            
+                            // Return to original state after delay
+                            setTimeout(function() {
+                                addToCartBtn.innerHTML = originalText;
+                                addToCartBtn.classList.remove('btn-success');
+                            }, 2000);
+                            
+                            // Show success toast with enhanced animation
+                            if (response.success) {
+                                const toast = new bootstrap.Toast(toastElement, {
+                                    autohide: true,
+                                    delay: 4000
+                                });
+                                
+                                // Add animation class
+                                toastElement.classList.add('toast-slide-in');
+                                
+                                // Show toast
+                                toast.show();
+                                
+                                // Remove animation class after displayed
+                                setTimeout(() => {
+                                    toastElement.classList.remove('toast-slide-in');
+                                }, 500);
+                                
+                                // Update cart count with animation
+                                if (response.cartCount) {
+                                    const cartCountElement = document.querySelector('.cart-count');
+                                    if (cartCountElement) {
+                                        cartCountElement.textContent = response.cartCount;
+                                        cartCountElement.classList.add('count-update');
+                                        setTimeout(() => {
+                                            cartCountElement.classList.remove('count-update');
+                                        }, 1000);
+                                    }
+                                }
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Reset button with error animation
+                            addToCartBtn.classList.remove('adding');
+                            addToCartBtn.classList.add('btn-danger');
+                            addToCartBtn.innerHTML = '<i class="fas fa-times me-2"></i> Failed!';
+                            
+                            // Return to original state after delay
+                            setTimeout(function() {
+                                addToCartBtn.innerHTML = originalText;
+                                addToCartBtn.classList.remove('btn-danger');
+                            }, 2000);
+                            
+                            // Show error message
+                            console.error(error);
+                            alert('Failed to add product to cart. Please try again.');
+                        }
+                    });
+                });
+            }
+
+            // ENHANCED: Related Products Add to Cart with improved animations
+            const relatedAddToCartBtns = document.querySelectorAll('.product-actions .add-to-cart');
+            if (relatedAddToCartBtns.length > 0) {
+                relatedAddToCartBtns.forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Prevent multiple clicks
+                        if (this.classList.contains('processing')) return;
+                        
+                        const productId = this.getAttribute('data-id');
+                        const productCard = this.closest('.product-card');
+                        const productImage = productCard.querySelector('img');
+                        const navbarCart = document.querySelector('.navbar-cart') || document.querySelector('.fa-shopping-cart');
+                        
+                        // Add processing state
+                        this.classList.add('processing');
+                        const originalInnerHTML = this.innerHTML;
+                        this.innerHTML = '<div class="loader-circle"></div>';
+                        
+                        // Create flying image animation
+                        if (productImage && navbarCart) {
+                            // Create element
+                            const flyingImage = document.createElement('img');
+                            flyingImage.src = productImage.src;
+                            flyingImage.className = 'flying-image';
+                            document.body.appendChild(flyingImage);
+                            
+                            // Get positions
+                            const prodRect = productImage.getBoundingClientRect();
+                            const cartRect = navbarCart.getBoundingClientRect();
+                            
+                            // Set initial position
+                            flyingImage.style.cssText = `
+                                position: fixed;
+                                z-index: 9999;
+                                width: 80px;
+                                height: 80px;
+                                object-fit: cover;
+                                top: ${prodRect.top + window.scrollY}px;
+                                left: ${prodRect.left + prodRect.width/2 - 40}px;
+                                opacity: 0.9;
+                                pointer-events: none;
+                                border-radius: 50%;
+                                box-shadow: 0 5px 30px rgba(0,0,0,0.15);
+                            `;
+                            
+                            // Animate after a short delay
+                            setTimeout(() => {
+                                // Calculate a curved path
+                                const controlX = window.innerWidth / 2;
+                                const controlY = Math.min(prodRect.top, cartRect.top) - 100;
+                                
+                                // Animate to cart
+                                flyingImage.style.transition = 'all 0.8s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+                                flyingImage.style.top = `${cartRect.top + window.scrollY}px`;
+                                flyingImage.style.left = `${cartRect.left}px`;
+                                flyingImage.style.width = '20px';
+                                flyingImage.style.height = '20px';
+                                flyingImage.style.opacity = '0';
+                                
+                                // Animate cart icon when image reaches it
+                                setTimeout(() => {
+                                    navbarCart.classList.add('cart-bump');
+                                }, 600);
+                                
+                                // Clean up animations
+                                setTimeout(() => {
+                                    if (document.body.contains(flyingImage)) {
+                                        document.body.removeChild(flyingImage);
+                                    }
+                                    navbarCart.classList.remove('cart-bump');
+                                }, 900);
+                            }, 100);
+                        }
+                        
+                        // AJAX request
+                        $.ajax({
+                            url: "{{ route('cart.add') }}",
+                            type: "POST",
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                product_id: productId,
+                                quantity: 1 // Default to 1 for related products
+                            },
+                            success: function(response) {
+                                // Reset button with success animation
+                                btn.classList.remove('processing');
+                                btn.innerHTML = '<i class="fas fa-check"></i>';
+                                
+                                // Return to original state after delay
+                                setTimeout(function() {
+                                    btn.innerHTML = originalInnerHTML;
+                                }, 1500);
+                                
+                                // Show success toast
+                                if (response.success) {
+                                    const toast = new bootstrap.Toast(toastElement, {
+                                        autohide: true,
+                                        delay: 4000
+                                    });
+                                    
+                                    // Add animation class
+                                    toastElement.classList.add('toast-slide-in');
+                                    
+                                    // Show toast
+                                    toast.show();
+                                    
+                                    // Remove animation class
+                                    setTimeout(() => {
+                                        toastElement.classList.remove('toast-slide-in');
+                                    }, 500);
+                                    
+                                    // Update cart count with animation
+                                    if (response.cartCount) {
+                                        const cartCountElement = document.querySelector('.cart-count');
+                                        if (cartCountElement) {
+                                            cartCountElement.textContent = response.cartCount;
+                                            cartCountElement.classList.add('count-update');
+                                            setTimeout(() => {
+                                                cartCountElement.classList.remove('count-update');
+                                            }, 1000);
+                                        }
+                                    }
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                // Reset button with error animation
+                                btn.classList.remove('processing');
+                                btn.innerHTML = '<i class="fas fa-times"></i>';
+                                
+                                // Return to original state after delay
+                                setTimeout(function() {
+                                    btn.innerHTML = originalInnerHTML;
+                                }, 1500);
+                                
+                                console.error(error);
+                            }
+                        });
+                    });
+                });
+            }
+            
+            // Touch device detection for better mobile experience
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            if (isTouchDevice) {
+                // Enhance touch experience for gallery
+                const mainImageContainer = document.querySelector('.main-image-container');
+                if (mainImageContainer) {
+                    // Add touch swipe support for gallery
+                    let touchStartX = 0;
+                    let touchEndX = 0;
+                    
+                    mainImageContainer.addEventListener('touchstart', function(e) {
+                        touchStartX = e.changedTouches[0].screenX;
+                    }, false);
+                    
+                    mainImageContainer.addEventListener('touchend', function(e) {
+                        touchEndX = e.changedTouches[0].screenX;
+                        handleSwipe();
+                    }, false);
+                    
+                    function handleSwipe() {
+                        const currentThumb = document.querySelector('.thumbnail-item.active');
+                        const currentIndex = parseInt(currentThumb.dataset.index);
+                        const imageCount = {{ count($produk->images) }};
+                        
+                        if (touchEndX < touchStartX - 50) { // Swipe left
+                            const newIndex = currentIndex < imageCount - 1 ? currentIndex + 1 : 0;
+                            changeMainImage(newIndex);
+                        }
+                        
+                        if (touchEndX > touchStartX + 50) { // Swipe right
+                            const newIndex = currentIndex > 0 ? currentIndex - 1 : imageCount - 1;
+                            changeMainImage(newIndex);
+                        }
+                    }
+                }
+                
+                // Make controls more visible on touch devices
+                document.querySelectorAll('.control-btn, .quantity-btn, .action-btn').forEach(btn => {
+                    btn.style.width = btn.offsetWidth + 4 + 'px';
+                    btn.style.height = btn.offsetHeight + 4 + 'px';
+                });
+            }
         });
         
         // Function to change main image
@@ -1405,6 +2101,20 @@
                 
                 // Add active class to selected thumbnail
                 document.querySelector(`.thumbnail-item[data-index="${index}"]`).classList.add('active');
+                
+                // Scroll thumbnail into view if needed
+                const thumbnailsSlider = document.querySelector('.thumbnails-slider');
+                const activeThumb = document.querySelector(`.thumbnail-item[data-index="${index}"]`);
+                
+                if (thumbnailsSlider && activeThumb) {
+                    const sliderRect = thumbnailsSlider.getBoundingClientRect();
+                    const thumbRect = activeThumb.getBoundingClientRect();
+                    
+                    // Check if thumbnail is not fully visible
+                    if (thumbRect.left < sliderRect.left || thumbRect.right > sliderRect.right) {
+                        thumbnailsSlider.scrollLeft = activeThumb.offsetLeft - thumbnailsSlider.offsetWidth / 2 + activeThumb.offsetWidth / 2;
+                    }
+                }
             }
         }
         

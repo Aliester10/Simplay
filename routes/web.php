@@ -45,6 +45,7 @@ use App\Http\Controllers\Distribution\Portal\DistributionController;
 use App\Http\Controllers\Distribution\Portal\InvoiceController;
 use App\Http\Controllers\Distribution\Portal\ProformaInvoiceDistributorController;
 use App\Http\Controllers\Distribution\Profile\ProfileDistributorController;
+use App\Http\Controllers\CartController;
 
 
 /*
@@ -165,6 +166,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
     Route::get('/register', function () {
         return redirect()->route('distributors.register');
     });
+
+    // Rute Cart untuk Semua Pengguna
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 });
 
 
@@ -180,7 +187,13 @@ Route::middleware(['auth', 'user-access:member'])->group(function () {
         Route::get('/portal/controlgenerations', [PortalController::class, 'ControllerGenerations'])->name('portal.controlgenerations');
         Route::get('/portal/document', [PortalController::class, 'document'])->name('portal.document');
         Route::get('/portal/qna', [PortalController::class, 'Faq'])->name('portal.qna');
-
+        
+        // Member cart routes
+        Route::get('/portal/cart', [PortalController::class, 'cart'])->name('portal.cart');
+        Route::post('/portal/cart/add', [PortalController::class, 'addToCart'])->name('member.cart.add');
+        Route::put('/portal/cart/update', [PortalController::class, 'updateCart'])->name('member.cart.update');
+        Route::delete('/portal/cart/remove', [PortalController::class, 'removeFromCart'])->name('member.cart.remove');
+        Route::post('/portal/order/submit', [PortalController::class, 'submitOrder'])->name('member.order.submit');
 
         Route::get('/portal/tickets', [TicketMemberController::class, 'index'])->name('tickets.index');
         Route::get('/portal/tickets/create', [TicketMemberController::class, 'create'])->name('tickets.create');
