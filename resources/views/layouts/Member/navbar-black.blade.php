@@ -7,31 +7,61 @@
         ->where('end_date', '>=', today())
         ->get()
         ->groupBy('type');
+    
+    // Count cart items based on user type - IMPROVED VERSION
+    $cartCount = 0;
+    if (auth()->check()) {
+        if (auth()->user()->type === 'distributor' && session()->has('quotation_cart')) {
+            $cartCount = is_array(session('quotation_cart')) ? count(session('quotation_cart')) : 0;
+        } elseif (auth()->user()->type === 'member' && session()->has('member_cart')) {
+            $cartCount = is_array(session('member_cart')) ? count(session('member_cart')) : 0;
+        } elseif (session()->has('cart')) {
+            // Fallback for any authenticated user with regular cart
+            $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
+        }
+    } elseif (session()->has('cart')) {
+        $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
+    }
+    
+    // Current date and time (UTC)
+    $currentDateTime = "2025-05-26 18:00:05";
+    // Current user's login
+    $currentUserLogin = "Aliester10";
 @endphp
 
 <!-- Top Dark Bar -->
 <div class="container-fluid top-dark-bar">
-    <div class="container d-flex justify-content-center align-items-center flex-wrap h-100">
-        @if(!empty($compro->maps))
-            <a href="{{ $compro->maps }}" class="text-light me-md-4 me-2 mb-1 mb-md-0" target="_blank">
-                <img src="{{ asset('assets/icons/topbar-icons/location.svg') }}" alt="Location" class="topbar-icon">
-                <span>Lokasi Kantor</span>
-            </a>
-        @endif
-        
-        @if(!empty($compro->no_telepon))
-            <a href="tel:+62{{ $compro->no_telepon }}" class="text-light me-md-4 me-2 mb-1 mb-md-0">
-                <img src="{{ asset('assets/icons/topbar-icons/phone-call.svg') }}" alt="Phone" class="topbar-icon">
-                <span>{{ $compro->no_telepon }}</span>
-            </a>
-        @endif
-        
-        @if(!empty($compro->email))
-            <a href="mailto:{{ $compro->email }}" class="text-light mb-1 mb-md-0">
-                <img src="{{ asset('assets/icons/topbar-icons/email.svg') }}" alt="Email" class="topbar-icon">
-                <span>{{ $compro->email }}</span>
-            </a>
-        @endif
+    <div class="container d-flex justify-content-between align-items-center flex-wrap h-100">
+        <div class="d-flex align-items-center flex-wrap">
+            @if(!empty($compro->maps))
+                <a href="{{ $compro->maps }}" class="text-light me-md-4 me-2 mb-1 mb-md-0" target="_blank">
+                    <img src="{{ asset('assets/icons/topbar-icons/location.svg') }}" alt="Location" class="topbar-icon">
+                    <span>Lokasi Kantor</span>
+                </a>
+            @endif
+            
+            @if(!empty($compro->no_telepon))
+                <a href="tel:+62{{ $compro->no_telepon }}" class="text-light me-md-4 me-2 mb-1 mb-md-0">
+                    <img src="{{ asset('assets/icons/topbar-icons/phone-call.svg') }}" alt="Phone" class="topbar-icon">
+                    <span>{{ $compro->no_telepon }}</span>
+                </a>
+            @endif
+            
+            @if(!empty($compro->email))
+                <a href="mailto:{{ $compro->email }}" class="text-light mb-1 mb-md-0">
+                    <img src="{{ asset('assets/icons/topbar-icons/email.svg') }}" alt="Email" class="topbar-icon">
+                    <span>{{ $compro->email }}</span>
+                </a>
+            @endif
+        </div>
+        <div class="d-flex align-items-center text-light">
+            <div class="me-3 top-info">
+                <i class="far fa-clock me-1"></i> {{ $currentDateTime }}
+            </div>
+            <div class="top-info">
+                <i class="far fa-user me-1"></i> {{ $currentUserLogin }}
+            </div>
+        </div>
     </div>
 </div>
 
@@ -134,35 +164,36 @@
                     @endif
                 </div>
                 
-                <!-- Cart Icon - Updated for Animation -->
+                <!-- Cart Icon - Updated with modern badge design -->
                 <div>
                     @if(auth()->check())
                         @if(auth()->user()->type === 'distributor')
                             <a href="{{ route('quotations.cart') }}" class="nav-icon-link position-relative">
                                 <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                                @if(session('quotation_cart'))
-                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
-                                        {{ count(session('quotation_cart')) }}
-                                    </span>
+                                @if($cartCount > 0)
+                                    <span class="cart-badge">{{ $cartCount }}</span>
                                 @endif
                             </a>
                         @elseif(auth()->user()->type === 'member')
                             <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
                                 <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                                @if(session('member_cart'))
-                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
-                                        {{ count(session('member_cart')) }}
-                                    </span>
+                                @if($cartCount > 0)
+                                    <span class="cart-badge">{{ $cartCount }}</span>
+                                @endif
+                            </a>
+                        @else
+                            <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                                <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                                @if($cartCount > 0)
+                                    <span class="cart-badge">{{ $cartCount }}</span>
                                 @endif
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                        <a href="{{ route('login') }}" class="nav-icon-link position-relative" title="Login untuk akses keranjang">
                             <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                            @if(session('cart'))
-                                <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
-                                    {{ count(session('cart')) }}
-                                </span>
+                            @if($cartCount > 0)
+                                <span class="cart-badge">{{ $cartCount }}</span>
                             @endif
                         </a>
                     @endif
@@ -215,6 +246,12 @@
     filter: brightness(0) invert(1);
 }
 
+.top-info {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
 /* Main navigation bar styling - Transparent */
 .navbar {
     background-color: transparent;
@@ -230,9 +267,9 @@
     width: auto;
 }
 
-/* Navigation links - UPDATED to black */
+/* Navigation links - Changed color to black */
 .navbar .nav-link {
-    color: #000; /* Changed from #fff to #000 */
+    color: #000; /* Changed from #fff to #000 for black color */
     font-weight: 500;
     padding: 0.5rem 1rem;
     margin-right: 0.5rem;
@@ -243,12 +280,12 @@
 
 .navbar .nav-link:hover,
 .navbar .nav-link.active {
-    color: #6196FF;
+    color: #6196FF; /* Kept the hover/active color */
 }
 
 .navbar .navbar-toggler {
     border: none;
-    color: #000; /* Changed from #fff to #000 */
+    color: #000; /* Changed from #fff to #000 for black color */
     padding: 0.4rem 0.6rem;
     font-size: 1.2rem;
 }
@@ -267,7 +304,7 @@
     border-radius: 30px;
     height: 36px;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.3); /* Changed border color */
+    border: 1px solid rgba(0, 0, 0, 0.3); /* Changed from white to black border */
 }
 
 .search-input {
@@ -278,11 +315,11 @@
     width: 100%;
     padding: 0 45px 0 20px;
     outline: none;
-    color: #000; /* Changed from #fff to #000 */
+    color: #000; /* Changed from #fff to #000 for black color */
 }
 
 .search-input::placeholder {
-    color: rgba(0, 0, 0, 0.7); /* Changed placeholder color */
+    color: rgba(0, 0, 0, 0.7); /* Changed from white to black with opacity */
 }
 
 .search-btn {
@@ -302,14 +339,14 @@
     width: 18px;
     height: 18px;
     opacity: 0.8;
-    filter: none; /* Removed filter that was making icon white */
+    filter: brightness(0); /* Remove invert filter to keep it black */
 }
 
-/* Navbar icons styling - UPDATED */
+/* Navbar icons styling */
 .navbar-icon {
     height: 22px;
     width: auto;
-    filter: none; /* Removed filter that was making icons white */
+    filter: brightness(0); /* Remove invert filter to keep it black */
 }
 
 .nav-icon-link {
@@ -318,6 +355,40 @@
     align-items: center;
     justify-content: center;
     position: relative;
+}
+
+/* Modern Cart Badge Styling */
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ff3e3e, #ff0000);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+    z-index: 10;
+    animation: badgePulse 2s infinite;
+    transition: all 0.3s ease;
+}
+
+@keyframes badgePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(255, 0, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
 }
 
 /* Dropdown menu styling */
@@ -341,14 +412,6 @@
 .user-info {
     background-color: #f8f9fa;
     color: #333;
-}
-
-/* Badge positioning fix */
-.badge.translate-middle {
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(25%, -25%);
 }
 
 /* Mobile search */
@@ -541,12 +604,14 @@
     .navbar-brand img.logo-img {
         height: 28px;
     }
+    .top-info {
+        font-size: 10px;
+    }
 }
 
 @media (max-width: 575.98px) {
     .top-dark-bar .container {
-        flex-wrap: wrap;
-        justify-content: center;
+        justify-content: space-between;
     }
     
     .top-dark-bar a {
@@ -562,17 +627,26 @@
     .navbar-brand img.logo-img {
         height: 26px;
     }
+    
+    .top-info {
+        font-size: 9px;
+    }
 }
 
 /* For very small screens like iPhone SE */
 @media (max-width: 360px) {
     .top-dark-bar .container {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
         padding-left: 1rem;
+        padding-right: 1rem;
     }
     .top-dark-bar a {
-        margin-right: 0 !important;
+        margin-right: 0.5rem !important;
+        font-size: 0.6rem;
+    }
+    .top-info {
+        font-size: 8px;
     }
 }
 </style>
@@ -666,5 +740,79 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
         });
     }
+    
+    // Function to check if user is logged in before adding to cart
+    window.checkLoginBeforeAddToCart = function(event, productId) {
+        // Check if user is logged in (this value should be set from the PHP backend)
+        const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+        
+        if (!isLoggedIn) {
+            event.preventDefault();
+            // Save product ID to session storage to potentially redirect back after login
+            sessionStorage.setItem('pendingCartProduct', productId);
+            // Redirect to login page
+            window.location.href = "{{ route('login') }}";
+            return false;
+        }
+        return true;
+    }
+    
+    // Add cart animation effects
+    function animateCartIcon() {
+        const cartIcon = document.querySelector('.navbar-cart');
+        const cartBadge = document.querySelector('.cart-badge');
+        
+        if (cartIcon) {
+            cartIcon.classList.add('cart-bump');
+            setTimeout(() => {
+                cartIcon.classList.remove('cart-bump');
+            }, 500);
+        }
+        
+        if (cartBadge) {
+            cartBadge.style.transform = 'scale(1.5)';
+            cartBadge.style.boxShadow = '0 0 10px rgba(255,0,0,0.7)';
+            setTimeout(() => {
+                cartBadge.style.transform = '';
+                cartBadge.style.boxShadow = '';
+            }, 500);
+        }
+    }
+    
+    // Monitor for cart updates (triggered by add to cart buttons)
+    document.addEventListener('cartUpdated', function() {
+        animateCartIcon();
+    });
+    
+    // Add global handler for add-to-cart buttons
+    document.addEventListener('click', function(e) {
+        const addToCartBtn = e.target.closest('.add-to-cart-btn');
+        if (addToCartBtn) {
+            const productId = addToCartBtn.dataset.productId;
+            if (!checkLoginBeforeAddToCart(e, productId)) {
+                return;
+            }
+            
+            // If we're here, user is logged in and can add to cart
+            // The form submission will continue normally
+            
+            // Simulate cart update animation when item is added
+            setTimeout(() => {
+                animateCartIcon();
+            }, 500);
+        }
+    });
+    
+    // Check on page load if we have a pending product to add to cart after login
+    document.addEventListener('DOMContentLoaded', function() {
+        const pendingProductId = sessionStorage.getItem('pendingCartProduct');
+        const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+        
+        if (pendingProductId && isLoggedIn) {
+            // Could trigger add to cart here automatically, or show a notification
+            // that user can now add the product to cart
+            sessionStorage.removeItem('pendingCartProduct');
+        }
+    });
 });
 </script>

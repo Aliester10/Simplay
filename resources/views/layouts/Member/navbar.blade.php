@@ -7,6 +7,21 @@
         ->where('end_date', '>=', today())
         ->get()
         ->groupBy('type');
+    
+    // Count cart items based on user type - IMPROVED VERSION
+    $cartCount = 0;
+    if (auth()->check()) {
+        if (auth()->user()->type === 'distributor' && session()->has('quotation_cart')) {
+            $cartCount = is_array(session('quotation_cart')) ? count(session('quotation_cart')) : 0;
+        } elseif (auth()->user()->type === 'member' && session()->has('member_cart')) {
+            $cartCount = is_array(session('member_cart')) ? count(session('member_cart')) : 0;
+        } elseif (session()->has('cart')) {
+            // Fallback for any authenticated user with regular cart
+            $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
+        }
+    } elseif (session()->has('cart')) {
+        $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
+    }
 @endphp
 
 <!-- Top Dark Bar -->
@@ -134,35 +149,36 @@
                     @endif
                 </div>
                 
-                <!-- Cart Icon - Updated for Animation -->
+                <!-- Cart Icon - Updated with modern badge design -->
                 <div>
                     @if(auth()->check())
                         @if(auth()->user()->type === 'distributor')
                             <a href="{{ route('quotations.cart') }}" class="nav-icon-link position-relative">
                                 <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                                @if(session('quotation_cart'))
-                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
-                                        {{ count(session('quotation_cart')) }}
-                                    </span>
+                                @if($cartCount > 0)
+                                    <span class="cart-badge">{{ $cartCount }}</span>
                                 @endif
                             </a>
                         @elseif(auth()->user()->type === 'member')
                             <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
                                 <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                                @if(session('member_cart'))
-                                    <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
-                                        {{ count(session('member_cart')) }}
-                                    </span>
+                                @if($cartCount > 0)
+                                    <span class="cart-badge">{{ $cartCount }}</span>
+                                @endif
+                            </a>
+                        @else
+                            <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                                <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
+                                @if($cartCount > 0)
+                                    <span class="cart-badge">{{ $cartCount }}</span>
                                 @endif
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
+                        <a href="{{ route('login') }}" class="nav-icon-link position-relative" title="Login untuk akses keranjang">
                             <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                            @if(session('cart'))
-                                <span class="badge bg-primary rounded-pill position-absolute translate-middle cart-count">
-                                    {{ count(session('cart')) }}
-                                </span>
+                            @if($cartCount > 0)
+                                <span class="cart-badge">{{ $cartCount }}</span>
                             @endif
                         </a>
                     @endif
@@ -320,6 +336,40 @@
     position: relative;
 }
 
+/* Modern Cart Badge Styling */
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #ff3e3e, #ff0000);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+    z-index: 10;
+    animation: badgePulse 2s infinite;
+    transition: all 0.3s ease;
+}
+
+@keyframes badgePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(255, 0, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
+}
+
 /* Dropdown menu styling */
 .dropdown-menu {
     border-radius: 0.5rem;
@@ -341,14 +391,6 @@
 .user-info {
     background-color: #f8f9fa;
     color: #333;
-}
-
-/* Badge positioning fix */
-.badge.translate-middle {
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(25%, -25%);
 }
 
 /* Mobile search */
@@ -666,5 +708,79 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
         });
     }
+    
+    // Function to check if user is logged in before adding to cart
+    window.checkLoginBeforeAddToCart = function(event, productId) {
+        // Check if user is logged in (this value should be set from the PHP backend)
+        const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+        
+        if (!isLoggedIn) {
+            event.preventDefault();
+            // Save product ID to session storage to potentially redirect back after login
+            sessionStorage.setItem('pendingCartProduct', productId);
+            // Redirect to login page
+            window.location.href = "{{ route('login') }}";
+            return false;
+        }
+        return true;
+    }
+    
+    // Add cart animation effects
+    function animateCartIcon() {
+        const cartIcon = document.querySelector('.navbar-cart');
+        const cartBadge = document.querySelector('.cart-badge');
+        
+        if (cartIcon) {
+            cartIcon.classList.add('cart-bump');
+            setTimeout(() => {
+                cartIcon.classList.remove('cart-bump');
+            }, 500);
+        }
+        
+        if (cartBadge) {
+            cartBadge.style.transform = 'scale(1.5)';
+            cartBadge.style.boxShadow = '0 0 10px rgba(255,0,0,0.7)';
+            setTimeout(() => {
+                cartBadge.style.transform = '';
+                cartBadge.style.boxShadow = '';
+            }, 500);
+        }
+    }
+    
+    // Monitor for cart updates (triggered by add to cart buttons)
+    document.addEventListener('cartUpdated', function() {
+        animateCartIcon();
+    });
+    
+    // Add global handler for add-to-cart buttons
+    document.addEventListener('click', function(e) {
+        const addToCartBtn = e.target.closest('.add-to-cart-btn');
+        if (addToCartBtn) {
+            const productId = addToCartBtn.dataset.productId;
+            if (!checkLoginBeforeAddToCart(e, productId)) {
+                return;
+            }
+            
+            // If we're here, user is logged in and can add to cart
+            // The form submission will continue normally
+            
+            // Simulate cart update animation when item is added
+            setTimeout(() => {
+                animateCartIcon();
+            }, 500);
+        }
+    });
+    
+    // Check on page load if we have a pending product to add to cart after login
+    document.addEventListener('DOMContentLoaded', function() {
+        const pendingProductId = sessionStorage.getItem('pendingCartProduct');
+        const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+        
+        if (pendingProductId && isLoggedIn) {
+            // Could trigger add to cart here automatically, or show a notification
+            // that user can now add the product to cart
+            sessionStorage.removeItem('pendingCartProduct');
+        }
+    });
 });
 </script>

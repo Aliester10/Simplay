@@ -942,6 +942,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Prevent multiple clicks
             if (this.classList.contains('processing')) return;
             
+            // Check if user is logged in
+            const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+            
+            if (!isLoggedIn) {
+                // Redirect to login page if not logged in
+                window.location.href = "{{ route('login') }}";
+                return;
+            }
+            
             const productId = this.getAttribute('data-id');
             const productCard = this.closest('.product-card');
             const productImage = productCard.querySelector('img');
@@ -1086,6 +1095,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     wishlistButtons.forEach(button => {
         button.addEventListener('click', function() {
+            // Check if user is logged in
+            const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+            
+            if (!isLoggedIn) {
+                // Redirect to login page if not logged in
+                window.location.href = "{{ route('login') }}";
+                return;
+            }
+            
             const icon = this.querySelector('i');
             
             // Create ripple animation element
