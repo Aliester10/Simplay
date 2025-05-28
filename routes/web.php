@@ -74,16 +74,6 @@ Route::middleware(['auth', 'user-access:admin'])->prefix('admin/slider')->name('
     Route::delete('/{id}', [SliderController::class, 'destroy'])->name('destroy');
 });
 
-Route::middleware(['auth', 'user-access:admin'])->prefix('admin/activity')->name('Admin.Activity.')->group(function () {
-    Route::get('/', [ActivityController::class, 'index'])->name('index');
-    Route::get('/create', [ActivityController::class, 'create'])->name('create');
-    Route::post('/', [ActivityController::class, 'store'])->name('store');
-    Route::get('/{slug}', [ActivityController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [ActivityController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [ActivityController::class, 'update'])->name('update');
-    Route::delete('/{id}', [ActivityController::class, 'destroy'])->name('destroy');
-});
-
 Route::middleware(['auth', 'user-access:admin'])->prefix('admin/brand')->name('Admin.Brand.')->group(function () {
     Route::get('/', [BrandPartnerController::class, 'index'])->name('index');
     Route::get('/create', [BrandPartnerController::class, 'create'])->name('create');
@@ -275,6 +265,18 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
         Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
+        // Route activity yang dipindahkan ke dalam grup dengan prefix lokalisasi
+        Route::prefix('admin/activity')->name('admin.activity.')->group(function () {
+            Route::get('/', [ActivityController::class, 'index'])->name('index');
+            Route::get('/create', [ActivityController::class, 'create'])->name('create');
+            Route::post('/', [ActivityController::class, 'store'])->name('store');
+            Route::get('/{activity}', [ActivityController::class, 'show'])->name('show');
+            Route::get('/{activity}/edit', [ActivityController::class, 'edit'])->name('edit');
+            Route::put('/{activity}', [ActivityController::class, 'update'])->name('update');
+            Route::delete('/{activity}', [ActivityController::class, 'destroy'])->name('destroy');
+            Route::delete('/image/{id}', [ActivityController::class, 'deleteImage'])->name('image.delete');
+        });
+
         Route::resource('admin/members', MemberController::class);
         Route::get('members/{id}/add-products', [MemberController::class, 'addProducts'])->name('members.add-products');
         Route::post('members/{id}/store-products', [MemberController::class, 'storeProducts'])->name('members.store-products');
@@ -337,8 +339,6 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         Route::post('/invoices/store/{proformaInvoiceId}', [InvoiceAdminController::class, 'store'])->name('invoices.store');
         Route::get('/invoices/{id}', [InvoiceAdminController::class, 'show'])->name('invoices.show');
 
-
-
         Route::get('/admin/visitors', [VisitorController::class, 'index'])->name('admin.visitors');
         Route::resource('admin/produk', ProdukController::class)->names('admin.produk');
         Route::resource('admin/parameter', CompanyParameterController::class);
@@ -346,7 +346,6 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         Route::resource('admin/kategori', KategoriController::class)->names('admin.kategori');
         Route::resource('admin/faq', FAQController::class)->names('admin.faq');
         Route::resource('admin/slider', SliderController::class)->names('admin.slider');
-        Route::resource('admin/activity', ActivityController::class)->names('admin.activity');
         Route::resource('admin/brand', BrandPartnerController::class)->names('admin.brand');
         Route::resource('admin/meta', MetaController::class)->names('admin.meta');
         Route::post('/froala/upload_image', [MetaController::class, 'uploadImage'])->name('froala.upload_image');

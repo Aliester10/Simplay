@@ -26,7 +26,30 @@
                     <tbody>
                         @foreach($activities as $activity)
                             <tr>
-                                <td><img src="{{ asset('images/'.$activity->image) }}" alt="{{ $activity->title }}" class="img-thumbnail" style="max-width: 100px; height: auto;"></td>
+                                <td>
+                                    <div id="carousel-{{ $activity->id }}" class="carousel slide" data-bs-ride="carousel" style="width: 100px;">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <img src="{{ asset('images/'.$activity->image) }}" class="d-block w-100" alt="{{ $activity->title }}" style="height: 60px; object-fit: cover;">
+                                            </div>
+                                            @foreach($activity->images as $image)
+                                                <div class="carousel-item">
+                                                    <img src="{{ asset('images/'.$image->image) }}" class="d-block w-100" alt="{{ $activity->title }}" style="height: 60px; object-fit: cover;">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        @if($activity->images->count() > 0)
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ $activity->id }}" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ $activity->id }}" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </td>
                                 <td>{{ $activity->date->format('d-m-Y') }}</td>
                                 <td>{{ $activity->title }}</td>
                                 <td>{{ Str::limit($activity->description, 50) }}</td>
@@ -37,7 +60,7 @@
                                         <form action="{{ route('admin.activity.destroy', $activity) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus aktivitas ini?')">Hapus</button>
                                         </form>
                                     </div>
                                 </td>

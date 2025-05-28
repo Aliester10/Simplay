@@ -21,4 +21,9 @@ class Activity extends Model
     protected $casts = [
         'date' => 'datetime',
     ];
+    
+    public function images()
+    {
+        return $this->hasMany(ActivityImage::class);
+    }
 }

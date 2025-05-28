@@ -16,8 +16,13 @@ class ActivityMemberController extends Controller
 
     public function show(Activity $activity)
     {
-        return view('Member.Activity.detail-act', compact('activity'));
+        // Get other activities for the related activities slider (excluding current activity)
+        $otherActivities = Activity::where('id', '!=', $activity->id)
+                                ->latest('date')
+                                ->take(6)
+                                ->get();
+        
+        // Change this line to use detail-act instead of show
+        return view('Member.Activity.detail-act', compact('activity', 'otherActivities'));
     }
-
-
 }
