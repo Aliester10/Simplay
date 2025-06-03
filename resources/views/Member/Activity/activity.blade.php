@@ -484,7 +484,7 @@
             box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.3);
         }
 
-        /* NEW: Filter and Search Section */
+        /* NEW: Filter and Query Section */
         .filter-section {
             background: white;
             border-radius: var(--radius-xl);
@@ -510,13 +510,13 @@
             gap: 12px;
         }
 
-        .search-box {
+        .query-box {
             position: relative;
             flex: 1;
             max-width: 400px;
         }
 
-        .search-input {
+        .query-input {
             width: 100%;
             background: var(--neutral-50);
             border: 2px solid var(--neutral-200);
@@ -528,14 +528,14 @@
             transition: var(--transition-base);
         }
 
-        .search-input:focus {
+        .query-input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
             background: white;
         }
 
-        .search-icon {
+        .query-icon {
             position: absolute;
             left: 18px;
             top: 50%;
@@ -599,6 +599,9 @@
             position: relative;
             border: 1px solid rgba(var(--neutral-200), 0.5);
             group: hover;
+            /* REMOVED: Initial loading state - cards appear immediately */
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
 
         .premium-card::before {
@@ -631,6 +634,7 @@
             position: relative;
             height: 300px;
             overflow: hidden;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
         }
 
         .card-image {
@@ -638,6 +642,11 @@
             height: 100%;
             object-fit: cover;
             transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+            /* OPTIMIZED: Faster image loading */
+            opacity: 1;
+            filter: none;
+            loading: eager;
+            decoding: sync;
         }
 
         .premium-card:hover .card-image {
@@ -943,91 +952,9 @@
             border: 1px solid var(--neutral-200);
         }
 
-        /* Ultra Loader */
-        .ultra-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-        }
-
-        .ultra-loader.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .ultra-spinner {
-            width: 80px;
-            height: 80px;
-            border: 6px solid var(--neutral-200);
-            border-top: 6px solid var(--primary);
-            border-right: 6px solid var(--secondary);
-            border-radius: 50%;
-            animation: ultraSpin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .ultra-spinner::before {
-            content: '';
-            position: absolute;
-            top: -6px;
-            left: -6px;
-            right: -6px;
-            bottom: -6px;
-            border: 6px solid transparent;
-            border-left: 6px solid rgba(var(--primary-rgb), 0.3);
-            border-radius: 50%;
-            animation: ultraSpin 2s linear infinite reverse;
-        }
-
-        @keyframes ultraSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loader-text {
-            color: var(--text);
-            font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-
-        .loader-subtext {
-            color: var(--text-light);
-            font-size: 14px;
-        }
-
-        /* Card Animation System */
-        .premium-card {
-            opacity: 0;
-            transform: translateY(40px) scale(0.95);
-            animation: cardReveal 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        .premium-card:nth-child(1) { animation-delay: 0.1s; }
-        .premium-card:nth-child(2) { animation-delay: 0.2s; }
-        .premium-card:nth-child(3) { animation-delay: 0.3s; }
-        .premium-card:nth-child(4) { animation-delay: 0.4s; }
-        .premium-card:nth-child(5) { animation-delay: 0.5s; }
-        .premium-card:nth-child(6) { animation-delay: 0.6s; }
-
-        @keyframes cardReveal {
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
+        /* REMOVED: All card loading animations */
+        /* REMOVED: Card Animation System */
+        /* REMOVED: @keyframes cardReveal */
 
         /* Responsive Excellence */
         @media (max-width: 1200px) {
@@ -1077,7 +1004,7 @@
                 gap: 20px;
             }
 
-            .search-box {
+            .query-box {
                 max-width: 100%;
             }
 
@@ -1191,9 +1118,9 @@
                             <i class="fas fa-filter"></i>
                             <span>Filter & Pencarian</span>
                         </div>
-                        <div class="search-box">
-                            <input type="text" class="search-input" placeholder="Cari aktivitas..." id="searchInput">
-                            <i class="fas fa-search search-icon"></i>
+                        <div class="query-box">
+                            <input type="text" class="query-input" placeholder="Cari aktivitas..." id="activityQuery">
+                            <i class="fas fa-search query-icon"></i>
                         </div>
                     </div>
                     
@@ -1234,16 +1161,15 @@
                 <div class="premium-grid" id="premiumGrid">
                     @forelse ($activities as $index => $item)
                         <article class="premium-card activity-item" 
-                                 data-aos="fade-up" 
-                                 data-aos-delay="{{ $index * 150 }}" 
-                                 data-aos-duration="800"
                                  data-category="{{ $item->category ?? 'general' }}"
                                  data-status="{{ $item->status ?? 'ongoing' }}"
                                  data-title="{{ strtolower($item->title) }}">
                             <div class="card-image-wrapper">
                                 <img src="{{ asset('images/' . $item->image) }}" 
                                      alt="{{ $item->title }}" 
-                                     class="card-image">
+                                     class="card-image"
+                                     loading="eager"
+                                     decoding="sync">
                                 <div class="card-overlay"></div>
                                 
                                 <!-- Status Badge -->
@@ -1267,8 +1193,6 @@
                             
                             <div class="premium-content">
                                 <div class="content-header">
-       
-                                    
                                     <h3 class="content-title">{{ $item->title }}</h3>
                                     
                                     <p class="content-description">
@@ -1295,7 +1219,7 @@
                         </article>
                     @empty
                         <!-- NEW: Empty State -->
-                        <div class="empty-state" data-aos="fade-up">
+                        <div class="empty-state">
                             <div class="empty-icon">
                                 <i class="fas fa-calendar-times"></i>
                             </div>
@@ -1313,7 +1237,7 @@
 
                 <!-- Enhanced Pagination -->
                 @if($activities->hasPages())
-                    <div class="pagination-section" data-aos="fade-up">
+                    <div class="pagination-section">
                         <div class="pagination-container">
                             {{ $activities->links() }}
                         </div>
@@ -1326,21 +1250,21 @@
     <!-- Ultra-Enhanced JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize AOS with custom settings
+            // Initialize AOS with custom settings (REDUCED duration for faster loading)
             if (typeof AOS !== 'undefined') {
                 AOS.init({
-                    duration: 1000,
+                    duration: 600,
                     easing: 'ease-out-cubic',
                     once: true,
-                    offset: 50,
-                    delay: 100
+                    offset: 30,
+                    delay: 0
                 });
             }
 
             // Create Advanced Particle System
             function createParticleSystem() {
                 const particleContainer = document.getElementById('particleSystem');
-                const particleCount = 15;
+                const particleCount = 10; // REDUCED from 15 to 10 for better performance
                 
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
@@ -1361,35 +1285,30 @@
                 }
             }
 
-            // Ultra-Enhanced Filter and Search System
-            const searchInput = document.getElementById('searchInput');
+            // Ultra-Enhanced Filter and Query System
+            const activityQuery = document.getElementById('activityQuery');
             const sortSelect = document.getElementById('sortSelect');
             const statusFilter = document.getElementById('statusFilter');
-            const ultraLoader = document.getElementById('ultraLoader');
             const premiumGrid = document.getElementById('premiumGrid');
             const activityItems = document.querySelectorAll('.activity-item');
 
             let currentFilters = {
-                search: '',
+                query: '',
                 sort: 'latest',
                 status: 'all',
                 category: 'all'
             };
 
-            // Search functionality
-            searchInput.addEventListener('input', function() {
-                currentFilters.search = this.value.toLowerCase();
+            // Query functionality
+            activityQuery.addEventListener('input', function() {
+                currentFilters.query = this.value.toLowerCase();
                 applyFilters();
             });
 
-            // Sort functionality
+            // Sort functionality (REMOVED loading animation)
             sortSelect.addEventListener('change', function() {
                 currentFilters.sort = this.value;
-                showUltraLoader();
-                setTimeout(() => {
-                    applyFilters();
-                    hideUltraLoader();
-                }, 800);
+                applyFilters();
             });
 
             // Status filter
@@ -1404,8 +1323,8 @@
                 activityItems.forEach((item, index) => {
                     let shouldShow = true;
 
-                    // Search filter
-                    if (currentFilters.search && !item.dataset.title.includes(currentFilters.search)) {
+                    // Query filter
+                    if (currentFilters.query && !item.dataset.title.includes(currentFilters.query)) {
                         shouldShow = false;
                     }
 
@@ -1421,7 +1340,6 @@
 
                     if (shouldShow) {
                         item.style.display = 'block';
-                        item.style.animationDelay = `${visibleCount * 0.1}s`;
                         visibleCount++;
                     } else {
                         item.style.display = 'none';
@@ -1463,12 +1381,12 @@
             }
 
             window.clearFilters = function() {
-                searchInput.value = '';
+                activityQuery.value = '';
                 sortSelect.value = 'latest';
                 statusFilter.value = 'all';
                 
                 currentFilters = {
-                    search: '',
+                    query: '',
                     sort: 'latest',
                     status: 'all',
                     category: 'all'
@@ -1476,28 +1394,6 @@
                 
                 applyFilters();
             };
-
-            function showUltraLoader() {
-                ultraLoader.classList.add('active');
-            }
-
-            function hideUltraLoader() {
-                ultraLoader.classList.remove('active');
-            }
-
-            function animatePremiumCards() {
-                const cards = document.querySelectorAll('.premium-card:not([style*="display: none"])');
-                cards.forEach((card, index) => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(40px) scale(0.95)';
-                    
-                    setTimeout(() => {
-                        card.style.transition = 'all 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0) scale(1)';
-                    }, index * 150);
-                });
-            }
 
             // Premium Bookmark System
             const bookmarkButtons = document.querySelectorAll('.bookmark-btn');
@@ -1714,6 +1610,9 @@
                         flex-direction: column;
                         gap: 12px;
                         z-index: 1000;
+                        opacity: 0;
+                        transform: translateY(20px);
+                        transition: all 0.3s ease;
                     }
 
                     .quick-action-btn {
@@ -1847,71 +1746,30 @@
                     switch(e.key) {
                         case 'f':
                             e.preventDefault();
-                            searchInput.focus();
+                            activityQuery.focus();
                             showNotification('Fokus pada pencarian', 'info');
                             break;
-                    }
+                        }
                 }
                 
                 if (e.key === 'Escape') {
-                    if (searchInput.value) {
-                        searchInput.value = '';
-                        searchInput.dispatchEvent(new Event('input'));
+                    if (activityQuery.value) {
+                        activityQuery.value = '';
+                        activityQuery.dispatchEvent(new Event('input'));
                         showNotification('Pencarian dibersihkan', 'info');
                     }
                 }
             });
 
-            // Loading states for navigation
-            document.querySelectorAll('.pagination a, .primary-action').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (!this.classList.contains('disabled') && this.getAttribute('href') !== '#') {
-                        showUltraLoader();
-                    }
-                });
-            });
+            // REMOVED: Loading states for navigation to improve performance
 
-            // NEW: Progressive image loading
-            function setupProgressiveImageLoading() {
-                const images = document.querySelectorAll('.card-image');
-                const imageObserver = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            img.style.filter = 'blur(0px)';
-                            img.style.opacity = '1';
-                            observer.unobserve(img);
-                        }
-                    });
-                });
+            // REMOVED: Progressive image loading that causes delays
 
-                images.forEach(img => {
-                    img.style.filter = 'blur(10px)';
-                    img.style.opacity = '0.8';
-                    img.style.transition = 'all 0.5s ease';
-                    imageObserver.observe(img);
-                });
-            }
+            // REMOVED: Performance monitoring that can slow down initial load
 
-            // NEW: Performance monitoring
-            function monitorPerformance() {
-                const observer = new PerformanceObserver((list) => {
-                    const entries = list.getEntries();
-                    entries.forEach((entry) => {
-                        if (entry.entryType === 'navigation') {
-                            console.log('Page load time:', entry.loadEventEnd - entry.loadEventStart);
-                        }
-                    });
-                });
-                
-                observer.observe({ entryTypes: ['navigation'] });
-            }
-
-            // Initialize all features
+            // Initialize essential features only
             createParticleSystem();
             addQuickActions();
-            setupProgressiveImageLoading();
-            monitorPerformance();
 
             // Add custom ripple animation styles
             const style = document.createElement('style');
@@ -1939,19 +1797,336 @@
                 .notification-content i {
                     font-size: 18px;
                 }
+
+                .showing-info {
+                    color: var(--text-light);
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+
+                .showing-info .highlight {
+                    color: var(--primary);
+                    font-weight: 700;
+                }
+
+                .control-label {
+                    color: var(--text);
+                    font-size: 14px;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .control-label i {
+                    color: var(--primary);
+                    font-size: 16px;
+                }
+
+                /* Enhanced Notification System */
+                .notification {
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                }
+
+                .notification-success {
+                    background: var(--gradient-success) !important;
+                }
+
+                .notification-error {
+                    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+                }
+
+                .notification-warning {
+                    background: var(--gradient-secondary) !important;
+                }
+
+                .notification-info {
+                    background: var(--gradient-primary) !important;
+                }
+
+                /* Enhanced Empty State Animations */
+                .empty-state {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .empty-icon {
+                    animation: emptyIconFloat 3s ease-in-out infinite;
+                }
+
+                @keyframes emptyIconFloat {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+
+                /* Enhanced Filter Animation */
+                .filter-section {
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    position: relative;
+                }
+
+                .filter-section::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 2px;
+                    background: var(--gradient-primary);
+                    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+                }
+
+                /* Enhanced Card Hover Effects */
+                .premium-card {
+                    will-change: transform;
+                    backface-visibility: hidden;
+                }
+
+                .premium-card:hover {
+                    will-change: auto;
+                }
+
+                /* Enhanced Pagination */
+                .pagination a, .pagination span {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-width: 48px;
+                    height: 48px;
+                    margin: 0 4px;
+                    background: white;
+                    border: 2px solid var(--neutral-200);
+                    border-radius: var(--radius-md);
+                    color: var(--text);
+                    font-weight: 600;
+                    text-decoration: none;
+                    transition: var(--transition-base);
+                }
+
+                .pagination a:hover {
+                    background: var(--primary);
+                    border-color: var(--primary);
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+                }
+
+                .pagination .active span {
+                    background: var(--gradient-primary);
+                    border-color: var(--primary);
+                    color: white;
+                    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+                }
+
+                .pagination .disabled span {
+                    background: var(--neutral-100);
+                    border-color: var(--neutral-200);
+                    color: var(--text-light);
+                    cursor: not-allowed;
+                }
+
+                /* Enhanced Mobile Responsiveness */
+                @media (max-width: 480px) {
+                    .filter-controls {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+
+                    .filter-group {
+                        flex-direction: column;
+                        align-items: stretch;
+                        text-align: center;
+                    }
+
+                    .filter-select {
+                        min-width: 100%;
+                    }
+
+                    .showing-info {
+                        text-align: center;
+                        margin-top: 16px;
+                    }
+
+                    .premium-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+
+                    .card-actions {
+                        flex-direction: column;
+                        gap: 12px;
+                    }
+
+                    .secondary-actions {
+                        justify-content: center;
+                    }
+                }
+
+                /* Dark Mode Support (Optional) */
+                @media (prefers-color-scheme: dark) {
+                    :root {
+                        --surface: #1e293b;
+                        --text: #e2e8f0;
+                        --text-light: #94a3b8;
+                        --neutral-50: #334155;
+                        --neutral-100: #475569;
+                        --neutral-200: #64748b;
+                    }
+
+                    .activity-showcase {
+                        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+                    }
+
+                    .premium-card {
+                        background: rgba(30, 41, 59, 0.8);
+                        backdrop-filter: blur(20px);
+                        border-color: rgba(100, 116, 139, 0.3);
+                    }
+
+                    .filter-section {
+                        background: rgba(30, 41, 59, 0.9);
+                        backdrop-filter: blur(30px);
+                        border-color: rgba(100, 116, 139, 0.3);
+                    }
+
+                    .query-input {
+                        background: rgba(51, 65, 85, 0.8);
+                        border-color: rgba(100, 116, 139, 0.4);
+                        color: var(--text);
+                    }
+
+                    .filter-select {
+                        background: rgba(51, 65, 85, 0.8);
+                        border-color: rgba(100, 116, 139, 0.4);
+                        color: var(--text);
+                    }
+                }
+
+                /* Print Styles */
+                @media print {
+                    .geometric-bg,
+                    .particle-system,
+                    .quick-actions,
+                    .hero-cta,
+                    .filter-section,
+                    .secondary-actions {
+                        display: none !important;
+                    }
+
+                    .cinematic-hero {
+                        height: 200px;
+                        page-break-inside: avoid;
+                    }
+
+                    .premium-card {
+                        page-break-inside: avoid;
+                        box-shadow: none;
+                        border: 1px solid #ccc;
+                    }
+
+                    .premium-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+                }
+
+                /* Accessibility Enhancements */
+                @media (prefers-reduced-motion: reduce) {
+                    * {
+                        animation-duration: 0.01ms !important;
+                        animation-iteration-count: 1 !important;
+                        transition-duration: 0.01ms !important;
+                    }
+
+                    .particle-system {
+                        display: none;
+                    }
+
+                    .geometric-bg {
+                        display: none;
+                    }
+                }
+
+                /* High Contrast Mode */
+                @media (prefers-contrast: high) {
+                    .premium-card {
+                        border: 3px solid #000;
+                    }
+
+                    .action-btn {
+                        border: 3px solid #000;
+                    }
+
+                    .primary-action {
+                        background: #000;
+                        border: 3px solid #000;
+                    }
+                }
+
+                /* Focus Visible for Better Accessibility */
+                .query-input:focus-visible,
+                .filter-select:focus-visible,
+                .action-btn:focus-visible,
+                .primary-action:focus-visible,
+                .quick-action-btn:focus-visible {
+                    outline: 3px solid var(--primary);
+                    outline-offset: 2px;
+                }
+
+                /* OPTIMIZED: Faster image rendering */
+                .card-image {
+                    image-rendering: -webkit-optimize-contrast;
+                    image-rendering: optimize-contrast;
+                    transform: translateZ(0);
+                    backface-visibility: hidden;
+                }
+
+                /* OPTIMIZED: Hardware acceleration for cards */
+                .premium-card {
+                    transform: translateZ(0);
+                    backface-visibility: hidden;
+                }
             `;
             document.head.appendChild(style);
 
             // Smooth scroll for better UX
             document.documentElement.style.scrollBehavior = 'smooth';
 
-            // Welcome message for logged-in user
-            setTimeout(() => {
-                showNotification('', 'success');
-            }, 1000);
+            // REMOVED: Welcome message section has been deleted
+            
+            // OPTIMIZED: Simple Error Handling for Images
+            document.querySelectorAll('.card-image').forEach(img => {
+                img.addEventListener('error', function() {
+                    // Simple fallback without heavy SVG processing
+                    this.style.background = 'linear-gradient(135deg, #f0f0f0, #e0e0e0)';
+                    this.style.display = 'flex';
+                    this.style.alignItems = 'center';
+                    this.style.justifyContent = 'center';
+                    this.innerHTML = '<div style="color: #999; font-size: 14px; text-align: center;"><i class="fas fa-image" style="font-size: 48px; margin-bottom: 8px; display: block;"></i>Gambar tidak tersedia</div>';
+                    this.style.filter = 'none';
+                    this.style.opacity = '1';
+                });
+
+                // OPTIMIZED: Preload critical images only
+                if (img.loading !== 'lazy') {
+                    img.loading = 'eager';
+                    img.decoding = 'sync';
+                }
+            });
+
+            // REMOVED: Battery Status API (not essential for core functionality)
+            // REMOVED: Complex performance monitoring
+            // REMOVED: Service Worker registration (optional feature)
+            // REMOVED: Connection monitoring (not critical)
+            // REMOVED: Memory monitoring (can impact performance)
+
+            console.log('🚀 Activity Showcase initialized successfully with optimized performance!');
         });
 
-        // Page visibility API for performance
+        // SIMPLIFIED: Page visibility API for performance
         document.addEventListener('visibilitychange', function() {
             const particles = document.querySelectorAll('.particle');
             const geometricShapes = document.querySelectorAll('.geometric-shape');
@@ -1965,18 +2140,19 @@
             }
         });
 
-        // NEW: Service Worker for offline support (optional)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('SW registered: ', registration);
-                    })
-                    .catch((registrationError) => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
-        }
+        // OPTIMIZED: Preload critical resources
+        window.addEventListener('load', () => {
+            // Preload next page images if pagination exists
+            const nextPageLink = document.querySelector('.pagination .next');
+            if (nextPageLink && 'requestIdleCallback' in window) {
+                requestIdleCallback(() => {
+                    const link = document.createElement('link');
+                    link.rel = 'prefetch';
+                    link.href = nextPageLink.href;
+                    document.head.appendChild(link);
+                });
+            }
+        });
     </script>
 
     <!-- AOS Library -->

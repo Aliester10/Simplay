@@ -60,7 +60,6 @@
                         </div>
                         <div class="category-item">
                             <a href="{{ route('filterByCategory', 6) }}">NETWORKING</a>
-                            <div class="orange-divider"></div>
                         </div>
                     </div>
                 </div>
