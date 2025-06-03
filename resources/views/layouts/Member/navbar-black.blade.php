@@ -29,43 +29,7 @@
     $currentUserLogin = "Aliester10";
 @endphp
 
-<!-- Top Dark Bar -->
-<div class="container-fluid top-dark-bar">
-    <div class="container d-flex justify-content-between align-items-center flex-wrap h-100">
-        <div class="d-flex align-items-center flex-wrap">
-            @if(!empty($compro->maps))
-                <a href="{{ $compro->maps }}" class="text-light me-md-4 me-2 mb-1 mb-md-0" target="_blank">
-                    <img src="{{ asset('assets/icons/topbar-icons/location.svg') }}" alt="Location" class="topbar-icon">
-                    <span>Lokasi Kantor</span>
-                </a>
-            @endif
-            
-            @if(!empty($compro->no_telepon))
-                <a href="tel:+62{{ $compro->no_telepon }}" class="text-light me-md-4 me-2 mb-1 mb-md-0">
-                    <img src="{{ asset('assets/icons/topbar-icons/phone-call.svg') }}" alt="Phone" class="topbar-icon">
-                    <span>{{ $compro->no_telepon }}</span>
-                </a>
-            @endif
-            
-            @if(!empty($compro->email))
-                <a href="mailto:{{ $compro->email }}" class="text-light mb-1 mb-md-0">
-                    <img src="{{ asset('assets/icons/topbar-icons/email.svg') }}" alt="Email" class="topbar-icon">
-                    <span>{{ $compro->email }}</span>
-                </a>
-            @endif
-        </div>
-        <div class="d-flex align-items-center text-light">
-            <div class="me-3 top-info">
-                <i class="far fa-clock me-1"></i> {{ $currentDateTime }}
-            </div>
-            <div class="top-info">
-                <i class="far fa-user me-1"></i> {{ $currentUserLogin }}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Navigation Bar -->
+<!-- Main Navigation Bar (Now at top position) -->
 <nav class="navbar navbar-expand-lg">
     <div class="container">
         <!-- Logo Section -->
@@ -217,49 +181,14 @@
 
 <!-- Embedded CSS -->
 <style>
-/* Top dark bar styling */
-.top-dark-bar {
-    background-color: #1D1E33;
-    font-size: 0.85rem;
-    position: relative;
-    z-index: 1030;
-    height: 50px; /* Set fixed height to 50px */
-}
-
-.top-dark-bar a {
-    text-decoration: none;
-    color: #fff;
-    transition: all 0.3s ease;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-}
-
-.top-dark-bar a:hover {
-    opacity: 0.8;
-}
-
-.topbar-icon {
-    height: 17px;
-    width: auto;
-    margin-right: 5px;
-    filter: brightness(0) invert(1);
-}
-
-.top-info {
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-}
-
-/* Main navigation bar styling - Transparent */
+/* Main navigation bar styling - Now at top position */
 .navbar {
     background-color: transparent;
     padding: 1rem 0;
-    z-index: 1020;
+    z-index: 1030;
     position: absolute;
     width: 100%;
-    top: 50px; /* Updated to match top bar height */
+    top: 0; /* Changed from 50px to 0 */
 }
 
 .navbar-brand img.logo-img {
@@ -267,9 +196,9 @@
     width: auto;
 }
 
-/* Navigation links - Changed color to black */
+/* Navigation links - Black color */
 .navbar .nav-link {
-    color: #000; /* Changed from #fff to #000 for black color */
+    color: #000;
     font-weight: 500;
     padding: 0.5rem 1rem;
     margin-right: 0.5rem;
@@ -280,12 +209,12 @@
 
 .navbar .nav-link:hover,
 .navbar .nav-link.active {
-    color: #6196FF; /* Kept the hover/active color */
+    color: #6196FF;
 }
 
 .navbar .navbar-toggler {
     border: none;
-    color: #000; /* Changed from #fff to #000 for black color */
+    color: #000;
     padding: 0.4rem 0.6rem;
     font-size: 1.2rem;
 }
@@ -304,7 +233,7 @@
     border-radius: 30px;
     height: 36px;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.3); /* Changed from white to black border */
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .search-input {
@@ -315,11 +244,11 @@
     width: 100%;
     padding: 0 45px 0 20px;
     outline: none;
-    color: #000; /* Changed from #fff to #000 for black color */
+    color: #000;
 }
 
 .search-input::placeholder {
-    color: rgba(0, 0, 0, 0.7); /* Changed from white to black with opacity */
+    color: rgba(0, 0, 0, 0.7);
 }
 
 .search-btn {
@@ -339,14 +268,14 @@
     width: 18px;
     height: 18px;
     opacity: 0.8;
-    filter: brightness(0); /* Remove invert filter to keep it black */
+    filter: brightness(0);
 }
 
 /* Navbar icons styling */
 .navbar-icon {
     height: 22px;
     width: auto;
-    filter: brightness(0); /* Remove invert filter to keep it black */
+    filter: brightness(0);
 }
 
 .nav-icon-link {
@@ -443,14 +372,14 @@
 
 /* Adjust header carousel to work with transparent navbar */
 .header-carousel {
-    margin-top: -50px; /* Updated to match top bar height */
+    margin-top: 0; /* Changed from -50px to 0 */
 }
 
 .header-carousel-item {
-    padding-top: 50px; /* Updated to match top bar height */
+    padding-top: 0; /* Changed from 50px to 0 */
 }
 
-/* User dropdown specific styling - NEW */
+/* User dropdown specific styling */
 .user-dropdown {
     position: relative;
 }
@@ -487,7 +416,7 @@
     font-weight: 500;
 }
 
-/* Animasi Cart - NEW */
+/* Animasi Cart */
 .flying-image {
     z-index: 9999;
     pointer-events: none;
@@ -582,71 +511,30 @@
     }
     
     .header-carousel {
-        margin-top: 0; /* Reset margin for mobile */
+        margin-top: 0;
     }
     
     .header-carousel-item {
-        padding-top: 0; /* Reset padding for mobile */
+        padding-top: 0;
     }
 }
 
 @media (max-width: 767.98px) {
-    .top-dark-bar a {
-        margin-right: 0.5rem !important;
-        font-size: 0.7rem;
-    }
-    .top-dark-bar a span {
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
     .navbar-brand img.logo-img {
         height: 28px;
-    }
-    .top-info {
-        font-size: 10px;
     }
 }
 
 @media (max-width: 575.98px) {
-    .top-dark-bar .container {
-        justify-content: space-between;
-    }
-    
-    .top-dark-bar a {
-        margin-bottom: 0.25rem;
-        margin-right: 0.75rem !important;
-        font-size: 0.65rem;
-    }
-    
-    .top-dark-bar a:last-child {
-        margin-right: 0 !important;
-    }
-    
     .navbar-brand img.logo-img {
         height: 26px;
-    }
-    
-    .top-info {
-        font-size: 9px;
     }
 }
 
 /* For very small screens like iPhone SE */
 @media (max-width: 360px) {
-    .top-dark-bar .container {
-        flex-direction: row;
-        flex-wrap: wrap;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    .top-dark-bar a {
-        margin-right: 0.5rem !important;
-        font-size: 0.6rem;
-    }
-    .top-info {
-        font-size: 8px;
+    .navbar-brand img.logo-img {
+        height: 24px;
     }
 }
 </style>

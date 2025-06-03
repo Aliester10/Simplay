@@ -28,115 +28,101 @@
         </div>
     @endif
 
-    <!-- Carousel Start -->
-    <div class="header-carousel owl-carousel mb-0 position-relative">
-        @if ($sliders->isEmpty())
-            <!-- Default Slider if no data -->
-            <div class="header-carousel-item position-relative">
-                <img src="{{ asset('assets/img/MAS00029.jpg') }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;" alt="Default Image">
-                <div class="gradient-overlay"></div>
-                <div class="carousel-caption">
-                    <div class="carousel-caption-content text-start">
-                        <div class="text-border">
-                            <h1 class="text-white mb-3">Lorem ipsum dolor sit amet.</h1>
-                            <p class="mb-4 text-white">Lorem ipsum dolor sit amet consectetur adipiscing elit. Amet consectetur adipisicing elit. Eius quibque faucibus et sapien vitae perferendis sem pharetr. Vitae pellentesque sem placerat in eu cursus mi.</p>
+    <!-- Modern Header Section Start -->
+    <div class="modern-header">
+        <!-- Dynamic Background Slider -->
+        <div id="backgroundSlider" class="wave-bg"></div>
+        
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+                <!-- Left Categories Section -->
+                <div class="col-lg-auto col-md-auto category-sidebar">
+                    <div class="category-list">
+                        <div class="category-item active">
+                            <a href="{{ route('filterByCategory', 1) }}">COMPUTER & LAPTOP</a>
+                            <div class="orange-divider"></div>
                         </div>
-                        <a href="#" class="shop-now-btn">shop now</a>
+                        <div class="category-item">
+                            <a href="{{ route('filterByCategory', 2) }}">PRINTER & SCANNER</a>
+                            <div class="orange-divider"></div>
+                        </div>
+                        <div class="category-item">
+                            <a href="{{ route('filterByCategory', 3) }}">AIR CONDITIONER</a>
+                            <div class="orange-divider"></div>
+                        </div>
+                        <div class="category-item">
+                            <a href="{{ route('filterByCategory', 4) }}">TELEVISION & VW</a>
+                            <div class="orange-divider"></div>
+                        </div>
+                        <div class="category-item">
+                            <a href="{{ route('filterByCategory', 5) }}">CAMERA & PHOTOGRAPHY</a>
+                            <div class="orange-divider"></div>
+                        </div>
+                        <div class="category-item">
+                            <a href="{{ route('filterByCategory', 6) }}">NETWORKING</a>
+                            <div class="orange-divider"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @else
-            <!-- Loop through sliders if data exists -->
-            @foreach ($sliders as $slider)
-                <div class="header-carousel-item position-relative">
-                    <img src="{{ asset($slider->image_url) }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;" alt="Image">
-                    <div class="gradient-overlay"></div>
-                    <!-- Left-aligned caption -->
-                    <div class="carousel-caption">
-                        <div class="carousel-caption-content text-start">
-                            <div class="text-border">
-                                <h1 class="text-white mb-3">{{ $slider->title }}</h1>
-                                <p class="mb-4 text-white">{{ $slider->description }}</p>
+                
+                <!-- Middle Content Section -->
+                <div class="col header-content">
+                    <div id="sliderContent" class="content-wrapper">
+                        <!-- Content will be dynamically updated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Right Featured Product Section -->
+                <div class="col-lg-4 col-md-4 featured-product">
+                    @if(!$produks->isEmpty())
+                        <div id="productCarousel" class="product-carousel">
+                            @foreach($produks->take(3) as $index => $featuredProduct)
+                                <div class="product-container carousel-item {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}">
+                                    <div class="product-image">
+                                        <img src="{{ asset($featuredProduct->images->first()->gambar ?? 'assets/img/default.jpg') }}" alt="{{ $featuredProduct->nama }}">
+                                    </div>
+                                    <div class="product-info">
+                                        <h3>{{ $featuredProduct->nama }}</h3>
+                                        <p>{{ Str::limit($featuredProduct->deskripsi, 80) }}</p>
+                                        <div class="product-price">IDR {{ number_format($featuredProduct->harga, 0, ',', '.') }}</div>
+                                        <div class="product-actions">
+                                            <a href="{{ route('product.show', $featuredProduct->id) }}" class="add-to-cart">READ MORE</a>
+                                            <button class="cart-icon"><i class="fas fa-shopping-cart"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="nav-controls">
+                            <button class="nav-prev"><i class="fas fa-circle-arrow-left"></i></button>
+                            <div class="carousel-indicators">
+                                @foreach($produks->take(3) as $index => $product)
+                                    <span class="indicator {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}"></span>
+                                @endforeach
                             </div>
-                            <a href="{{ $slider->button_url }}" class="shop-now-btn">{{ $slider->button_text }}</a>
+                            <button class="nav-next"><i class="fas fa-circle-arrow-right"></i></button>
                         </div>
-                    </div>
-                </div>
-            @endforeach
-        @endif
-    </div>
-
-    <!-- GOOD Banner (Complete Rewrite) -->
-    <div class="ticker-wrap">
-        <div class="ticker">
-            @for ($i = 0; $i < 99; $i++)
-            <div class="ticker-item">Lorem <span class="ticker-dot">•</span></div>
-            @endfor
-        </div>
-    </div>
-
-    <!-- Category Section Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-4 justify-content-center">
-                <!-- Computer & Laptop -->
-                <div class="col-lg-2 col-md-3 col-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <a href="{{ route('filterByCategory', 1) }}" class="category-item text-center">
-                        <div class="category-icon">
-                            <img src="{{ asset('assets/icons/category-icon/monitor.svg') }}" alt="Computer & Laptop">
+                    @else
+                        <div class="product-container">
+                            <div class="product-image">
+                                <img src="{{ asset('assets/img/laptop.png') }}" alt="Featured Product">
+                            </div>
+                            <div class="product-info">
+                                <h3>JUDUL PRODUK</h3>
+                                <p>DESKRIPSI PRODUK</p>
+                                <div class="product-price">IDR 1,000</div>
+                                <div class="product-actions">
+                                    <button class="add-to-cart">READ MORE</button>
+                                    <button class="cart-icon"><i class="fas fa-shopping-cart"></i></button>
+                                </div>
+                            </div>
                         </div>
-                        <h5 class="mt-3">Computer & Laptop</h5>
-                    </a>
-                </div>
-                <!-- Printer & Scanner -->
-                <div class="col-lg-2 col-md-3 col-6 wow fadeInUp" data-wow-delay="0.2s">
-                    <a href="{{ route('filterByCategory', 2) }}" class="category-item text-center">
-                        <div class="category-icon">
-                            <img src="{{ asset('assets/icons/category-icon/printer.svg') }}" alt="Printer & Scanner">
-                        </div>
-                        <h5 class="mt-3">Printer & Scanner</h5>
-                    </a>
-                </div>
-                <!-- Air Conditioner -->
-                <div class="col-lg-2 col-md-3 col-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <a href="{{ route('filterByCategory', 3) }}" class="category-item text-center">
-                        <div class="category-icon">
-                            <img src="{{ asset('assets/icons/category-icon/air-conditioner.svg') }}" alt="Air Conditioner">
-                        </div>
-                        <h5 class="mt-3">Air Conditioner</h5>
-                    </a>
-                </div>
-                <!-- Television & Video Wall -->
-                <div class="col-lg-2 col-md-3 col-6 wow fadeInUp" data-wow-delay="0.4s">
-                    <a href="{{ route('filterByCategory', 4) }}" class="category-item text-center">
-                        <div class="category-icon">
-                            <img src="{{ asset('assets/icons/category-icon/television.svg') }}" alt="Television & Video Wall">
-                        </div>
-                        <h5 class="mt-3">Television & Video Wall</h5>
-                    </a>
-                </div>
-                <!-- Camera & Photography -->
-                <div class="col-lg-2 col-md-3 col-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <a href="{{ route('filterByCategory', 5) }}" class="category-item text-center">
-                        <div class="category-icon">
-                            <img src="{{ asset('assets/icons/category-icon/Camera.svg') }}" alt="Camera & Photography">
-                        </div>
-                        <h5 class="mt-3">Camera & Photography</h5>
-                    </a>
-                </div>
-                <!-- Networking -->
-                <div class="col-lg-2 col-md-3 col-6 wow fadeInUp" data-wow-delay="0.6s">
-                    <a href="{{ route('filterByCategory', 6) }}" class="category-item text-center">
-                        <div class="category-icon">
-                            <img src="{{ asset('assets/icons/category-icon/web.svg') }}" alt="Networking">
-                        </div>
-                        <h5 class="mt-3">Networking</h5>
-                    </a>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-    <!-- Category Section End -->
+    <!-- Modern Header Section End -->
 
     <!-- HIGHLY ENHANCED Product Section Start -->
     @if (!$produks->isEmpty())
@@ -148,7 +134,7 @@
                 <!-- Elegant section header -->
                 <div class="luxury-section-header">
                     <div class="luxury-section-line"></div>
-                    <h2 class="luxury-section-title">Our  Products</h2>
+                    <h2 class="luxury-section-title">Our Products</h2>
                     <div class="luxury-section-line"></div>
                 </div>
                 <p class="luxury-section-subtitle">Discover Excellence in Technology</p>
@@ -165,7 +151,7 @@
                             <!-- Product image container with hover effects -->
                             <div class="premium-product-image">
                                 <img src="{{ asset($produk->images->first()->gambar ?? 'assets/img/default.jpg') }}" 
-                                     alt="{{ $produk->nama }}">
+                                    alt="{{ $produk->nama }}">
                                 
                                 <!-- Premium overlay with shine effect -->     
                                 <div class="premium-shine-overlay"></div>
@@ -317,7 +303,7 @@
             .catch(error => console.error('Error fetching data:', error));
     </script>
 
-    <!-- CSS for styling (Including NEW Premium Products Styling) -->
+    <!-- CSS for styling (Including NEW Modern Header Styling) -->
     <style>
         /* ===== ANIMASI UTAMA ===== */
         /* Keyframes for animations */
@@ -409,11 +395,6 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
 
         @keyframes scrollVertical {
             0% { transform: translateY(0); }
@@ -475,24 +456,21 @@
                 box-shadow: 0 0 0 0 rgba(2, 11, 41, 0);
             }
         }
-        
-        /* Logo rotation */
-        @keyframes slowRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Text gradient animation */
-        @keyframes textGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        /* Section title reveal */
-        @keyframes drawLine {
-            0% { width: 0; }
-            100% { width: 60px; }
+
+        /* Background slider fade */
+        @keyframes fadeSlide {
+            0%, 15% {
+                opacity: 1;
+            }
+            30%, 45% {
+                opacity: 0;
+            }
+            60%, 75% {
+                opacity: 0;
+            }
+            90%, 100% {
+                opacity: 1;
+            }
         }
 
         /* ===== PRELOADER ===== */
@@ -524,294 +502,543 @@
             animation: spin 1s linear infinite;
         }
 
-        /* ===== HEADER CAROUSEL ANIMATIONS ===== */
-        .header-carousel-item {
-            height: 100vh;
-            max-height: 600px;
+        /* ===== NEW MODERN HEADER STYLING ===== */
+        .modern-header {
             position: relative;
+            min-height: 800px; /* Increased height for better visual */
             overflow: hidden;
-            background-color: #f0f0f0;
-        }
-
-        .header-carousel-item img {
-            transition: transform 8s ease;
-        }
-
-        .owl-item.active .header-carousel-item img {
-            transform: scale(1.1);
-        }
-
-        /* Gradient overlay like in the image */
-        .gradient-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
-            z-index: 1;
-        }
-
-        /* Left-aligned caption with flexbox */
-        .carousel-caption {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            text-align: left;
-            z-index: 2;
-            padding: 0 5%;
-        }
-
-        /* Caption content styling */
-        .carousel-caption-content {
-            max-width: 550px;
-            padding-left: 15px;
-            opacity: 0;
-        }
-
-        .owl-item.active .carousel-caption-content {
-            animation: fadeInRight 1s forwards 0.5s;
-        }
-
-        /* Border for text content */
-        .text-border {
-            border-left: 4px solid #fff;
-            padding-left: 15px;
-            margin-bottom: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .owl-item.active .text-border:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 0;
-            background-color: #fff;
-            animation: borderGrow 1s forwards 0.8s;
-        }
-
-        .carousel-caption-content h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            opacity: 0;
-        }
-
-        .owl-item.active h1 {
-            animation: fadeInUp 0.8s forwards 1s;
-        }
-
-        .carousel-caption-content p {
-            font-size: 1rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            opacity: 0;
-        }
-
-        .owl-item.active p {
-            animation: fadeInUp 0.8s forwards 1.3s;
-        }
-
-        /* Shop now button styling */
-        .shop-now-btn {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #333;
-            padding: 0.5rem 2rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            text-transform: lowercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-            opacity: 0;
-        }
-
-        .owl-item.active .shop-now-btn {
-            animation: fadeInUp 0.8s forwards 1.6s;
-        }
-
-        .shop-now-btn:hover {
-            background-color: #020b29;
-            color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Owl Carousel custom navigation dots */
-        .owl-dots {
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .owl-dot {
-            width: 10px;
-            height: 10px;
-            margin: 0 5px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.5) !important;
-            border: none !important;
-            outline: none !important;
-            padding: 0 !important;
-        }
-
-        .owl-dot.active {
-            background-color: #fff !important;
-            width: 12px;
-            height: 12px;
+            margin-bottom: 0;
         }
         
-        /* Menghilangkan tombol navigasi panah */
-        .owl-nav {
-            display: none !important;
-        }
-
-        /* ===== GOOD BANNER ANIMATIONS ===== */
-        .ticker-wrap {
+        /* Background wave effect with dynamic slider */
+        .wave-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            overflow: hidden;
-            background: #020b29;
-            padding: 10px 0;
-            position: relative;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
         }
-
-        .ticker {
-            display: inline-block;
-            white-space: nowrap;
-            padding-right: 100%; /* offset for seamless looping */
-            box-sizing: content-box;
-            -webkit-animation-iteration-count: infinite;
-            animation-iteration-count: infinite;
-            -webkit-animation-timing-function: linear;
-            animation-timing-function: linear;
-            -webkit-animation-name: ticker;
-            animation-name: ticker;
-            -webkit-animation-duration: 30s;
-            animation-duration: 30s;
+        
+        #backgroundSlider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #FF1493 0%, #8A2BE2 50%, #6A0DAD 100%);
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+            transition: background-image 1s ease;
         }
-
-        .ticker:hover {
-            animation-play-state: paused;
-        }
-
-        .ticker-item {
-            display: inline-block;
-            padding: 0 1rem;
-            font-size: 1rem;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: bold;
-        }
-
-        .ticker-dot {
-            margin-left: 10px;
-            display: inline-block;
-        }
-
-        /* ===== CATEGORY SECTION ANIMATIONS ===== */
-        .category-item {
-            display: block;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-
-        .category-item:hover {
-            transform: translateY(-10px);
-            text-decoration: none;
-            color: #6196FF;
-        }
-
-        .category-icon {
-            width: 80px;
-            height: 80px;
-            background-color: #020b29;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            transition: all 0.4s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-icon:hover {
-            transform: rotate(5deg);
-            background-color: #6196FF;
-            box-shadow: 0 10px 20px rgba(97, 150, 255, 0.3);
-        }
-
-        .category-icon::after {
+        
+        #backgroundSlider:before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            background: linear-gradient(90deg, rgba(255,20,147,0.4) 0%, rgba(138,43,226,0.3) 50%, rgba(106,13,173,0.3) 100%); /* Reduced opacity here */
+            z-index: 1;
+        }
+        
+        /* Category sidebar styling */
+        .category-sidebar {
+            width: 220px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-list {
+            background-color: rgba(147, 0, 119, 0.7);
+            width: 100%;
+            padding: 15px 0;
+            border-radius: 0 0 10px 0;
+        }
+        
+        .category-item {
+            position: relative;
+            padding: 16px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .category-item a {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            display: block;
+            padding-left: 15px;
+            text-transform: uppercase;
+        }
+        
+        .category-item.active a,
+        .category-item:hover a {
+            color: white;
+        }
+        
+        .orange-divider {
+            height: 1px;
+            background-color: #ff8432;
+            margin: 0;
+            opacity: 0.9;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        
+        /* Middle content section */
+        .header-content {
+            padding: 130px 30px 60px;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .content-wrapper {
+            max-width: 680px; /* Increased from 580px to accommodate longer titles */
+            padding-left: 30px;
+        }
+        
+        .design-tagline {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+        
+        .design-title h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            line-height: 1.1;
+            margin: 0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            white-space: nowrap; /* Ensure title stays on one line */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Add ellipsis if text is too long */
+        }
+        
+        .design-description {
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-top: 20px;
+            max-width: 480px;
+        }
+        
+        .explore-btn {
+            margin-top: 40px;
+        }
+        
+        .btn-explore {
+            background-color: rgba(0,0,0,0.2);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        
+        .btn-explore:hover {
+            background-color: white;
+            color: #FF1493;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* Right featured product carousel - Keep translucent background */
+        .featured-product {
+            padding: 130px 30px 60px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .product-carousel {
+            position: relative;
+            height: 440px;
+            overflow: hidden;
+        }
+        
+        .carousel-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: translateX(50px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
         }
-
-        .category-icon:hover::after {
+        
+        .carousel-item.active {
             opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
         }
-
-        .category-icon img {
+        
+        .product-container {
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-image {
+            text-align: center;
+            margin-bottom: 20px;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 0 0 auto;
+            max-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-image img {
+            max-width: 100%;
+            height: auto;
+            max-height: 140px;
+            object-fit: contain;
+        }
+        
+        .product-info {
+            padding: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-info h3 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .product-info p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            flex: 1;
+        }
+        
+        .product-price {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .add-to-cart {
+            flex: 1;
+            background-color: #FF1493;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .add-to-cart:hover {
+            background-color: #ff69b4;
+            transform: translateY(-3px);
+            color: white;
+        }
+        
+        .cart-icon {
             width: 40px;
             height: 40px;
-            filter: brightness(0) invert(1);
+            background-color: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
-
-        .category-item:hover .category-icon img {
-            transform: scale(1.2);
-            animation: pulse 1.5s infinite;
+        
+        .cart-icon:hover {
+            background-color: white;
+            color: #FF1493;
         }
-
-        .category-item h5 {
-            font-size: 0.9rem;
-            margin-top: 10px;
-            font-weight: 500;
+        
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
+        .nav-prev, .nav-next {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
         }
-
-        .category-item:hover h5 {
-            color: #020b29;
-            font-weight: bold;
+        
+        .nav-prev:hover, .nav-next:hover {
+            background-color: white;
+            color: #FF1493;
+            transform: scale(1.1);
         }
-
-        .category-item h5::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background-color: #6196FF;
+        
+        .carousel-indicators {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.4);
+            cursor: pointer;
             transition: all 0.3s ease;
-            transform: translateX(-50%);
+        }
+        
+        .indicator.active {
+            background-color: white;
+            transform: scale(1.3);
         }
 
-        .category-item:hover h5::after {
-            width: 50%;
+        /* ===== RESPONSIVE STYLES FOR BANNER ONLY ===== */
+        @media (max-width: 1199px) {
+            /* Large Desktop adjustments */
+            .category-sidebar {
+                width: 200px;
+            }
+            
+            .category-item {
+                padding: 14px 18px;
+            }
+            
+            .category-item a {
+                font-size: 0.75rem;
+            }
+            
+            .header-content, .featured-product {
+                padding: 120px 25px 50px;
+            }
+            
+            .content-wrapper {
+                max-width: 580px;
+            }
+            
+            .design-title h1 {
+                font-size: 2.3rem;
+            }
+            
+            .modern-header {
+                min-height: 750px;
+            }
+        }
+
+        @media (max-width: 991px) {
+            /* Tablet adjustments */
+            .category-sidebar {
+                width: 180px;
+            }
+            
+            .category-item {
+                padding: 12px 15px;
+            }
+            
+            .category-item a {
+                font-size: 0.7rem;
+                padding-left: 10px;
+            }
+            
+            .header-content, .featured-product {
+                padding: 100px 20px 40px;
+            }
+            
+            .content-wrapper {
+                padding-left: 15px;
+                max-width: 480px;
+            }
+            
+            .design-title h1 {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+            
+            .design-description {
+                font-size: 0.9rem;
+            }
+            
+            .product-carousel {
+                height: 400px;
+            }
+            
+            .modern-header {
+                min-height: 700px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Mobile landscape & small tablets */
+            .modern-header {
+                min-height: auto;
+            }
+            
+            .row {
+                flex-direction: column;
+            }
+            
+            .category-sidebar {
+                width: 100%;
+                height: auto;
+                min-height: auto;
+            }
+            
+            .category-list {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 15px 0;
+                border-radius: 0;
+            }
+            
+            .category-item {
+                padding: 10px 15px;
+                width: 50%;
+            }
+            
+            .orange-divider {
+                display: none;
+            }
+            
+            .header-content, .featured-product {
+                padding: 30px 20px;
+                width: 100%;
+            }
+            
+            .content-wrapper {
+                padding-left: 0;
+                max-width: 100%;
+            }
+            
+            .design-title h1 {
+                font-size: 1.8rem;
+                letter-spacing: 2px;
+                white-space: normal; /* Allow wrapping on mobile */
+            }
+            
+            .design-description p {
+                font-size: 0.9rem;
+            }
+            
+            .product-carousel {
+                height: 350px;
+            }
+            
+            .col-lg-4, .col-md-4 {
+                width: 100%;
+                max-width: 100%;
+                flex: 0 0 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            /* Mobile portrait */
+            .category-item {
+                width: 100%;
+                padding: 8px 15px;
+            }
+            
+            .category-list {
+                padding: 10px 0;
+            }
+            
+            .header-content {
+                padding: 25px 15px;
+            }
+            
+            .design-title h1 {
+                font-size: 1.6rem;
+                letter-spacing: 1px;
+            }
+            
+            .btn-explore {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+                width: 100%;
+                text-align: center;
+                display: block;
+            }
+            
+            .product-carousel {
+                height: 320px;
+            }
+            
+            .product-info h3 {
+                font-size: 1.2rem;
+            }
+            
+            .add-to-cart {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+            
+            .cart-icon, .nav-prev, .nav-next {
+                width: 35px;
+                height: 35px;
+            }
         }
 
         /* ===== BRAND SECTION ANIMATIONS ===== */
@@ -898,39 +1125,7 @@
             transform: translateY(0);
         }
 
-        /* Leaflet Map marker tooltip */
-        .marker-tooltip {
-            background-color: #b3d9ff;
-            border: 1px solid #80b3ff;
-            padding: 5px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            font-size: 12px;
-            color: #333;
-        }
-
-        .info-window img.popup-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 5px;
-        }
-
-        .popup-title {
-            font-size: 20px;
-            color: black;
-            font-weight: bold;
-        }
-
-        .popup-description,
-        .popup-address {
-            font-size: 12px;
-            color: #333;
-            margin-top: 10px;
-            text-align: justify;
-        }
-
-        /* ========== NEW PREMIUM PRODUCT SECTION ========== */
+        /* ========== PREMIUM PRODUCT SECTION ========== */
         
         /* Main section styling */
         .premium-products-section {
@@ -1044,19 +1239,11 @@
             overflow: hidden;
         }
         
-        .premium-product-card:hover .premium-product-logo {
-            transform: scale(1.1) rotate(10deg);
-        }
-        
         .premium-product-logo img {
             width: 40px;
             height: 40px;
             object-fit: contain;
             transition: all 0.4s ease;
-        }
-        
-        .premium-product-card:hover .premium-product-logo img {
-            animation: slowRotate 10s linear infinite;
         }
         
         /* Product image */
@@ -1192,14 +1379,6 @@
             transition: all 0.3s ease;
         }
         
-        .premium-product-card:hover .premium-product-title {
-            background: linear-gradient(90deg, #020b29, #6196FF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% 100%;
-            animation: textGradient 2s linear infinite;
-        }
-        
         /* Product footer with details link */
         .premium-product-footer {
             margin-top: auto;
@@ -1273,7 +1452,6 @@
             color: white;
             transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(2, 11, 41, 0.5);
-            animation: buttonPulse 1.5s infinite;
         }
         
         .premium-view-button:hover:before {
@@ -1296,194 +1474,25 @@
             transform: translateX(5px);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 991px) {
-            .premium-product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 30px;
-            }
-            
-            .luxury-section-title {
-                font-size: 2.2rem;
-            }
-            
-            .premium-product-card {
-                height: 420px;
-            }
-            
-            .premium-product-image {
-                height: 220px;
-            }
+        /* Animation for drawLine */
+        @keyframes drawLine {
+            from { width: 0; }
+            to { width: 100px; }
+        }
+
+        /* Ensure both background and content transition simultaneously */
+        .slide-transition .wave-bg,
+        .slide-transition .content-wrapper {
+            transition: opacity 0.8s ease;
         }
         
-        @media (max-width: 768px) {
-            .header-carousel-item {
-                height: 400px;
-            }
-
-            .carousel-caption-content h1 {
-                font-size: 1.8rem;
-            }
-
-            .carousel-caption-content p {
-                font-size: 0.9rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .category-icon {
-                width: 60px;
-                height: 60px;
-            }
-
-            .category-icon img {
-                width: 30px;
-                height: 30px;
-            }
-
-            .category-item h5 {
-                font-size: 0.8rem;
-            }
-            
-            .premium-products-section {
-                padding: 70px 0;
-            }
-            
-            .luxury-section-title {
-                font-size: 1.8rem;
-            }
-            
-            .luxury-section-subtitle {
-                font-size: 1rem;
-                margin-bottom: 30px;
-            }
-            
-            .premium-product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 20px;
-            }
-            
-            .premium-product-card {
-                height: 380px;
-            }
-            
-            .premium-product-image {
-                height: 200px;
-            }
-            
-            .premium-product-title {
-                font-size: 1.1rem;
-                min-height: 3rem;
-            }
-            
-            .premium-product-logo {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .premium-product-logo img {
-                width: 30px;
-                height: 30px;
-            }
-            
-            .premium-action-button {
-                width: 35px;
-                height: 35px;
-                font-size: 0.9rem;
-            }
-            
-            .carousel-container-vertical {
-                height: 250px;
-            }
-            
-            .info-window {
-                padding: 10px;
-            }
-
-            .popup-title {
-                font-size: 18px;
-            }
-
-            .popup-description,
-            .popup-address {
-                font-size: 10px;
-            }
-
-            .info-window img.popup-image {
-                margin-bottom: 5px;
-            }
-
-            .ticker-item {
-                padding: 0 1rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        /* Media query untuk perangkat dengan lebar maksimal 480px */
-        @media (max-width: 480px) {
-            .popup-title {
-                font-size: 16px;
-            }
-
-            .popup-description,
-            .popup-address {
-                font-size: 9px;
-            }
-            
-            .carousel-container-vertical {
-                height: 220px;
-            }
-            
-            .brand-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-            
-            .premium-products-section {
-                padding: 50px 0;
-            }
-            
-            .luxury-section-title {
-                font-size: 1.5rem;
-            }
-            
-            .luxury-section-subtitle {
-                font-size: 0.9rem;
-                margin-bottom: 20px;
-            }
-            
-            .premium-product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-                gap: 20px;
-            }
-            
-            .premium-product-card {
-                height: 350px;
-            }
-            
-            .premium-product-image {
-                height: 180px;
-            }
-            
-            .premium-product-details {
-                padding: 15px;
-            }
-            
-            .premium-product-category {
-                font-size: 0.8rem;
-            }
-            
-            .premium-product-title {
-                font-size: 1rem;
-                min-height: 2.8rem;
-            }
-            
-            .premium-view-button {
-                padding: 12px 30px;
-                font-size: 0.9rem;
-            }
+        /* Special class for slide transitions */
+        .slide-transition {
+            position: relative;
         }
     </style>
 
-    <!-- JavaScript animations (Updated) -->
+    <!-- JavaScript animations (Updated for Modern Header) -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Preloader
@@ -1496,8 +1505,14 @@
                 }, 500);
             });
             
+            // Initialize slider content and background
+            initSliderContent();
+            
+            // Initialize Product Carousel
+            initProductCarousel();
+            
             // Initialize scroll animations
-            const fadeElements = document.querySelectorAll('.container-xxl, .premium-product-card, .category-item, h1, h6, .brand-item');
+            const fadeElements = document.querySelectorAll('.container-xxl, .premium-product-card, h6, .brand-item');
             fadeElements.forEach(function(element) {
                 element.classList.add('fade-in-scroll');
             });
@@ -1519,266 +1534,287 @@
             checkScroll();
             window.addEventListener('scroll', checkScroll);
             
-            // Enhanced Header Carousel
-            if (document.querySelector('.header-carousel')) {
-                $('.header-carousel').on('initialized.owl.carousel', function() {
-                    setTimeout(function() {
-                        $('.owl-item.active .carousel-caption-content').css('opacity', '1');
-                    }, 100);
-                });
-                
-                $('.header-carousel').on('translated.owl.carousel', function() {
-                    $('.owl-item .carousel-caption-content').css('opacity', '0');
-                    setTimeout(function() {
-                        $('.owl-item.active .carousel-caption-content').css('opacity', '1');
-                    }, 100);
-                });
-            }
-            
-            // Calculate ticker speed based on number of items for smoother animation
-            const ticker = document.querySelector('.ticker');
-            if (ticker) {
-                const tickerItems = ticker.querySelectorAll('.ticker-item');
-                const itemCount = tickerItems.length;
-                // Adjust speed based on number of items (more items = slower animation for better visibility)
-                ticker.style.animationDuration = (itemCount * 1.5) + 's';
-            }
-            
-            // Category Icons Animation
-            document.querySelectorAll('.category-icon').forEach(function(icon, index) {
-                icon.style.animationDelay = (index * 0.1) + 's';
-                icon.addEventListener('mouseenter', function() {
-                    this.style.animationPlayState = 'paused';
-                });
-                
-                icon.addEventListener('mouseleave', function() {
-                    this.style.animationPlayState = 'running';
-                });
-            });
-            
-            // Premium Product Cards Animation
-            document.querySelectorAll('.premium-product-card').forEach(function(card, index) {
-                // Add staggered animation delay
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                
-                setTimeout(function() {
-                    card.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 200 + (index * 100)); // Staggered delay
-                
-                // 3D Tilting effect for premium cards
-                card.addEventListener('mousemove', function(e) {
-                    const cardRect = card.getBoundingClientRect();
-                    const cardX = e.clientX - cardRect.left;
-                    const cardY = e.clientY - cardRect.top;
-                    
-                    const angleY = (cardX / cardRect.width - 0.5) * 8; // Reduce tilt intensity
-                    const angleX = (0.5 - cardY / cardRect.height) * 8;
-                    
-                    card.style.transform = `translateY(-10px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    card.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
-                });
-            });
-            
-            // Brand Items Animation
-            document.querySelectorAll('.brand-item').forEach(function(item, index) {
-                item.style.animationDelay = (index * 0.1) + 's';
-                item.addEventListener('mouseenter', function() {
-                    this.style.animationPlayState = 'paused';
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    this.style.animationPlayState = 'running';
-                });
-            });
-            
-            // Vertical scroll for brand section - pause on hover
-            const carouselContentVertical = document.querySelector('.carousel-content-vertical');
-            if (carouselContentVertical) {
-                carouselContentVertical.addEventListener('mouseenter', function() {
-                    this.style.animationPlayState = 'paused';
-                });
-                
-                carouselContentVertical.addEventListener('mouseleave', function() {
-                    this.style.animationPlayState = 'running';
-                });
-            }
-            
-            // Parallax Effect for Carousel Background
-            document.querySelectorAll('.header-carousel-item').forEach(function(item) {
-                item.addEventListener('mousemove', function(e) {
-                    const moveX = (e.clientX - window.innerWidth / 2) * 0.005;
-                    const moveY = (e.clientY - window.innerHeight / 2) * 0.005;
-                    
-                    const img = this.querySelector('img');
-                    if (img) {
-                        img.style.transform = `scale(1.1) translate(${moveX}px, ${moveY}px)`;
-                    }
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    const img = this.querySelector('img');
-                    if (img) {
-                        img.style.transform = 'scale(1.1)';
-                    }
-                });
-            });
-            
-            // Enhanced Alert Animations
-            document.querySelectorAll('.alert').forEach(function(alert) {
-                // Add close animation
-                const closeBtn = alert.querySelector('.btn-close');
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        alert.style.animation = 'fadeOut 0.5s forwards';
-                        setTimeout(function() {
-                            alert.remove();
-                        }, 500);
-                    });
-                }
-            });
-            
-            // Auto-hide alerts after 5 seconds
-            setTimeout(function() {
-                document.querySelectorAll('.alert').forEach(function(alert) {
-                    alert.style.animation = 'fadeOut 0.5s forwards';
-                    setTimeout(function() {
-                        if (alert.parentNode) {
-                            alert.remove();
-                        }
-                    }, 500);
-                });
-            }, 5000);
-            
-            // Random floating particles for premium section background
-            const productsSection = document.querySelector('.premium-products-section');
-            if (productsSection) {
-                // Create canvas for floating particles
-                const canvas = document.createElement('canvas');
-                canvas.style.position = 'absolute';
-                canvas.style.top = '0';
-                canvas.style.left = '0';
-                canvas.style.width = '100%';
-                canvas.style.height = '100%';
-                canvas.style.pointerEvents = 'none';
-                canvas.style.zIndex = '0';
-                
-                // Add canvas to section background
-                const bgWrapper = document.querySelector('.premium-bg-wrapper');
-                bgWrapper.appendChild(canvas);
-                
-                // Set canvas dimensions
-                canvas.width = productsSection.offsetWidth;
-                canvas.height = productsSection.offsetHeight;
-                
-                const ctx = canvas.getContext('2d');
-                const particles = [];
-                
-                // Create floating particles
-                for (let i = 0; i < 50; i++) {
-                    particles.push({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
-                        radius: Math.random() * 2 + 1,
-                        speedX: Math.random() * 0.5 - 0.25,
-                        speedY: Math.random() * 0.5 - 0.25,
-                        color: getParticleColor()
-                    });
-                }
-                
-                function getParticleColor() {
-                    const colors = [
-                        'rgba(2, 11, 41, 0.1)',
-                        'rgba(97, 150, 255, 0.1)',
-                        'rgba(200, 220, 255, 0.2)'
-                    ];
-                    return colors[Math.floor(Math.random() * colors.length)];
-                }
-                
-                // Animate particles
-                function animateParticles() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    
-                    particles.forEach(particle => {
-                        particle.x += particle.speedX;
-                        particle.y += particle.speedY;
-                        
-                        // Bounce from edges
-                        if (particle.x > canvas.width) particle.x = 0;
-                        if (particle.x < 0) particle.x = canvas.width;
-                        if (particle.y > canvas.height) particle.y = 0;
-                        if (particle.y < 0) particle.y = canvas.height;
-                        
-                        // Draw particle
-                        ctx.beginPath();
-                        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = particle.color;
-                        ctx.fill();
+            // Category Interaction
+            document.querySelectorAll('.category-item').forEach(function(item) {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    document.querySelectorAll('.category-item').forEach(function(elem) {
+                        elem.classList.remove('active');
                     });
                     
-                    requestAnimationFrame(animateParticles);
-                }
-                
-                animateParticles();
-                
-                // Update canvas size on window resize
-                window.addEventListener('resize', function() {
-                    canvas.width = productsSection.offsetWidth;
-                    canvas.height = productsSection.offsetHeight;
-                });
-            }
-            
-            // Initialize Owl Carousel with navigation dots
-            $(document).ready(function(){
-                $('.header-carousel').owlCarousel({
-                    items: 1,
-                    loop: true,
-                    autoplay: true,
-                    autoplayTimeout: 5000,
-                    autoplayHoverPause: true,
-                    nav: false,           // Pastikan navigasi panah dinonaktifkan
-                    dots: true,           // Aktifkan indikator dots
-                    dotsClass: 'owl-dots',
-                    animateOut: 'fadeOut',
-                    smartSpeed: 1000
-                });
-                
-                // Menghapus elemen navigasi yang mungkin masih muncul
-                $('.owl-nav').remove();
-            });
-            
-            // Add subtle movement to product images on mousemove
-            document.querySelectorAll('.premium-product-image').forEach(function(productImage) {
-                productImage.addEventListener('mousemove', function(e) {
-                    const img = this.querySelector('img');
-                    if (!img) return;
-                    
-                    const rect = this.getBoundingClientRect();
-                    const x = e.clientX - rect.left; 
-                    const y = e.clientY - rect.top;
-                    
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const moveX = (x - centerX) / centerX * 10; // Maximum 10px movement
-                    const moveY = (y - centerY) / centerY * 10;
-                    
-                    img.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.1)`;
-                });
-                
-                productImage.addEventListener('mouseleave', function() {
-                    const img = this.querySelector('img');
-                    if (img) {
-                        img.style.transform = 'translate(0, 0) scale(1)';
-                    }
+                    // Add active class to clicked item
+                    this.classList.add('active');
                 });
             });
         });
+        
+        // Slider Content Function with TEXT and IMAGE fully synchronized changes
+        function initSliderContent() {
+            // Get all slider data from PHP
+            const sliders = @json($sliders);
+            
+            if (!sliders || sliders.length === 0) {
+                // No sliders available, add default content
+                updateSliderContent({
+                    title: 'COMPUTER AND LAPTOPS',  // Updated to match the image example
+                    subtitle: 'PRESENTING SMART SOLUTIONS',
+                    description: 'Welcome our latest innovation! We are proud to introduce the latest products designed to meet your needs better. With advanced features and modern design, this new product is ready to provide extraordinary experiences that have never existed before.',
+                    button_text: 'MORE',
+                    button_url: '#',
+                    image_url: 'assets/img/default-bg.jpg'
+                }, true);
+                return;
+            }
+            
+            // Set initial slide
+            updateSliderContent(sliders[0], true);
+            
+            // Set up auto rotate if multiple sliders
+            if (sliders.length > 1) {
+                let currentIndex = 0;
+                
+                // Auto rotate sliders
+                setInterval(() => {
+                    currentIndex = (currentIndex + 1) % sliders.length;
+                    updateSliderContent(sliders[currentIndex], false);
+                }, 5000); // Change every 5 seconds
+            }
+        }
+        
+        function updateSliderContent(slider, isInitial) {
+            // Get the content wrapper
+            const contentWrapper = document.getElementById('sliderContent');
+            // Get background element
+            const bgElement = document.getElementById('backgroundSlider');
+            
+            if (!contentWrapper || !bgElement) return;
+            
+            // Set background image with transition effect
+            const assetPath = "{{ asset('') }}";
+            const newImageUrl = `${assetPath}${slider.image_url}`;
+            
+            // Create new background element
+            const tempBg = document.createElement('div');
+            tempBg.className = 'wave-bg slide-transition';
+            tempBg.style.backgroundImage = `url('${newImageUrl}')`;
+            tempBg.style.opacity = '0';
+            tempBg.style.position = 'absolute';
+            tempBg.style.top = '0';
+            tempBg.style.left = '0';
+            tempBg.style.width = '100%';
+            tempBg.style.height = '100%';
+            tempBg.style.transition = 'opacity 0.8s ease';
+            tempBg.style.zIndex = '0';
+            
+            // Add gradient overlay with reduced opacity
+            tempBg.innerHTML = '<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg, rgba(255,20,147,0.4) 0%, rgba(138,43,226,0.3) 50%, rgba(106,13,173,0.3) 100%);z-index:1;"></div>';
+            
+            // Prepare new content
+            const newContent = document.createElement('div');
+            newContent.className = 'content-wrapper slide-transition';
+            newContent.style.opacity = '0';
+            newContent.style.transition = 'opacity 0.8s ease';
+            newContent.innerHTML = `
+                <div class="design-tagline">${slider.subtitle || ''}</div>
+                <div class="design-title">
+                    <h1>${slider.title || 'TITLE HERE'}</h1>
+                </div>
+                <div class="design-description">
+                    <p>${slider.description || ''}</p>
+                </div>
+                <div class="explore-btn">
+                    <a href="${slider.button_url || '#'}" class="btn-explore">
+                        ${slider.button_text || 'MORE'}
+                    </a>
+                </div>
+            `;
+            
+            if (isInitial) {
+                // First load - just show content and background immediately
+                if (bgElement) {
+                    bgElement.style.backgroundImage = `url('${newImageUrl}')`;
+                    // Ensure the overlay also has reduced opacity on initial load
+                    const existingOverlay = bgElement.querySelector('div');
+                    if (!existingOverlay) {
+                        bgElement.innerHTML = '<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg, rgba(255,20,147,0.4) 0%, rgba(138,43,226,0.3) 50%, rgba(106,13,173,0.3) 100%);z-index:1;"></div>';
+                    } else {
+                        existingOverlay.style.background = 'linear-gradient(90deg, rgba(255,20,147,0.4) 0%, rgba(138,43,226,0.3) 50%, rgba(106,13,173,0.3) 100%)';
+                    }
+                }
+                contentWrapper.innerHTML = '';
+                contentWrapper.appendChild(newContent);
+                newContent.style.opacity = '1';
+                animateTitleLetters(newContent.querySelector('.design-title h1'));
+            } else {
+                try {
+                    // 1. Add new background to DOM but keep it invisible
+                    bgElement.parentNode.insertBefore(tempBg, bgElement.nextSibling);
+                    
+                    // 2. Create new content but keep it invisible too
+                    const oldContent = contentWrapper.innerHTML;
+                    contentWrapper.innerHTML = '';
+                    contentWrapper.appendChild(newContent);
+                    
+                    // 3. IMPORTANT: Force reflow to ensure transitions work
+                    void tempBg.offsetWidth;
+                    void newContent.offsetWidth;
+                    
+                    // 4. Start both transitions simultaneously
+                    tempBg.style.opacity = '1';
+                    newContent.style.opacity = '1';
+                    
+                    // 5. Animate title letters
+                    animateTitleLetters(newContent.querySelector('.design-title h1'));
+                    
+                    // 6. Remove old background after transition
+                    setTimeout(() => {
+                        if (bgElement && bgElement.parentNode) {
+                            bgElement.parentNode.removeChild(bgElement);
+                            tempBg.id = 'backgroundSlider';
+                        }
+                    }, 800);
+                } catch (error) {
+                    console.error("Error during slider transition:", error);
+                }
+            }
+        }
+
+        function animateTitleLetters(titleElement) {
+            if (!titleElement) return;
+            
+            try {
+                // Create animated letters
+                const text = titleElement.textContent;
+                titleElement.textContent = '';
+                
+                [...text].forEach((letter, i) => {
+                    const span = document.createElement('span');
+                    span.textContent = letter === ' ' ? '\u00A0' : letter; // Use non-breaking space for spaces
+                    span.style.transitionDelay = `${i * 0.05}s`;
+                    span.style.opacity = '0';
+                    span.style.transform = 'translateY(20px)';
+                    span.style.display = 'inline-block';
+                    span.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    
+                    titleElement.appendChild(span);
+                    
+                    // Animate entrance with a small delay for each letter
+                    setTimeout(() => {
+                        span.style.opacity = '1';
+                        span.style.transform = 'translateY(0)';
+                    }, 100 + (i * 50));
+                });
+            } catch (error) {
+                console.error("Error animating title letters:", error);
+                if (titleElement) titleElement.style.opacity = '1';
+            }
+        }
+        
+        // Product Carousel Function
+        function initProductCarousel() {
+            const carousel = document.getElementById('productCarousel');
+            if (!carousel) return;
+            
+            const items = carousel.querySelectorAll('.carousel-item');
+            if (!items.length) return;
+            
+            const prevBtn = document.querySelector('.nav-prev');
+            const nextBtn = document.querySelector('.nav-next');
+            const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+            
+            let currentIndex = 0;
+            let timer;
+            let touchStartX, touchEndX;
+            
+            function showSlide(index) {
+                if (index < 0) index = items.length - 1;
+                if (index >= items.length) index = 0;
+                
+                // Update carousel items
+                items.forEach(item => item.classList.remove('active'));
+                items[index].classList.add('active');
+                
+                // Update indicators
+                if (indicators && indicators.length) {
+                    indicators.forEach(ind => ind.classList.remove('active'));
+                    if (indicators[index]) indicators[index].classList.add('active');
+                }
+                
+                currentIndex = index;
+                
+                // Reset timer
+                clearInterval(timer);
+                timer = setInterval(autoAdvance, 5000);
+            }
+            
+            function autoAdvance() {
+                showSlide(currentIndex + 1);
+            }
+            
+            // Event listeners
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    showSlide(currentIndex - 1);
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    showSlide(currentIndex + 1);
+                });
+            }
+            
+            if (indicators && indicators.length) {
+                indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', () => {
+                        showSlide(index);
+                    });
+                });
+            }
+            
+            // Touch swipe support
+            carousel.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            carousel.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+            
+            function handleSwipe() {
+                if (touchStartX - touchEndX > 50) {
+                    // Swipe left - next slide
+                    showSlide(currentIndex + 1);
+                } else if (touchEndX - touchStartX > 50) {
+                    // Swipe right - previous slide
+                    showSlide(currentIndex - 1);
+                }
+            }
+            
+            // Start auto-advance
+            timer = setInterval(autoAdvance, 5000);
+            
+            // Initialize first slide
+            showSlide(0);
+            
+            // Pause the carousel on hover, resume on mouse leave
+            carousel.addEventListener('mouseenter', function() {
+                clearInterval(timer);
+            });
+            
+            carousel.addEventListener('mouseleave', function() {
+                timer = setInterval(autoAdvance, 5000);
+            });
+            
+            // Handle visibility changes (when user switches tabs or apps)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    clearInterval(timer);
+                } else {
+                    timer = setInterval(autoAdvance, 5000);
+                }
+            });
+        }
     </script>
 @endsection

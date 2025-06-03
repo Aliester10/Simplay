@@ -22,35 +22,14 @@
     } elseif (session()->has('cart')) {
         $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
     }
+    
+    // Current date and time (UTC)
+    $currentDateTime = "2025-06-03 03:49:27";
+    // Current user's login
+    $currentUserLogin = "Aliester10";
 @endphp
 
-<!-- Top Dark Bar -->
-<div class="container-fluid top-dark-bar">
-    <div class="container d-flex justify-content-center align-items-center flex-wrap h-100">
-        @if(!empty($compro->maps))
-            <a href="{{ $compro->maps }}" class="text-light me-md-4 me-2 mb-1 mb-md-0" target="_blank">
-                <img src="{{ asset('assets/icons/topbar-icons/location.svg') }}" alt="Location" class="topbar-icon">
-                <span>Lokasi Kantor</span>
-            </a>
-        @endif
-        
-        @if(!empty($compro->no_telepon))
-            <a href="tel:+62{{ $compro->no_telepon }}" class="text-light me-md-4 me-2 mb-1 mb-md-0">
-                <img src="{{ asset('assets/icons/topbar-icons/phone-call.svg') }}" alt="Phone" class="topbar-icon">
-                <span>{{ $compro->no_telepon }}</span>
-            </a>
-        @endif
-        
-        @if(!empty($compro->email))
-            <a href="mailto:{{ $compro->email }}" class="text-light mb-1 mb-md-0">
-                <img src="{{ asset('assets/icons/topbar-icons/email.svg') }}" alt="Email" class="topbar-icon">
-                <span>{{ $compro->email }}</span>
-            </a>
-        @endif
-    </div>
-</div>
-
-<!-- Main Navigation Bar -->
+<!-- Main Navigation Bar (Now at top position) -->
 <nav class="navbar navbar-expand-lg">
     <div class="container">
         <!-- Logo Section -->
@@ -202,43 +181,14 @@
 
 <!-- Embedded CSS -->
 <style>
-/* Top dark bar styling */
-.top-dark-bar {
-    background-color: #1D1E33;
-    font-size: 0.85rem;
-    position: relative;
-    z-index: 1030;
-    height: 50px; /* Set fixed height to 50px */
-}
-
-.top-dark-bar a {
-    text-decoration: none;
-    color: #fff;
-    transition: all 0.3s ease;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-}
-
-.top-dark-bar a:hover {
-    opacity: 0.8;
-}
-
-.topbar-icon {
-    height: 17px;
-    width: auto;
-    margin-right: 5px;
-    filter: brightness(0) invert(1);
-}
-
-/* Main navigation bar styling - Transparent */
+/* Main navigation bar styling - Now at top position */
 .navbar {
-    background-color: transparent;
+    background-color: transparent; /* Transparent background */
     padding: 1rem 0;
-    z-index: 1020;
+    z-index: 1030;
     position: absolute;
     width: 100%;
-    top: 50px; /* Updated to match top bar height */
+    top: 0;
 }
 
 .navbar-brand img.logo-img {
@@ -246,9 +196,9 @@
     width: auto;
 }
 
-/* Navigation links */
+/* Navigation links - Changed to WHITE color */
 .navbar .nav-link {
-    color: #fff;
+    color: #fff; /* Changed to white */
     font-weight: 500;
     padding: 0.5rem 1rem;
     margin-right: 0.5rem;
@@ -259,17 +209,17 @@
 
 .navbar .nav-link:hover,
 .navbar .nav-link.active {
-    color: #6196FF;
+    color: #6196FF; /* Kept the hover/active color */
 }
 
 .navbar .navbar-toggler {
     border: none;
-    color: #fff;
+    color: #fff; /* Changed to white */
     padding: 0.4rem 0.6rem;
     font-size: 1.2rem;
 }
 
-/* Updated Search bar styling */
+/* Updated Search bar styling for white text */
 .search-container {
     width: 220px;
     max-width: 100%;
@@ -283,7 +233,7 @@
     border-radius: 30px;
     height: 36px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Changed to white border */
 }
 
 .search-input {
@@ -294,11 +244,11 @@
     width: 100%;
     padding: 0 45px 0 20px;
     outline: none;
-    color: #fff;
+    color: #fff; /* Changed to white */
 }
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.7); /* Changed to white with opacity */
 }
 
 .search-btn {
@@ -318,14 +268,14 @@
     width: 18px;
     height: 18px;
     opacity: 0.8;
-    filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1); /* Changed to make icon white */
 }
 
-/* Navbar icons styling */
+/* Navbar icons styling - Changed to WHITE */
 .navbar-icon {
     height: 22px;
     width: auto;
-    filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1); /* Changed to make icons white */
 }
 
 .nav-icon-link {
@@ -396,40 +346,40 @@
 /* Mobile search */
 .mobile-search {
     padding: 1rem 0;
-    background-color: #fff;
+    background-color: transparent; /* Changed to transparent */
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     display: none;
     z-index: 1010;
 }
 
 .mobile-search .search-wrapper {
-    background-color: #f5f5f5;
-    border: 1px solid #eee;
+    background-color: rgba(255, 255, 255, 0.2); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .mobile-search .search-input {
-    color: #555;
+    color: #fff; /* Changed to white */
 }
 
 .mobile-search .search-input::placeholder {
-    color: #aaa;
+    color: rgba(255, 255, 255, 0.7); /* Changed to white with opacity */
 }
 
 .mobile-search .search-icon {
-    filter: none;
-    opacity: 0.6;
+    filter: brightness(0) invert(1); /* Changed to make white */
+    opacity: 0.8;
 }
 
 /* Adjust header carousel to work with transparent navbar */
 .header-carousel {
-    margin-top: -50px; /* Updated to match top bar height */
+    margin-top: 0;
 }
 
 .header-carousel-item {
-    padding-top: 50px; /* Updated to match top bar height */
+    padding-top: 0;
 }
 
-/* User dropdown specific styling - NEW */
+/* User dropdown specific styling */
 .user-dropdown {
     position: relative;
 }
@@ -466,7 +416,7 @@
     font-weight: 500;
 }
 
-/* Animasi Cart - NEW */
+/* Animasi Cart */
 .flying-image {
     z-index: 9999;
     pointer-events: none;
@@ -496,48 +446,48 @@
 /* Responsive adjustments */
 @media (max-width: 991.98px) {
     .navbar {
-        background-color: rgba(255, 255, 255, 0.95);
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background for mobile */
         position: relative;
         top: 0;
         padding: 0.5rem 0;
     }
     
     .navbar .nav-link {
-        color: #333;
+        color: #fff; /* Keep white for mobile */
     }
     
     .navbar .navbar-toggler {
-        color: #333;
+        color: #fff; /* Keep white for mobile */
     }
     
     .navbar-icon {
-        filter: none;
+        filter: brightness(0) invert(1); /* Keep white for mobile */
     }
     
     .search-wrapper {
-        background-color: white;
-        border: 1px solid #f0f0f0;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     .search-input {
-        color: #555;
+        color: #fff; /* Changed to white */
     }
     
     .search-input::placeholder {
-        color: #aaa;
+        color: rgba(255, 255, 255, 0.7); /* Changed to white with opacity */
     }
     
     .search-icon {
-        filter: none;
-        opacity: 0.6;
+        filter: brightness(0) invert(1); /* Changed to make white */
+        opacity: 0.8;
     }
     
     #navbarContent {
-        background-color: white;
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent for mobile */
         border-radius: 0 0 1rem 1rem;
         padding: 1rem;
         margin-top: 0.5rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     
     .navbar-collapse {
@@ -546,7 +496,7 @@
     }
     
     .navbar .nav-item {
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Changed for light theme */
     }
     
     .navbar .nav-item:last-child {
@@ -556,51 +506,30 @@
     .nav-icons {
         margin-top: 1rem;
         padding-top: 1rem;
-        border-top: 1px solid #f0f0f0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Changed for light theme */
         justify-content: center;
     }
     
     .header-carousel {
-        margin-top: 0; /* Reset margin for mobile */
+        margin-top: 0;
     }
     
     .header-carousel-item {
-        padding-top: 0; /* Reset padding for mobile */
+        padding-top: 0;
+    }
+    
+    .mobile-search {
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent for mobile */
     }
 }
 
 @media (max-width: 767.98px) {
-    .top-dark-bar a {
-        margin-right: 0.5rem !important;
-        font-size: 0.7rem;
-    }
-    .top-dark-bar a span {
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
     .navbar-brand img.logo-img {
         height: 28px;
     }
 }
 
 @media (max-width: 575.98px) {
-    .top-dark-bar .container {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .top-dark-bar a {
-        margin-bottom: 0.25rem;
-        margin-right: 0.75rem !important;
-        font-size: 0.65rem;
-    }
-    
-    .top-dark-bar a:last-child {
-        margin-right: 0 !important;
-    }
-    
     .navbar-brand img.logo-img {
         height: 26px;
     }
@@ -608,13 +537,8 @@
 
 /* For very small screens like iPhone SE */
 @media (max-width: 360px) {
-    .top-dark-bar .container {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-left: 1rem;
-    }
-    .top-dark-bar a {
-        margin-right: 0 !important;
+    .navbar-brand img.logo-img {
+        height: 24px;
     }
 }
 </style>
