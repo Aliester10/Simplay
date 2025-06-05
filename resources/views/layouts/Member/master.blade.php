@@ -6,4 +6,3 @@
 
 @include('layouts.Member.footer')
 
-@include('partials.whatsapp-button')

@@ -46,7 +46,9 @@ use App\Http\Controllers\Distribution\Portal\InvoiceController;
 use App\Http\Controllers\Distribution\Portal\ProformaInvoiceDistributorController;
 use App\Http\Controllers\Distribution\Profile\ProfileDistributorController;
 use App\Http\Controllers\CartController;
-
+use App\Http\Controllers\Member\Career\CareerController;
+use App\Http\Controllers\Admin\Career\CareerPositionController;
+use App\Http\Controllers\Admin\Career\CareerApplicationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,7 +106,6 @@ Route::middleware(['auth', 'user-access:admin'])->prefix('admin/faq')->name('Adm
     Route::delete('/{faq_id}', [FAQController::class, 'destroy'])->name('destroy');
 });
 
-
 Route::prefix('id/admin')->middleware(['auth', 'user-access:admin'])->group(function () {
     Route::get('/admin/produk', [ProdukController::class, 'index'])->name('Admin.Produk.index');
     Route::get('/admin/produk/create', [ProdukController::class, 'create'])->name('Admin.Produk.create');
@@ -114,22 +115,34 @@ Route::prefix('id/admin')->middleware(['auth', 'user-access:admin'])->group(func
     Route::delete('/admin/produk/{produk}', [ProdukController::class, 'destroy'])->name('Admin.Produk.destroy');
 });
 
-
 // Guest Routes (No Authentication Required)
 Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/about', [HomeController::class, 'about'])->name('about');
-    // Rute lainnya
+    
+    // Career Routes - PUBLIC ACCESS for all users
+    Route::prefix('career')->name('member.career.')->group(function () {
+        Route::get('/', [CareerController::class, 'index'])->name('index');
+        Route::post('/apply', [CareerController::class, 'apply'])->name('apply');
+    });
+    
+    // Product Routes
     Route::get('/products', [ProdukMemberController::class, 'index'])->name('product.index');
     Route::get('/products/category/{id}', [ProdukMemberController::class, 'index'])->name('product.category');
     Route::get('/product/{id}', [ProdukMemberController::class, 'show'])->name('product.show');
     Route::get('/products/filter/{id}', [ProdukMemberController::class, 'filterByCategory'])->name('filterByCategory');
     Route::get('/products/search', [ProdukMemberController::class, 'search'])->name('products.search');
     Route::post('/products/search/store', [ProdukMemberController::class, 'search'])->name('products.search.store');
+    
+    // Activity Routes
     Route::get('/activity', [ActivityMemberController::class, 'activity'])->name('activity');
     Route::get('/activities/{activity}', [ActivityMemberController::class, 'show'])->name('activity.show');
+    
+    // Meta Routes
     Route::get('/member/meta/{slug}', [MetaMemberController::class, 'showMetaBySlug'])->name('member.meta.show');
     Route::get('/member/meta', [MetaMemberController::class, 'showMeta'])->name('member.meta.index');
+    
+    // Other Routes
     Route::get('/locations', [LocationMemberController::class, 'index']);
     Route::get('/contact', [ContactMenuController::class, 'index'])->name('contact');
     Route::post('/contact', [ContactMenuController::class, 'store']);
@@ -137,7 +150,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
     Route::get('/admin/guest-messages', [GuestMessageController::class, 'index'])->name('admin.guest-messages.index');
     Route::post('/guest-messages', [GuestMessageController::class, 'store'])->name('guest-messages.store');
 
-    // Distributor Registration - Perbaikan rute distributor
+    // Distributor Registration
     Route::get('/distributors/register', [RegisterController::class, 'showDistributorRegistrationForm'])->name('distributors.register');
     Route::post('/distributors/register', [RegisterController::class, 'registerDistributor'])->name('distributors.register.submit');
     Route::get('/distributors/waiting', function () {
@@ -149,7 +162,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
         Route::resource('qnaguest', QnaGuestController::class);
     });
 
-    // Menonaktifkan register default dari Auth::routes() dan hanya menggunakan yang lainnya
+    // Auth Routes
     Auth::routes(['register' => false]);
     
     // Redirect dari /register ke halaman distributor register
@@ -157,13 +170,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
         return redirect()->route('distributors.register');
     });
 
-    // Rute Cart untuk Semua Pengguna
+    // Cart Routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 });
-
 
 // Member Routes (Authenticated Users with "member" role)
 Route::middleware(['auth', 'user-access:member'])->group(function () {
@@ -206,6 +218,7 @@ Route::middleware(['auth', 'user-access:distributor'])->group(function () {
         Route::get('/portal/distribution/request-quotation', [DistributionController::class, 'requestQuotation'])->name('distribution.request-quotation');
         Route::get('/portal/distribution/create-po', [DistributionController::class, 'createPO'])->name('distribution.create-po');
         Route::get('/portal/distribution/invoices', [DistributionController::class, 'invoices'])->name('distribution.invoices');
+        
         // Routes for Distributor Ticketing Service
         Route::get('/portal/distribution/tickets', [TicketDistributorController::class, 'index'])->name('distribution.tickets.index');
         Route::get('/portal/distribution/tickets/create', [TicketDistributorController::class, 'create'])->name('distribution.tickets.create');
@@ -216,56 +229,48 @@ Route::middleware(['auth', 'user-access:distributor'])->group(function () {
         Route::put('/portal/distribution/tickets/{id}', [TicketDistributorController::class, 'update'])->name('distribution.tickets.update');
         Route::post('/portal/distribution/product/{id}/add-to-quotation', [ProdukMemberController::class, 'addToQuotation'])->name('Distributor.product.addToQuotation');
 
-        // Menampilkan halaman keranjang quotation
+        // Quotation Cart Routes
         Route::get('/quotations/cart', [QuotationController::class, 'cart'])->name('quotations.cart');
-        // Menambahkan produk ke keranjang
         Route::post('/quotations/add-to-cart', [QuotationController::class, 'addToCart'])->name('quotations.add_to_cart');
-        // Mengirim permintaan quotation dari keranjang
         Route::post('/quotations/submit', [QuotationController::class, 'submitCart'])->name('quotations.submit');
-        // Update quantity di keranjang
         Route::put('/quotations/update-cart', [QuotationController::class, 'updateCart'])->name('quotations.cart.update');
-        // Hapus item dari keranjang
         Route::delete('/quotations/remove-from-cart', [QuotationController::class, 'removeFromCart'])->name('quotations.cart.remove');
-        // Rute untuk negosiasi quotation
         Route::get('/quotations/{id}/nego', [QuotationController::class, 'nego'])->name('quotations.nego');
 
-
-        // Route untuk menampilkan form negosiasi
+        // Negotiation Routes
         Route::get('/distributor/quotations/{quotationId}/negotiation', [DistributorQuotationNegotiationController::class, 'create'])->name('distributor.quotations.negotiations.create');
-
-        // Route untuk menampilkan form negosiasi
-        Route::get('/distributor/quotations/{quotationId}/negotiation', [DistributorQuotationNegotiationController::class, 'create'])->name('distributor.quotations.negotiations.create');
-
-        // Route untuk menyimpan negosiasi
         Route::post('/distributor/quotations/{quotationId}/negotiation', [DistributorQuotationNegotiationController::class, 'store'])->name('distributor.quotations.negotiations.store');
         Route::get('/distributor/quotations/negotiations', [DistributorQuotationNegotiationController::class, 'index'])->name('distributor.quotations.negotiations.index');
+        
+        // Proforma Invoice Routes
         Route::get('/proforma-invoices', [ProformaInvoiceDistributorController::class, 'index'])->name('distributor.proforma-invoices.index');
         Route::post('/distributor/proforma-invoices/{id}/upload', [ProformaInvoiceDistributorController::class, 'uploadPaymentProof'])->name('distributor.proforma-invoices.upload');
         Route::get('/proforma-invoices/{id}', [ProformaInvoiceDistributorController::class, 'show'])->name('distributor.proforma-invoices.show');
 
         Route::get('/distributor/invoices', [InvoiceController::class, 'index'])->name('distributor.invoices.index');
 
-
         // Quotation Routes
-        Route::get('/portal/distribution/quotations/{id}', [QuotationController::class, 'show'])->name('quotations.show'); // View quotation
-        Route::put('/portal/distribution/quotations/{id}/cancel', [QuotationController::class, 'cancel'])->name('quotations.cancel'); // Cancel quotation
+        Route::get('/portal/distribution/quotations/{id}', [QuotationController::class, 'show'])->name('quotations.show');
+        Route::put('/portal/distribution/quotations/{id}/cancel', [QuotationController::class, 'cancel'])->name('quotations.cancel');
 
+        // Purchase Order Routes
         Route::get('/quotations/{quotationId}/create-po', [PurchaseOrderController::class, 'create'])->name('quotations.create_po');
         Route::post('/quotations/{quotationId}/create-po', [PurchaseOrderController::class, 'store'])->name('quotations.store_po');
         Route::get('/distributor/purchase-orders', [PurchaseOrderController::class, 'index'])->name('distributor.purchase-orders.index');
 
-        //routes profile
+        // Profile Routes
         Route::get('/distributor/profile', [ProfileDistributorController::class, 'show'])->name('distributor.profile.show');
         Route::get('/distributor/profile/edit', [ProfileDistributorController::class, 'edit'])->name('distributor.profile.edit');
         Route::put('/distributor/profile/update', [ProfileDistributorController::class, 'update'])->name('distributor.profile.update');
     });
 });
 
+// Admin Routes
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
     Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
         Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
-        // Route activity yang dipindahkan ke dalam grup dengan prefix lokalisasi
+        // Activity Routes
         Route::prefix('admin/activity')->name('admin.activity.')->group(function () {
             Route::get('/', [ActivityController::class, 'index'])->name('index');
             Route::get('/create', [ActivityController::class, 'create'])->name('create');
@@ -277,6 +282,7 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
             Route::delete('/image/{id}', [ActivityController::class, 'deleteImage'])->name('image.delete');
         });
 
+        // Member Management Routes
         Route::resource('admin/members', MemberController::class);
         Route::get('members/{id}/add-products', [MemberController::class, 'addProducts'])->name('members.add-products');
         Route::post('members/{id}/store-products', [MemberController::class, 'storeProducts'])->name('members.store-products');
@@ -285,60 +291,86 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         Route::post('/members/{id}/update-password', [MemberController::class, 'updatePassword'])->name('members.updatePassword');
         Route::post('/admin/validate-password', [MemberController::class, 'validatePassword'])->name('admin.validatePassword');
 
+        // Distributor Management Routes
         Route::get('/admin/distributors', [DistributorApprovalController::class, 'index'])->name('admin.distributors.index');
         Route::post('/admin/distributors/{id}/approve', [DistributorApprovalController::class, 'approve'])->name('admin.distributors.approve');
         Route::get('/admin/distributors/{id}', [DistributorApprovalController::class, 'show'])->name('admin.distributors.show');
 
-        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index'); // Daftar admin
-        Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create'); // Form tambah admin
-        Route::post('/admin', [AdminController::class, 'store'])->name('admin.store'); // Simpan admin baru
-        Route::get('/admin/{admin}/edit', [AdminController::class, 'edit'])->name('admin.edit'); // Form edit admin
-        Route::put('/admin/{admin}', [AdminController::class, 'update'])->name('admin.update'); // Update admin
-        Route::delete('/admin/{admin}', [AdminController::class, 'destroy'])->name('admin.destroy'); // Hapus admin
+        // Admin Management Routes
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create');
+        Route::post('/admin', [AdminController::class, 'store'])->name('admin.store');
+        Route::get('/admin/{admin}/edit', [AdminController::class, 'edit'])->name('admin.edit');
+        Route::put('/admin/{admin}', [AdminController::class, 'update'])->name('admin.update');
+        Route::delete('/admin/{admin}', [AdminController::class, 'destroy'])->name('admin.destroy');
 
-
-        // Routes Tiketing Layanan untuk Admin
+        // Ticket Management Routes
         Route::get('/admin/tickets', [TicketController::class, 'index'])->name('admin.tickets.index');
         Route::put('/admin/tickets/{id}/process', [TicketController::class, 'process'])->name('admin.tickets.process');
         Route::put('/admin/tickets/{id}/complete', [TicketController::class, 'complete'])->name('admin.tickets.complete');
         Route::get('/admin/tickets/{id}', [TicketController::class, 'show'])->name('admin.tickets.show');
 
+        // Quotation Management Routes
         Route::get('/admin/quotations', [QuotationAdminController::class, 'index'])->name('admin.quotations.index');
         Route::put('/quotations/{id}/status', [QuotationAdminController::class, 'updateStatus'])->name('admin.quotations.updateStatus');
         Route::post('/quotations/{id}/upload-file', [QuotationAdminController::class, 'uploadFile'])->name('admin.quotations.uploadFile');
-
         Route::get('admin/quotations/{id}/show', [QuotationAdminController::class, 'show'])->name('admin.quotations.show');
         Route::get('admin/quotations/{id}/edit', [QuotationAdminController::class, 'edit'])->name('admin.quotations.edit');
         Route::put('admin/quotations/{id}', [QuotationAdminController::class, 'update'])->name('admin.quotations.update');
 
-        // Menampilkan semua negosiasi untuk ditinjau admin
+        // Quotation Negotiation Routes
         Route::get('/admin/quotations/negotiations', [QuotationNegotiationController::class, 'index'])->name('admin.quotations.negotiations.index');
-        // Menerima negosiasi
         Route::put('/admin/quotations/negotiations/{id}/accept', [QuotationNegotiationController::class, 'accept'])->name('admin.quotations.negotiations.accept');
         Route::put('/admin/quotations/negotiations/{id}/process', [QuotationNegotiationController::class, 'process'])->name('admin.quotations.negotiations.process');
-        // Menolak negosiasi
         Route::put('/admin/quotations/negotiations/{id}/reject', [QuotationNegotiationController::class, 'reject'])->name('admin.quotations.negotiations.reject');
+        
+        // Purchase Order Management Routes
         Route::get('/purchase-orders', [PurchaseOrderAdminController::class, 'index'])->name('admin.purchase-orders.index');
         Route::get('/purchase-orders/{id}', [PurchaseOrderAdminController::class, 'show'])->name('admin.purchase-orders.show');
         Route::put('/purchase-orders/{id}/approve', [PurchaseOrderAdminController::class, 'approve'])->name('admin.purchase-orders.approve');
         Route::put('/purchase-orders/{id}/reject', [PurchaseOrderAdminController::class, 'reject'])->name('admin.purchase-orders.reject');
         Route::put('/purchase-orders/{id}/po-number', [PurchaseOrderAdminController::class, 'updatePoNumber'])->name('admin.purchase-orders.update-po-number');
 
-
+        // Proforma Invoice Management Routes
         Route::get('admin/purchase-orders/{id}/create-proforma-invoice', [ProformaInvoiceAdminController::class, 'create'])->name('admin.proforma-invoices.create');
         Route::post('admin/purchase-orders/{id}/store-proforma-invoice', [ProformaInvoiceAdminController::class, 'store'])->name('admin.proforma-invoices.store');
         Route::get('/admin/proforma-invoices', [ProformaInvoiceAdminController::class, 'index'])->name('admin.proforma-invoices.index');
         Route::get('/admin/proforma-invoices/{id}', [ProformaInvoiceAdminController::class, 'show'])->name('admin.proforma-invoices.show');
-        Route::put('/admin/proforma-invoices/{id}/approve-reject', [ProformaInvoiceAdminController::class, 'approveRejectPayment'])
-            ->name('admin.proforma-invoices.approve-reject');
+        Route::put('/admin/proforma-invoices/{id}/approve-reject', [ProformaInvoiceAdminController::class, 'approveRejectPayment'])->name('admin.proforma-invoices.approve-reject');
 
+        // Admin Career Management Routes - UPDATED WITH PROPER NAMING
+        Route::prefix('admin/career')->name('Admin.Career.')->group(function () {
+            // Career dashboard/overview
+            Route::get('/', [CareerPositionController::class, 'dashboard'])->name('index');
+            
+            // Career Positions Management
+            Route::prefix('positions')->name('Positions.')->group(function () {
+                Route::get('/', [CareerPositionController::class, 'index'])->name('index');
+                Route::get('/create', [CareerPositionController::class, 'create'])->name('create');
+                Route::post('/', [CareerPositionController::class, 'store'])->name('store');
+                Route::get('/{id}', [CareerPositionController::class, 'show'])->name('show');
+                Route::get('/{id}/edit', [CareerPositionController::class, 'edit'])->name('edit');
+                Route::put('/{id}', [CareerPositionController::class, 'update'])->name('update');
+                Route::delete('/{id}', [CareerPositionController::class, 'destroy'])->name('destroy');
+                Route::post('/{id}/toggle', [CareerPositionController::class, 'toggleStatus'])->name('toggle');
+            });
+            
+            // Career Applications Management
+            Route::prefix('applications')->name('Applications.')->group(function () {
+                Route::get('/', [CareerApplicationController::class, 'index'])->name('index');
+                Route::get('/{id}', [CareerApplicationController::class, 'show'])->name('show');
+                Route::post('/{id}/status', [CareerApplicationController::class, 'updateStatus'])->name('updateStatus');
+                Route::get('/{id}/cv/download', [CareerApplicationController::class, 'downloadCV'])->name('downloadCV');
+            });
+        });
 
-        // Route untuk index dan pembuatan invoice
+        // Invoice Management Routes
         Route::get('/invoices', [InvoiceAdminController::class, 'index'])->name('invoices.index');
         Route::get('/invoices/create/{proformaInvoiceId}', [InvoiceAdminController::class, 'create'])->name('invoices.create');
         Route::post('/invoices/store/{proformaInvoiceId}', [InvoiceAdminController::class, 'store'])->name('invoices.store');
         Route::get('/invoices/{id}', [InvoiceAdminController::class, 'show'])->name('invoices.show');
 
+        // Other Admin Routes
         Route::get('/admin/visitors', [VisitorController::class, 'index'])->name('admin.visitors');
         Route::resource('admin/produk', ProdukController::class)->names('admin.produk');
         Route::resource('admin/parameter', CompanyParameterController::class);

@@ -8,63 +8,64 @@
         ->get()
         ->groupBy('type');
     
-    // Count cart items based on user type - IMPROVED VERSION
+    // Count cart items based on user type - ONLY DISTRIBUTOR AND MEMBER
     $cartCount = 0;
-    if (auth()->check()) {
+    if (auth()->check() && in_array(auth()->user()->type, ['distributor', 'member'])) {
         if (auth()->user()->type === 'distributor' && session()->has('quotation_cart')) {
             $cartCount = is_array(session('quotation_cart')) ? count(session('quotation_cart')) : 0;
         } elseif (auth()->user()->type === 'member' && session()->has('member_cart')) {
             $cartCount = is_array(session('member_cart')) ? count(session('member_cart')) : 0;
-        } elseif (session()->has('cart')) {
-            // Fallback for any authenticated user with regular cart
-            $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
         }
-    } elseif (session()->has('cart')) {
-        $cartCount = is_array(session('cart')) ? count(session('cart')) : 0;
     }
+    // No cart access for guests or other user types
     
     // Current date and time (UTC)
-    $currentDateTime = "2025-06-03 03:49:27";
+    $currentDateTime = "2025-06-04 09:43:42";
     // Current user's login
     $currentUserLogin = "Aliester10";
 @endphp
 
 <!-- Main Navigation Bar (Now at top position) -->
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
+<nav class="navbar navbar-expand-lg custom-transparent-navbar">
+    <div class="container custom-transparent-container">
         <!-- Logo Section -->
-        <a href="{{ route('home') }}" class="navbar-brand">
+        <a href="{{ route('home') }}" class="navbar-brand custom-transparent-brand">
             <img src="{{ asset('assets/img/Logo.png') }}" alt="SIMPLAY Logo" class="img-fluid logo-img">
         </a>
         
         <!-- Toggler for mobile -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <button class="navbar-toggler custom-transparent-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <i class="fas fa-bars"></i>
         </button>
         
         <!-- Navbar Content -->
-        <div class="collapse navbar-collapse" id="navbarContent">
+        <div class="collapse navbar-collapse custom-transparent-collapse" id="navbarContent">
             <!-- Main Navigation Links -->
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 custom-transparent-nav">
+                <li class="nav-item custom-transparent-item">
+                    <a href="{{ route('home') }}" class="nav-link custom-transparent-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
+                <li class="nav-item custom-transparent-item">
+                    <a href="{{ route('activity') }}" class="nav-link custom-transparent-link {{ request()->routeIs('activity') ? 'active' : '' }}">Activity</a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('activity') }}" class="nav-link {{ request()->routeIs('activity') ? 'active' : '' }}">Activity</a>
+                
+                @if(auth()->check() && in_array(auth()->user()->type, ['distributor', 'member']))
+                    <!-- Menu for authorized users only (distributor & member) -->
+                    <li class="nav-item custom-transparent-item">
+                        <a href="{{ auth()->user()->type == 'member' ? route('portal') : route('distribution') }}" class="nav-link custom-transparent-link">Services</a>
+                    </li>
+                @endif
+                
+                <li class="nav-item custom-transparent-item">
+                    <a href="{{ route('about') }}" class="nav-link custom-transparent-link {{ request()->routeIs('about') ? 'active' : '' }}">About Us</a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('product.index') }}" class="nav-link {{ request()->routeIs('product.*') ? 'active' : '' }}">Products</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Career</a>
+                <li class="nav-item custom-transparent-item">
+                    <a href="{{ route('member.career.index') }}" class="nav-link custom-transparent-link">Career</a>
                 </li>
                 
                 @foreach ($activeMetas as $type => $metas)
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{ ucfirst($type) }}</a>
+                    <li class="nav-item dropdown custom-transparent-item">
+                        <a href="#" class="nav-link dropdown-toggle custom-transparent-link" data-bs-toggle="dropdown">{{ ucfirst($type) }}</a>
                         <ul class="dropdown-menu">
                             @foreach ($metas as $meta)
                                 <li><a href="{{ route('member.meta.show', $meta->slug) }}" class="dropdown-item">{{ $meta->title }}</a></li>
@@ -73,15 +74,34 @@
                     </li>
                 @endforeach
                 
-                @auth
-                    <li class="nav-item">
-                        <a href="{{ auth()->user()->type == 'member' ? route('portal') : route('distribution') }}" class="nav-link">Portal</a>
+                <!-- User Menu - Different for Mobile and Desktop -->
+                @if(auth()->check() && in_array(auth()->user()->type, ['distributor', 'member']))
+                    <!-- Mobile User Menu (Direct Links) - Only visible on mobile for authorized users -->
+                    <li class="nav-item d-lg-none mobile-user-item custom-transparent-item">
+                        <span class="nav-link user-name-mobile custom-transparent-link">{{ auth()->user()->nama_perusahaan }}</span>
                     </li>
-                @endauth
+                    <li class="nav-item d-lg-none mobile-user-item custom-transparent-item">
+                        <a class="nav-link custom-transparent-link" href="{{ auth()->user()->type == 'member' ? route('profile.show') : (auth()->user()->type == 'distributor' ? route('distributor.profile.show') : '#') }}">
+                            <i class="fa fa-user-circle me-2"></i> Profil
+                        </a>
+                    </li>
+                    <li class="nav-item d-lg-none mobile-user-item custom-transparent-item">
+                        <a class="nav-link custom-transparent-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <i class="fa fa-sign-out-alt me-2"></i> Keluar
+                        </a>
+                    </li>
+                @else
+                    <!-- Mobile Login Button - Only visible on mobile for unauthenticated users -->
+                    <li class="nav-item d-lg-none mobile-user-item custom-transparent-item">
+                        <a class="nav-link custom-transparent-link mobile-login-link" href="{{ route('login') }}">
+                            <i class="fa fa-sign-in-alt me-2"></i> Login
+                        </a>
+                    </li>
+                @endif
             </ul>
             
             <!-- Right Side Icons -->
-            <div class="d-flex align-items-center nav-icons">
+            <div class="d-flex align-items-center nav-icons custom-transparent-icons">
                 <!-- Search Bar -->
                 <div class="search-container me-3 d-none d-lg-block">
                     <form action="{{ route('products.search') }}" method="GET">
@@ -94,9 +114,9 @@
                     </form>
                 </div>
                 
-                <!-- User Icon -->
-                <div class="me-3">
-                    @if (auth()->check())
+                <!-- User Icon - Only for Desktop -->
+                <div class="me-3 d-none d-lg-block">
+                    @if(auth()->check() && in_array(auth()->user()->type, ['distributor', 'member']))
                         <div class="dropdown user-dropdown">
                             <a href="#" class="dropdown-toggle nav-icon-link" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="{{ asset('assets/icons/navbar-icons/login.svg') }}" alt="User" class="navbar-icon">
@@ -128,9 +148,10 @@
                     @endif
                 </div>
                 
-                <!-- Cart Icon - Updated with modern badge design -->
+                <!-- Cart Icon - ACCESSIBLE FOR ALL, REDIRECT TO LOGIN IF UNAUTHORIZED -->
                 <div>
-                    @if(auth()->check())
+                    @if(auth()->check() && in_array(auth()->user()->type, ['distributor', 'member']))
+                        <!-- Functional cart untuk distributor & member -->
                         @if(auth()->user()->type === 'distributor')
                             <a href="{{ route('quotations.cart') }}" class="nav-icon-link position-relative">
                                 <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
@@ -145,20 +166,11 @@
                                     <span class="cart-badge">{{ $cartCount }}</span>
                                 @endif
                             </a>
-                        @else
-                            <a href="{{ route('cart.index') }}" class="nav-icon-link position-relative">
-                                <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                                @if($cartCount > 0)
-                                    <span class="cart-badge">{{ $cartCount }}</span>
-                                @endif
-                            </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="nav-icon-link position-relative" title="Login untuk akses keranjang">
+                        <!-- Cart icon yang mengarahkan ke login untuk unauthorized users -->
+                        <a href="{{ route('login') }}" class="nav-icon-link position-relative cart-login-redirect" title="Login sebagai Member atau Distributor untuk akses keranjang">
                             <img src="{{ asset('assets/icons/navbar-icons/cart.svg') }}" alt="Cart" class="navbar-icon navbar-cart">
-                            @if($cartCount > 0)
-                                <span class="cart-badge">{{ $cartCount }}</span>
-                            @endif
                         </a>
                     @endif
                 </div>
@@ -181,14 +193,16 @@
 
 <!-- Embedded CSS -->
 <style>
-/* Main navigation bar styling - Now at top position */
-.navbar {
-    background-color: transparent; /* Transparent background */
+/* Main navigation bar styling */
+.custom-transparent-navbar {
+    background-color: transparent !important;
     padding: 1rem 0;
     z-index: 1030;
     position: absolute;
     width: 100%;
     top: 0;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .navbar-brand img.logo-img {
@@ -196,30 +210,50 @@
     width: auto;
 }
 
-/* Navigation links - Changed to WHITE color */
-.navbar .nav-link {
-    color: #fff; /* Changed to white */
+/* Navigation links */
+.custom-transparent-link {
+    color: #fff !important;
     font-weight: 500;
     padding: 0.5rem 1rem;
     margin-right: 0.5rem;
     position: relative;
     transition: all 0.3s ease;
     font-size: 0.9rem;
+    text-decoration: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
-.navbar .nav-link:hover,
-.navbar .nav-link.active {
-    color: #6196FF; /* Kept the hover/active color */
+.custom-transparent-link:hover,
+.custom-transparent-link.active {
+    color: #6196FF !important;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
-.navbar .navbar-toggler {
-    border: none;
-    color: #fff; /* Changed to white */
+.custom-transparent-toggler {
+    border: none !important;
+    color: #fff !important;
     padding: 0.4rem 0.6rem;
     font-size: 1.2rem;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
-/* Updated Search bar styling for white text */
+/* Transparent overrides untuk navbar */
+.custom-transparent-navbar,
+.custom-transparent-container,
+.custom-transparent-brand,
+.custom-transparent-collapse,
+.custom-transparent-nav,
+.custom-transparent-item,
+.custom-transparent-icons {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Search bar styling */
 .search-container {
     width: 220px;
     max-width: 100%;
@@ -233,7 +267,7 @@
     border-radius: 30px;
     height: 36px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Changed to white border */
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .search-input {
@@ -244,11 +278,11 @@
     width: 100%;
     padding: 0 45px 0 20px;
     outline: none;
-    color: #fff; /* Changed to white */
+    color: #fff;
 }
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7); /* Changed to white with opacity */
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .search-btn {
@@ -268,14 +302,14 @@
     width: 18px;
     height: 18px;
     opacity: 0.8;
-    filter: brightness(0) invert(1); /* Changed to make icon white */
+    filter: brightness(0) invert(1);
 }
 
-/* Navbar icons styling - Changed to WHITE */
+/* Navbar icons styling */
 .navbar-icon {
     height: 22px;
     width: auto;
-    filter: brightness(0) invert(1); /* Changed to make icons white */
+    filter: brightness(0) invert(1);
 }
 
 .nav-icon-link {
@@ -284,9 +318,21 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    transition: all 0.3s ease;
 }
 
-/* Modern Cart Badge Styling */
+/* Cart login redirect styling */
+.cart-login-redirect {
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.cart-login-redirect:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Cart Badge Styling */
 .cart-badge {
     position: absolute;
     top: -8px;
@@ -346,8 +392,9 @@
 /* Mobile search */
 .mobile-search {
     padding: 1rem 0;
-    background-color: transparent; /* Changed to transparent */
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
     display: none;
     z-index: 1010;
 }
@@ -358,15 +405,15 @@
 }
 
 .mobile-search .search-input {
-    color: #fff; /* Changed to white */
+    color: #fff;
 }
 
 .mobile-search .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.7); /* Changed to white with opacity */
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .mobile-search .search-icon {
-    filter: brightness(0) invert(1); /* Changed to make white */
+    filter: brightness(0) invert(1);
     opacity: 0.8;
 }
 
@@ -416,7 +463,46 @@
     font-weight: 500;
 }
 
-/* Animasi Cart */
+/* Mobile User Menu Styling */
+.mobile-user-item .nav-link {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0;
+    border-radius: 0;
+    padding: 0.75rem 1rem;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.mobile-user-item:last-child .nav-link {
+    border-bottom: none;
+}
+
+.user-name-mobile {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+    margin-bottom: 0.5rem;
+}
+
+/* Mobile Login Link Styling */
+.mobile-login-link {
+    background-color: rgba(97, 150, 255, 0.2) !important;
+    color: #fff !important;
+    font-weight: 500;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    text-align: center;
+    padding: 0.75rem !important;
+    transition: all 0.3s ease;
+}
+
+.mobile-login-link:hover, 
+.mobile-login-link:active {
+    background-color: rgba(97, 150, 255, 0.4) !important;
+    color: #fff !important;
+}
+
+/* Cart Animations */
 .flying-image {
     z-index: 9999;
     pointer-events: none;
@@ -443,51 +529,93 @@
     100% { transform: scale(1); }
 }
 
-/* Responsive adjustments */
+/* DESKTOP - Kembalikan tampilan normal */
+@media (min-width: 992px) {
+    /* PERBAIKAN: Reset untuk desktop agar normal kembali */
+    html, body {
+        padding-top: 0 !important;
+        margin: initial;
+        padding: initial;
+        background: initial;
+        background-color: initial;
+    }
+    
+    .app, .main-wrapper, .content-wrapper, .page-wrapper, .layout-wrapper, 
+    header, .header, .top-bar, .header-container {
+        background: initial;
+        background-color: initial;
+        margin: initial;
+        padding: initial;
+    }
+    
+    .custom-transparent-navbar {
+        position: absolute !important;
+    }
+    
+    .main-content, .container-fluid, .content-wrapper, main {
+        margin-top: 0 !important;
+        padding-top: initial;
+    }
+}
+
+/* MOBILE RESPONSIVE - Transparan untuk mobile saja */
 @media (max-width: 991.98px) {
-    .navbar {
-        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background for mobile */
-        position: relative;
+    /* Reset HTML & Body untuk mobile */
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    
+    /* Override wrapper elements untuk mobile */
+    .app, .main-wrapper, .content-wrapper, .page-wrapper, .layout-wrapper, 
+    header, .header, .top-bar, .header-container {
+        background: none !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Body content margin untuk mobile */
+    .main-content,
+    .container-fluid:not(.mobile-search),
+    .content-wrapper,
+    main {
+        margin-top: 80px !important;
+        padding-top: 0 !important;
+    }
+    
+    .custom-transparent-navbar {
+        position: fixed !important;
         top: 0;
-        padding: 0.5rem 0;
+        left: 0;
+        right: 0;
+        padding: 0.5rem 0 !important;
+        width: 100%;
+        z-index: 1030;
+        background: transparent !important;
+        background-color: transparent !important;
     }
     
-    .navbar .nav-link {
-        color: #fff; /* Keep white for mobile */
+    .custom-transparent-toggler {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
     }
     
-    .navbar .navbar-toggler {
-        color: #fff; /* Keep white for mobile */
-    }
-    
-    .navbar-icon {
-        filter: brightness(0) invert(1); /* Keep white for mobile */
-    }
-    
-    .search-wrapper {
-        background-color: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .search-input {
-        color: #fff; /* Changed to white */
-    }
-    
-    .search-input::placeholder {
-        color: rgba(255, 255, 255, 0.7); /* Changed to white with opacity */
-    }
-    
-    .search-icon {
-        filter: brightness(0) invert(1); /* Changed to make white */
-        opacity: 0.8;
-    }
-    
+    /* Menu dropdown semi-transparan untuk keterbacaan */
     #navbarContent {
-        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent for mobile */
+        background-color: rgba(0, 0, 0, 0.9) !important;
         border-radius: 0 0 1rem 1rem;
         padding: 1rem;
         margin-top: 0.5rem;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
     }
     
     .navbar-collapse {
@@ -495,37 +623,45 @@
         overflow-y: auto;
     }
     
-    .navbar .nav-item {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Changed for light theme */
+    .custom-transparent-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .navbar .nav-item:last-child {
+    .custom-transparent-item:last-child {
         border-bottom: none;
     }
     
-    .nav-icons {
+    .custom-transparent-icons {
         margin-top: 1rem;
         padding-top: 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Changed for light theme */
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
         justify-content: center;
     }
     
-    .header-carousel {
-        margin-top: 0;
-    }
-    
-    .header-carousel-item {
-        padding-top: 0;
-    }
-    
     .mobile-search {
-        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent for mobile */
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        z-index: 1025;
     }
 }
 
+/* Mobile size adjustments */
 @media (max-width: 767.98px) {
     .navbar-brand img.logo-img {
         height: 28px;
+    }
+    
+    .main-content,
+    .container-fluid:not(.mobile-search),
+    .content-wrapper,
+    main {
+        margin-top: 75px !important;
+    }
+    
+    .mobile-search {
+        top: 75px !important;
     }
 }
 
@@ -533,12 +669,33 @@
     .navbar-brand img.logo-img {
         height: 26px;
     }
+    
+    .main-content,
+    .container-fluid:not(.mobile-search),
+    .content-wrapper,
+    main {
+        margin-top: 70px !important;
+    }
+    
+    .mobile-search {
+        top: 70px !important;
+    }
 }
 
-/* For very small screens like iPhone SE */
 @media (max-width: 360px) {
     .navbar-brand img.logo-img {
         height: 24px;
+    }
+    
+    .main-content,
+    .container-fluid:not(.mobile-search),
+    .content-wrapper,
+    main {
+        margin-top: 65px !important;
+    }
+    
+    .mobile-search {
+        top: 65px !important;
     }
 }
 </style>
@@ -546,6 +703,48 @@
 <!-- Embedded JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // PERBAIKAN: Hanya apply force transparent untuk mobile
+    function forceTransparentBackgroundMobile() {
+        if (window.innerWidth <= 991) {
+            const elementsToMakeTransparent = [
+                'html',
+                'body',
+                '.app',
+                '.main-wrapper', 
+                '.content-wrapper',
+                '.page-wrapper',
+                '.layout-wrapper',
+                'header:not(.main-header)',
+                '.header:not(.main-header)',
+                '.top-bar',
+                '.header-container'
+            ];
+            
+            elementsToMakeTransparent.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    if (element) {
+                        element.style.background = 'none';
+                        element.style.backgroundColor = 'transparent';
+                        element.style.backgroundImage = 'none';
+                        element.style.border = 'none';
+                        element.style.boxShadow = 'none';
+                        element.style.margin = '0';
+                        element.style.padding = '0';
+                    }
+                });
+            });
+        }
+    }
+    
+    // Apply untuk mobile saja
+    forceTransparentBackgroundMobile();
+    
+    // Re-apply on window resize
+    window.addEventListener('resize', function() {
+        setTimeout(forceTransparentBackgroundMobile, 100);
+    });
+    
     // Mobile navbar toggle handling
     const navbarToggler = document.querySelector('.navbar-toggler');
     const mobileSearch = document.querySelector('.mobile-search');
@@ -558,7 +757,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 setTimeout(() => {
                     mobileSearch.classList.add('d-none');
-                }, 300); // Delay to match collapse animation
+                }, 300);
             }
         });
     }
@@ -572,51 +771,38 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
-    // Improved dropdown menu behavior
+    // User dropdown behavior for desktop
     const userDropdownContainer = document.querySelector('.user-dropdown');
     const userDropdownToggle = document.getElementById('userDropdown');
     const userDropdownMenu = document.querySelector('.user-dropdown-menu');
     
-    if (userDropdownContainer && userDropdownToggle && userDropdownMenu) {
+    if (userDropdownContainer && userDropdownToggle && userDropdownMenu && window.innerWidth >= 992) {
         let dropdownTimeout;
         
-        // Show dropdown on hover
         userDropdownContainer.addEventListener('mouseenter', function() {
             clearTimeout(dropdownTimeout);
-            
-            // Use Bootstrap's dropdown API to show the dropdown
             const bsDropdown = new bootstrap.Dropdown(userDropdownToggle);
             bsDropdown.show();
-            
-            // Add show class manually for better styling control
             userDropdownMenu.classList.add('show');
         });
         
-        // Hide dropdown with delay when mouse leaves
         userDropdownContainer.addEventListener('mouseleave', function() {
             dropdownTimeout = setTimeout(() => {
-                // Use Bootstrap's dropdown API to hide the dropdown
                 const bsDropdown = bootstrap.Dropdown.getInstance(userDropdownToggle);
                 if (bsDropdown) {
                     bsDropdown.hide();
                 }
-                
-                // Remove show class manually
                 userDropdownMenu.classList.remove('show');
-            }, 300); // 300ms delay before closing
+            }, 300);
         });
         
-        // Keep dropdown open when clicking inside the menu
         userDropdownMenu.addEventListener('click', function(e) {
-            // Prevent closing when clicking inside the dropdown menu (except links)
             if (!e.target.closest('a[href]')) {
                 e.stopPropagation();
             }
         });
         
-        // Handle touch devices
         userDropdownToggle.addEventListener('touchstart', function(e) {
-            // Toggle dropdown on touch for mobile
             const isOpen = userDropdownMenu.classList.contains('show');
             if (isOpen) {
                 const bsDropdown = bootstrap.Dropdown.getInstance(userDropdownToggle);
@@ -633,23 +819,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
-    // Function to check if user is logged in before adding to cart
+    // Updated login check function - ONLY DISTRIBUTOR AND MEMBER CAN ACCESS CART
     window.checkLoginBeforeAddToCart = function(event, productId) {
-        // Check if user is logged in (this value should be set from the PHP backend)
         const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+        const userType = '{{ auth()->check() ? auth()->user()->type : '' }}';
+        const authorizedTypes = ['distributor', 'member'];
         
-        if (!isLoggedIn) {
+        if (!isLoggedIn || !authorizedTypes.includes(userType)) {
             event.preventDefault();
-            // Save product ID to session storage to potentially redirect back after login
-            sessionStorage.setItem('pendingCartProduct', productId);
-            // Redirect to login page
-            window.location.href = "{{ route('login') }}";
+            if (!isLoggedIn) {
+                // Save product ID to session storage to potentially redirect back after login
+                sessionStorage.setItem('pendingCartProduct', productId);
+                // Redirect to login page
+                window.location.href = "{{ route('login') }}";
+            } else {
+                // User is logged in but not authorized
+                alert('Akses ditolak. Hanya Member dan Distributor yang dapat mengakses keranjang.');
+            }
             return false;
         }
         return true;
     }
     
-    // Add cart animation effects
+    // Cart animation effects
     function animateCartIcon() {
         const cartIcon = document.querySelector('.navbar-cart');
         const cartBadge = document.querySelector('.cart-badge');
@@ -671,12 +863,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
-    // Monitor for cart updates (triggered by add to cart buttons)
     document.addEventListener('cartUpdated', function() {
         animateCartIcon();
     });
     
-    // Add global handler for add-to-cart buttons
     document.addEventListener('click', function(e) {
         const addToCartBtn = e.target.closest('.add-to-cart-btn');
         if (addToCartBtn) {
@@ -685,26 +875,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             
-            // If we're here, user is logged in and can add to cart
-            // The form submission will continue normally
-            
-            // Simulate cart update animation when item is added
             setTimeout(() => {
                 animateCartIcon();
             }, 500);
         }
     });
     
-    // Check on page load if we have a pending product to add to cart after login
-    document.addEventListener('DOMContentLoaded', function() {
-        const pendingProductId = sessionStorage.getItem('pendingCartProduct');
-        const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
-        
-        if (pendingProductId && isLoggedIn) {
-            // Could trigger add to cart here automatically, or show a notification
-            // that user can now add the product to cart
-            sessionStorage.removeItem('pendingCartProduct');
-        }
-    });
+    // Check pending cart product after login
+    const pendingProductId = sessionStorage.getItem('pendingCartProduct');
+    const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+    const userType = '{{ auth()->check() ? auth()->user()->type : '' }}';
+    const authorizedTypes = ['distributor', 'member'];
+    
+    if (pendingProductId && isLoggedIn && authorizedTypes.includes(userType)) {
+        sessionStorage.removeItem('pendingCartProduct');
+        // Could auto-add to cart or show notification here
+    } else if (pendingProductId && isLoggedIn && !authorizedTypes.includes(userType)) {
+        sessionStorage.removeItem('pendingCartProduct');
+        alert('Akses ditolak. Hanya Member dan Distributor yang dapat mengakses keranjang.');
+    }
 });
 </script>

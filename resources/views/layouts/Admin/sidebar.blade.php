@@ -176,6 +176,17 @@
                                     <span class="sub-item">Merek</span>
                                 </a>
                             </li>
+
+                            <li>
+                                <a href="{{ route('Admin.Career.Positions.index') }}">
+                                    <span class="sub-item">Career Positions</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('Admin.Career.Applications.index') }}">
+                                    <span class="sub-item">Career Applications</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>
