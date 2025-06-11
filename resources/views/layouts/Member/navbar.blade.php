@@ -206,7 +206,7 @@
 }
 
 .navbar-brand img.logo-img {
-    height: 34px;
+    height: 40px;
     width: auto;
 }
 
