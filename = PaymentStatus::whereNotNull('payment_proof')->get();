@@ -1,0 +1,83 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#6530
+    [34mall[39m: [
+      [34;4mApp\Models\PaymentStatus[39;24m {#6532
+        [34mid[39m: [35m4[39m,
+        [34minvoice_id[39m: "[32mINV-000011[39m",
+        [34mpayment_proof[39m: "[32mpayment/proofs/payment_proof_4_1749789074.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6533
+        [34mid[39m: [35m5[39m,
+        [34minvoice_id[39m: "[32mINV-000012[39m",
+        [34mpayment_proof[39m: "[32mpayment/proofs/payment_proof_5_1749792172.png[39m",
+        [34mstatus[39m: "[32mapproved[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6534
+        [34mid[39m: [35m9[39m,
+        [34minvoice_id[39m: "[32mINV-000015[39m",
+        [34mpayment_proof[39m: "[32mpayment/proofs/payment_proof_9_1749794681.png[39m",
+        [34mstatus[39m: "[32mapproved[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6535
+        [34mid[39m: [35m10[39m,
+        [34minvoice_id[39m: "[32mINV-000016[39m",
+        [34mpayment_proof[39m: "[32mpayment/proofs/payment_proof_10_1749796647.png[39m",
+        [34mstatus[39m: "[32mapproved[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6536
+        [34mid[39m: [35m11[39m,
+        [34minvoice_id[39m: "[32mINV-000017[39m",
+        [34mpayment_proof[39m: "[32mpayment/proofs/payment_proof_11_1749796686.png[39m",
+        [34mstatus[39m: "[32mapproved[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6537
+        [34mid[39m: [35m13[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749798188-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749798229_payment_proof_Screenshot from 2025-05-19 15-08-33.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6538
+        [34mid[39m: [35m14[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749798262-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749798266_payment_proof_Screenshot from 2025-05-19 14-03-26.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6539
+        [34mid[39m: [35m15[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749798296-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749798299_payment_proof_Screenshot from 2025-05-19 15-56-54.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6540
+        [34mid[39m: [35m16[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749798556-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749798560_payment_proof_Screenshot from 2025-05-19 15-56-54.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6541
+        [34mid[39m: [35m17[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749799195-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749799199_payment_proof_Screenshot from 2025-05-19 15-08-33.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6542
+        [34mid[39m: [35m18[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749799254-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749799258_payment_proof_Screenshot from 2025-05-19 15-56-54.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6543
+        [34mid[39m: [35m20[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749801656-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749801659_payment_proof_Screenshot from 2025-05-19 17-14-44.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+      [34;4mApp\Models\PaymentStatus[39;24m {#6544
+        [34mid[39m: [35m21[39m,
+        [34minvoice_id[39m: "[32mINV-ORD-1749838785-7[39m",
+        [34mpayment_proof[39m: "[32mpayment-proofs/1749838790_payment_proof_Screenshot from 2025-05-19 15-56-54.png[39m",
+        [34mstatus[39m: "[32muploaded[39m",
+      },
+    ],
+  }
+

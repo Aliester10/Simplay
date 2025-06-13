@@ -22,10 +22,24 @@
                 <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
+                <a href="{{ route('Admin.Payment.status.show', $payment->id) }}">Detail</a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
                 <a href="#">Edit</a>
             </li>
         </ul>
     </div>
+
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     @if($errors->any())
         <div class="alert alert-danger">
@@ -41,81 +55,117 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Edit Status Pembayaran - {{ $payment->invoice_id }}</h4>
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Edit Status Pembayaran - {{ $payment->invoice_id }}</h4>
+                        <a href="{{ route('Admin.Payment.status.show', $payment->id) }}" class="btn btn-secondary btn-sm ml-auto">
+                            <i class="fa fa-arrow-left"></i> Kembali ke Detail
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('Admin.Payment.status.update', $payment->id) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('Admin.Payment.status.update', $payment->id) }}">
                         @csrf
                         @method('PUT')
                         
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Invoice ID</label>
-                                    <input type="text" name="invoice_id" class="form-control" value="{{ old('invoice_id', $payment->invoice_id) }}" required>
+                                    <label><strong>Invoice ID:</strong></label>
+                                    <p class="form-control-plaintext">{{ $payment->invoice_id }}</p>
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label>Nama Customer</label>
-                                    <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name', $payment->customer_name) }}" required>
+                                    <label><strong>Customer:</strong></label>
+                                    <p class="form-control-plaintext">{{ $payment->customer_name }}</p>
+                                    <small class="text-muted">{{ $payment->customer_email }}</small>
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label>Email Customer</label>
-                                    <input type="email" name="customer_email" class="form-control" value="{{ old('customer_email', $payment->customer_email) }}">
+                                    <label><strong>Amount:</strong></label>
+                                    <p class="form-control-plaintext">Rp {{ number_format($payment->amount, 0, ',', '.') }}</p>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label><strong>Payment Method:</strong></label>
+                                    <p class="form-control-plaintext">
+                                        <span class="badge badge-info">{{ strtoupper($payment->payment_method) }}</span>
+                                    </p>
                                 </div>
                             </div>
+                            
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Amount</label>
-                                    <input type="number" name="amount" class="form-control" value="{{ old('amount', $payment->amount) }}" step="0.01" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Payment Method</label>
-                                    <select name="payment_method" class="form-control" required>
-                                        <option value="bank_transfer" {{ old('payment_method', $payment->payment_method) == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
-                                        <option value="qris" {{ old('payment_method', $payment->payment_method) == 'qris' ? 'selected' : '' }}>QRIS</option>
-                                        <option value="other" {{ old('payment_method', $payment->payment_method) == 'other' ? 'selected' : '' }}>Other</option>
+                                    <label for="status"><strong>Status Pembayaran <span class="text-danger">*</span></strong></label>
+                                    <select name="status" id="status" class="form-control" required>
+                                        @foreach($statusOptions as $value => $label)
+                                            <option value="{{ $value }}" {{ $payment->status == $value ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
                                     </select>
+                                    <small class="form-text text-muted">
+                                        Current status: <strong>{{ ucfirst($payment->status) }}</strong>
+                                    </small>
                                 </div>
+                                
                                 <div class="form-group">
-                                    <label>Tanggal Pembayaran</label>
-                                    <input type="datetime-local" name="payment_date" class="form-control" 
-                                           value="{{ old('payment_date', $payment->payment_date ? $payment->payment_date->format('Y-m-d\TH:i') : '') }}">
+                                    <label for="admin_notes"><strong>Catatan Admin</strong></label>
+                                    <textarea name="admin_notes" id="admin_notes" class="form-control" rows="4" placeholder="Tambahkan catatan admin (opsional)...">{{ old('admin_notes', $payment->admin_notes) }}</textarea>
+                                    <small class="form-text text-muted">Catatan ini akan dicatat dalam sistem.</small>
+                                </div>
+                                
+                                <div class="form-group" id="reject-reason-group" style="{{ $payment->status == 'rejected' ? '' : 'display: none;' }}">
+                                    <label for="reject_reason"><strong>Alasan Penolakan <span class="text-danger">*</span></strong></label>
+                                    <textarea name="reject_reason" id="reject_reason" class="form-control" rows="3" placeholder="Masukkan alasan penolakan...">{{ old('reject_reason', $payment->reject_reason) }}</textarea>
+                                    <small class="form-text text-muted">Wajib diisi jika status diubah menjadi "Rejected".</small>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label>Status Pembayaran</label>
-                            <select name="status" class="form-control" required id="statusSelect">
-                                <option value="pending" {{ old('status', $payment->status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="approved" {{ old('status', $payment->status) == 'approved' ? 'selected' : '' }}>Approved</option>
-                                <option value="rejected" {{ old('status', $payment->status) == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" id="rejectReasonGroup" style="{{ old('status', $payment->status) == 'rejected' ? '' : 'display: none;' }}">
-                            <label>Alasan Penolakan <span class="text-danger">*</span></label>
-                            <textarea name="reject_reason" class="form-control" rows="3" placeholder="Masukkan alasan penolakan...">{{ old('reject_reason', $payment->reject_reason) }}</textarea>
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>Informasi Sistem</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label><strong>Payment Date:</strong></label>
+                                            <p class="form-control-plaintext">{{ $payment->payment_date ? $payment->payment_date->format('d/m/Y H:i:s') : '-' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label><strong>Created:</strong></label>
+                                            <p class="form-control-plaintext">{{ $payment->created_at->format('d/m/Y H:i:s') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label><strong>Last Updated:</strong></label>
+                                            <p class="form-control-plaintext">{{ $payment->updated_at->format('d/m/Y H:i:s') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                @if($payment->approvedBy)
+                                    <div class="alert alert-info">
+                                        <strong>Previously approved by:</strong> {{ $payment->approvedBy->name }} 
+                                        @if($payment->approved_at)
+                                            on {{ $payment->approved_at->format('d/m/Y H:i:s') }}
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label>Catatan Admin</label>
-                            <textarea name="admin_notes" class="form-control" rows="3" placeholder="Catatan admin...">{{ old('admin_notes', $payment->admin_notes) }}</textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Upload Bukti Pembayaran Baru (Opsional)</label>
-                            <input type="file" name="payment_proof" class="form-control" accept="image/*">
-                            <small class="text-muted">Kosongkan jika tidak ingin mengubah bukti pembayaran</small>
-                        </div>
-                        
-                        <div class="form-group">
+                        <div class="form-group text-right">
+                            <a href="{{ route('Admin.Payment.status.show', $payment->id) }}" class="btn btn-secondary">
+                                <i class="fa fa-times"></i> Cancel
+                            </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-save"></i> Update Status
                             </button>
-                            <a href="{{ route('Admin.Payment.status.show', $payment->id) }}" class="btn btn-secondary">
-                                <i class="fa fa-arrow-left"></i> Kembali
-                            </a>
                         </div>
                     </form>
                 </div>
@@ -126,45 +176,69 @@
             @if($payment->payment_proof)
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Bukti Pembayaran Saat Ini</h4>
+                        <h4 class="card-title">Bukti Pembayaran</h4>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ $payment->payment_proof_url }}" alt="Bukti Pembayaran" class="img-fluid mb-3" style="max-height: 300px;">
+                        <img src="{{ asset('storage/' . $payment->payment_proof) }}" 
+                             alt="Bukti Pembayaran" 
+                             class="img-fluid mb-3" 
+                             style="max-height: 300px; border: 1px solid #ddd; border-radius: 5px;">
+                        
                         <div>
-                            <a href="{{ $payment->payment_proof_url }}" target="_blank" class="btn btn-info btn-sm">
+                            <a href="{{ asset('storage/' . $payment->payment_proof) }}" 
+                               target="_blank" 
+                               class="btn btn-info btn-sm">
                                 <i class="fa fa-external-link"></i> Lihat Full Size
                             </a>
                         </div>
                     </div>
                 </div>
             @endif
-
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Informasi</h4>
-                </div>
-                <div class="card-body">
-                    <p><strong>Dibuat:</strong><br>{{ $payment->created_at->format('d/m/Y H:i:s') }}</p>
-                    <p><strong>Terakhir Update:</strong><br>{{ $payment->updated_at->format('d/m/Y H:i:s') }}</p>
-                    @if($payment->approvedBy)
-                        <p><strong>Diproses oleh:</strong><br>{{ $payment->approvedBy->name }}</p>
-                    @endif
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
 <script>
-document.getElementById('statusSelect').addEventListener('change', function() {
-    const rejectGroup = document.getElementById('rejectReasonGroup');
-    if (this.value === 'rejected') {
-        rejectGroup.style.display = 'block';
-        rejectGroup.querySelector('textarea').setAttribute('required', 'required');
-    } else {
-        rejectGroup.style.display = 'none';
-        rejectGroup.querySelector('textarea').removeAttribute('required');
-    }
+$(document).ready(function() {
+    // Show/hide reject reason field based on status
+    $('#status').change(function() {
+        const selectedStatus = $(this).val();
+        const rejectGroup = $('#reject-reason-group');
+        const rejectTextarea = $('#reject_reason');
+        
+        if (selectedStatus === 'rejected') {
+            rejectGroup.show();
+            rejectTextarea.prop('required', true);
+        } else {
+            rejectGroup.hide();
+            rejectTextarea.prop('required', false);
+        }
+    });
+    
+    // Form validation
+    $('form').submit(function(e) {
+        const status = $('#status').val();
+        const rejectReason = $('#reject_reason').val().trim();
+        
+        if (status === 'rejected' && !rejectReason) {
+            e.preventDefault();
+            alert('Alasan penolakan wajib diisi jika status diubah menjadi "Rejected".');
+            $('#reject_reason').focus();
+            return false;
+        }
+        
+        // Confirm status change
+        const currentStatus = '{{ $payment->status }}';
+        if (status !== currentStatus) {
+            const confirmation = confirm(`Apakah Anda yakin ingin mengubah status dari "${currentStatus}" menjadi "${status}"?`);
+            if (!confirmation) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
 });
+
+console.log('🎯 Payment status edit form loaded');
 </script>
 @endsection

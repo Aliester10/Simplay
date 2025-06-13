@@ -1,3 +1,5 @@
+{{-- resources/views/Admin/Payment/status/show.blade.php - PRODUCTION CLEAN VERSION --}}
+
 @extends('layouts.Admin.master')
 
 @section('title', 'Detail Status Pembayaran')
@@ -73,7 +75,7 @@
                             <div class="form-group">
                                 <label><strong>Status:</strong></label>
                                 <p class="mb-1">
-                                    <span class="badge {{ $payment->status_badge }}">{{ ucfirst($payment->status) }}</span>
+                                    <span class="badge {{ $payment->status_badge ?? 'badge-secondary' }}">{{ ucfirst($payment->status) }}</span>
                                 </p>
                             </div>
                             <div class="form-group">
@@ -122,7 +124,7 @@
                                 <div class="card-body">
                                     <p><strong>Order Number:</strong> {{ $payment->order->order_number }}</p>
                                     <p><strong>Status Order:</strong> 
-                                        <span class="badge {{ $payment->order->status_badge }}">{{ ucfirst($payment->order->status) }}</span>
+                                        <span class="badge {{ $payment->order->status_badge ?? 'badge-secondary' }}">{{ ucfirst($payment->order->status) }}</span>
                                     </p>
                                     <p><strong>Total Amount:</strong> Rp {{ number_format($payment->order->total_amount, 0, ',', '.') }}</p>
                                 </div>
@@ -140,11 +142,38 @@
                         <h4 class="card-title">Bukti Pembayaran</h4>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ $payment->payment_proof_url }}" alt="Bukti Pembayaran" class="img-fluid mb-3" style="max-height: 400px;">
-                        <div>
-                            <a href="{{ $payment->payment_proof_url }}" target="_blank" class="btn btn-info btn-sm">
+                        {{-- 🎯 PRODUCTION: Clean image display using working asset URL --}}
+                        <div class="payment-proof-container">
+                            <img src="{{ asset('storage/' . $payment->payment_proof) }}" 
+                                 alt="Bukti Pembayaran" 
+                                 class="img-fluid payment-proof-image mb-3" 
+                                 style="max-height: 400px; max-width: 100%; border: 1px solid #ddd; padding: 5px; border-radius: 5px;"
+                                 onload="console.log('✅ Payment proof loaded successfully')"
+                                 onerror="console.error('❌ Payment proof failed to load'); this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBhdmFpbGFibGU8L3RleHQ+PC9zdmc+';">
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a href="{{ asset('storage/' . $payment->payment_proof) }}" 
+                               target="_blank" 
+                               class="btn btn-info btn-sm">
                                 <i class="fa fa-external-link"></i> Lihat Full Size
                             </a>
+                            <a href="{{ asset('storage/' . $payment->payment_proof) }}" 
+                               download="payment_proof_{{ $payment->invoice_id }}.png"
+                               class="btn btn-success btn-sm">
+                                <i class="fa fa-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Bukti Pembayaran</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-triangle"></i> Belum ada bukti pembayaran yang diupload.
                         </div>
                     </div>
                 </div>
@@ -155,13 +184,17 @@
                     <h4 class="card-title">Aksi</h4>
                 </div>
                 <div class="card-body">
-                    @if($payment->status === 'pending')
+                    @if($payment->status === 'uploaded' && $payment->payment_proof)
                         <button type="button" class="btn btn-success btn-block mb-2" onclick="approvePayment({{ $payment->id }})">
                             <i class="fa fa-check"></i> Approve Pembayaran
                         </button>
                         <button type="button" class="btn btn-danger btn-block mb-2" onclick="rejectPayment({{ $payment->id }})">
                             <i class="fa fa-times"></i> Reject Pembayaran
                         </button>
+                    @elseif($payment->status === 'pending')
+                        <div class="alert alert-info">
+                            <i class="fa fa-clock"></i> Menunggu customer upload bukti pembayaran.
+                        </div>
                     @endif
                     
                     <a href="{{ route('Admin.Payment.status.edit', $payment->id) }}" class="btn btn-warning btn-block mb-2">
@@ -177,7 +210,7 @@
     </div>
 </div>
 
-<!-- Modal untuk Approve -->
+<!-- Modals remain the same... -->
 <div class="modal fade" id="approveModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -208,7 +241,6 @@
     </div>
 </div>
 
-<!-- Modal untuk Reject -->
 <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -243,7 +275,6 @@
     </div>
 </div>
 
-<!-- Modal untuk Delete -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -272,18 +303,23 @@
 
 <script>
 function approvePayment(id) {
-    $('#approveForm').attr('action', '{{ route("Admin.Payment.status.update", ":id") }}'.replace(':id', id));
+    const url = '{{ route("Admin.Payment.status.update", ":id") }}'.replace(':id', id);
+    $('#approveForm').attr('action', url);
     $('#approveModal').modal('show');
 }
 
 function rejectPayment(id) {
-    $('#rejectForm').attr('action', '{{ route("Admin.Payment.status.update", ":id") }}'.replace(':id', id));
+    const url = '{{ route("Admin.Payment.status.update", ":id") }}'.replace(':id', id);
+    $('#rejectForm').attr('action', url);
     $('#rejectModal').modal('show');
 }
 
 function deletePayment(id) {
-    $('#deleteForm').attr('action', '{{ route("Admin.Payment.status.destroy", ":id") }}'.replace(':id', id));
+    const url = '{{ route("Admin.Payment.status.destroy", ":id") }}'.replace(':id', id);
+    $('#deleteForm').attr('action', url);
     $('#deleteModal').modal('show');
 }
+
+console.log('🎉 Payment proof system working successfully!');
 </script>
 @endsection
