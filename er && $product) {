@@ -1,0 +1,20 @@
+[90m= [39m[34;4mApp\Models\Produk[39;24m {#6486
+    [34mid[39m: [35m1[39m,
+    [34mnama[39m: "[32mPrinter & Scanner[39m",
+    [34mmerk[39m: "[32mEpson[39m",
+    [34mdeskripsi[39m: "[32mPhoto Default - 10 x 15 cm / 4 x 6 inch: Approx. 92 sec per photo (Borderless) Approx. 69 sec per photo (Border) Draft, A4 (Black / Colour): Up to 33 ppm / 15 ppm ISO 24734, A4 Simplex (Black / Colour): Up to 10.5 ipm / 5.0 ipm ISO 24734, A4 Duplex (Black / Colour): Up to 6.0 ipm / 4.0 ipm First Page Out Time from Ready Mode (Black / Colour): Approx. 10 sec / 16 sec / USB: USB 2.0 Network: Wi-Fi IEEE 802.11b/g/n, Wi-Fi Direct Network Protocol: TCP/IPv4, TCP/IPv6 Network Management Protocols: SNMP, HTTP, DHCP, APIPA, PING, DDNS, mDNS, SLP, WSD, LLTD[39m",
+    [34muser_manual[39m: "[32muploads/produk/user_manual/1732692158_1731491063-1726032018-invoice-pt-inzan-permata-000003-inv-ags-ip-ix-2024-1.pdf[39m",
+    [34mkategori_id[39m: [35m2[39m,
+    [34mcreated_at[39m: "[32m2024-11-27 07:22:38[39m",
+    [34mupdated_at[39m: "[32m2025-05-22 07:29:33[39m",
+    [34mlink[39m: "[32mhttps://e-katalog.lkpp.go.id/[39m",
+    [34mspesifikasi[39m: """
+      [32mType : L4260 A4 Wi-Fi Duplex All-In-One Ink Tank Printer[39m\r\n
+      [32mMerek : Epson[39m\r\n
+      [32mNama Alat : EPSON ECOTANK L4260 A4 WI-FI DUPLEX ALL-IN-ONE INK TANK PRINTER[39m\r\n
+      [32mSub - Kategori : Printer[39m\r\n
+      [32mKategori : Komputer & Aksesoris[39m
+      """,
+    [34mharga[39m: "[32m3000000.00[39m",
+  }
+

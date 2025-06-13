@@ -141,6 +141,35 @@
                     </div>
                 </li>
 
+                <!-- Payment Management -->
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">Payment</h4>
+                </li>
+                <li class="nav-item">
+                    <a data-bs-toggle="collapse" href="#payment-management">
+                        <i class="fas fa-credit-card"></i>
+                        <p>Payment</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div class="collapse" id="payment-management">
+                        <ul class="nav nav-collapse">
+                            <li>
+                                <a href="{{ route('Admin.Payment.status.index') }}">
+                                    <span class="sub-item">Status Pembayaran</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('Admin.Payment.settings.index') }}">
+                                    <span class="sub-item">Payment Setting</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
                 <!-- Content Management -->
                 <li class="nav-section">
                     <span class="sidebar-mini-icon">

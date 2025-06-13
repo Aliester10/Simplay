@@ -12,8 +12,11 @@ class Produk extends Model
 
     protected $table = 'produk';
 
-
     protected $fillable = ['nama', 'merk', 'link', 'deskripsi', 'spesifikasi', 'harga', 'user_manual', 'kategori_id'];
+
+    protected $casts = [
+        'harga' => 'decimal:2'
+    ];
 
     public function images()
     {
@@ -39,14 +42,15 @@ class Produk extends Model
     {
         return $this->belongsToMany(User::class, 'user_produk', 'produk_id', 'user_id');
     }
+
     public function documentCertificationsProduk()
     {
-        return $this->hasMany(DocumentCertificationsProduk::class); // or hasMany() if multiple
+        return $this->hasMany(DocumentCertificationsProduk::class);
     }
 
     public function brosur()
     {
-        return $this->hasMany(Brosur::class); // or use a different relationship type if necessary
+        return $this->hasMany(Brosur::class);
     }
 
     public function quotations()
@@ -56,6 +60,73 @@ class Produk extends Model
 
     public function quotationProducts()
     {
-        return $this->hasMany(QuotationProduct::class, 'produk_id'); // Sesuaikan jika kolomnya adalah 'product_id'
+        return $this->hasMany(QuotationProduct::class, 'produk_id');
+    }
+
+    // ========== CART SYSTEM ADDITIONS ==========
+    
+    /**
+     * Relationship to Cart - NEW
+     */
+    public function cartItems()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    /**
+     * Check if product is in user's cart - NEW
+     */
+    public function isInCart($userId)
+    {
+        return $this->cartItems()->where('user_id', $userId)->exists();
+    }
+
+    /**
+     * Get cart quantity for specific user - NEW
+     */
+    public function getCartQuantity($userId)
+    {
+        $cartItem = $this->cartItems()->where('user_id', $userId)->first();
+        return $cartItem ? $cartItem->quantity : 0;
+    }
+
+    /**
+     * Get formatted price - NEW
+     */
+    public function getFormattedPriceAttribute()
+    {
+        return 'Rp ' . number_format($this->harga, 0, ',', '.');
+    }
+
+    /**
+     * Get main image - NEW
+     */
+    public function getMainImageAttribute()
+    {
+        $image = $this->images->first();
+        return $image ? asset($image->gambar) : asset('assets/img/default.jpg');
+    }
+
+    /**
+     * Scope for available products - NEW
+     */
+    public function scopeAvailable($query)
+    {
+        return $query->where('harga', '>', 0);
+    }
+
+    /**
+     * Get product summary for cart - NEW
+     */
+    public function getCartSummaryAttribute()
+    {
+        return [
+            'id' => $this->id,
+            'nama' => $this->nama,
+            'merk' => $this->merk,
+            'harga' => $this->harga,
+            'formatted_price' => $this->formatted_price,
+            'main_image' => $this->main_image
+        ];
     }
 }

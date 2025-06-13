@@ -1,0 +1,22 @@
+[90m= [39m[34;4mApp\Models\User[39;24m {#6493
+    [34mid[39m: [35m2[39m,
+    [34mname[39m: "[32mUmalo[39m",
+    [34memail[39m: "[32mUmalo@gmail.com[39m",
+    [34memail_verified_at[39m: [36mnull[39m,
+    #[33mpassword[39m: "[32m$2y$12$fJeRFSp0Ynr5zeaCDr5oB.1WboEwpU5JAHuzzyEjcqWC5/kCqB1j.[39m",
+    [34mno_telp[39m: "[32m082283044300[39m",
+    [34malamat[39m: "[32mDepok Tapos[39m",
+    [34mnama_perusahaan[39m: "[32mPt. Umalo Sedia Tekno[39m",
+    [34mtype[39m: [35m0[39m,
+    [34mbidang_id[39m: [35m1[39m,
+    [34mlocation_id[39m: [35m11[39m,
+    #[33mremember_token[39m: [36mnull[39m,
+    [34mcreated_at[39m: "[32m2024-11-27 07:05:38[39m",
+    [34mupdated_at[39m: "[32m2024-11-27 07:07:47[39m",
+    [34mpic[39m: [36mnull[39m,
+    [34mnomor_telp_pic[39m: [36mnull[39m,
+    [34makta[39m: [36mnull[39m,
+    [34mnib[39m: [36mnull[39m,
+    [34mverified[39m: [35m0[39m,
+  }
+

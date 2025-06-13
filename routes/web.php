@@ -49,11 +49,17 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Member\Career\CareerController;
 use App\Http\Controllers\Admin\Career\CareerPositionController;
 use App\Http\Controllers\Admin\Career\CareerApplicationController;
+use App\Http\Controllers\Member\Payment\MemberPaymentController;
+use App\Http\Controllers\Admin\Payment\PaymentSettingsController;
+use App\Http\Controllers\Admin\Payment\PaymentStatusController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
+| UPDATED: 2025-06-13 06:53:38 UTC
+| USER: Aliester10  
+| CHANGES: Added BLOB QR support for payment settings
 */
 
 Route::middleware(['auth', 'user-access:admin'])->prefix('admin/meta')->name('Admin.Meta.')->group(function () {
@@ -170,11 +176,293 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
         return redirect()->route('distributors.register');
     });
 
-    // Cart Routes
+    // Cart Routes - UPDATED WITH DATABASE SUPPORT
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    
+    // NEW CART QUANTITY UPDATE ROUTES
+    Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.update.quantity');
+    Route::post('/cart/item/remove', [CartController::class, 'removeItem'])->name('cart.item.remove');
+    
+    // CHECKOUT AND PAYMENT ROUTES - NEW
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/checkout', [CartController::class, 'processCheckout'])->name('checkout.process');
+        Route::get('/payment/{id}', [CartController::class, 'showPayment'])->name('payment.show');
+        Route::post('/payment/{id}/upload-proof', [CartController::class, 'uploadPaymentProof'])->name('payment.upload.proof');
+        Route::get('/payment/{id}/status', [CartController::class, 'paymentStatus'])->name('payment.status');
+        
+        // UPDATED Payment API Routes - WITH BLOB QR SUPPORT
+        Route::get('/api/payment-settings', function() {
+            try {
+                $settings = \App\Models\PaymentSetting::where('status', 'active')->first();
+                
+                if (!$settings) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No payment settings configured',
+                        'data' => null,
+                        'debug_info' => [
+                            'timestamp' => '2025-06-13 06:53:38',
+                            'user' => 'Aliester10',
+                            'issue' => 'No active payment settings found'
+                        ]
+                    ], 404);
+                }
+
+                $qrImage = null;
+                
+                // Priority 1: Check QrisImage table for file-based QR
+                $qrImageRecord = \App\Models\QrisImage::where('status', 'active')->first();
+                if ($qrImageRecord && $qrImageRecord->image_path) {
+                    $filePath = public_path('storage/' . $qrImageRecord->image_path);
+                    if (file_exists($filePath)) {
+                        $qrImage = [
+                            'id' => $qrImageRecord->id,
+                            'name' => $qrImageRecord->name,
+                            'image_path' => $qrImageRecord->image_path,
+                            'full_url' => asset('storage/' . $qrImageRecord->image_path),
+                            'file_exists' => true,
+                            'source' => 'file',
+                            'file_size' => filesize($filePath),
+                            'timestamp' => '2025-06-13 06:53:38',
+                            'user' => 'Aliester10'
+                        ];
+                    }
+                }
+                
+                // Priority 2: Use BLOB data if no file found or file doesn't exist
+                if (!$qrImage && $settings->qr_img) {
+                    $qrImage = [
+                        'id' => $settings->id,
+                        'name' => 'QR Payment Code (Database BLOB)',
+                        'image_path' => null,
+                        'full_url' => 'data:image/png;base64,' . base64_encode($settings->qr_img),
+                        'file_exists' => true,
+                        'source' => 'blob',
+                        'blob_size' => strlen($settings->qr_img),
+                        'timestamp' => '2025-06-13 06:53:38',
+                        'user' => 'Aliester10'
+                    ];
+                }
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'bank_name' => $settings->bank_name,
+                        'account_number' => $settings->account_number,
+                        'account_name' => $settings->account_name,
+                        'payment_instructions' => $settings->payment_instructions,
+                        'qr_image' => $qrImage,
+                        'status' => $settings->status,
+                        'has_qr' => $qrImage !== null
+                    ],
+                    'debug_info' => [
+                        'timestamp' => '2025-06-13 06:53:38',
+                        'user' => 'Aliester10',
+                        'settings_id' => $settings->id,
+                        'qr_image_flag' => $settings->qr_image ?? false,
+                        'blob_size' => $settings->qr_img ? strlen($settings->qr_img) . ' bytes' : '0 bytes',
+                        'qris_record_exists' => $qrImageRecord ? true : false,
+                        'qr_source_used' => $qrImage ? $qrImage['source'] : 'none'
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'error_details' => [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'timestamp' => '2025-06-13 06:53:38',
+                        'user' => 'Aliester10'
+                    ]
+                ], 500);
+            }
+        })->name('api.payment.settings');
+    });
+
+    // Debug Routes - FOR TESTING ONLY (remove in production)
+    Route::get('/debug/cart-data', function() {
+        try {
+            if (!auth()->check()) {
+                return response()->json([
+                    'error' => 'User not authenticated',
+                    'message' => 'Please login first',
+                    'redirect' => route('login')
+                ], 401);
+            }
+
+            $user = auth()->user();
+            $cartItems = \App\Models\Cart::where('user_id', $user->id)
+                ->with(['produk.images'])
+                ->get();
+
+            $cartTotal = $cartItems->sum(function($item) {
+                return $item->quantity * $item->price;
+            });
+
+            $cartCount = $cartItems->sum('quantity');
+
+            return response()->json([
+                'success' => true,
+                'timestamp' => '2025-06-13 06:53:38',
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'user_type' => $user->type,
+                'cart_items_count' => $cartItems->count(),
+                'cart_total_quantity' => $cartCount,
+                'cart_total_amount' => $cartTotal,
+                'formatted_total' => 'Rp ' . number_format($cartTotal, 0, ',', '.'),
+                'cart_items' => $cartItems->map(function($item) {
+                    return [
+                        'id' => $item->id,
+                        'product_id' => $item->produk_id,
+                        'product_name' => $item->produk->nama,
+                        'product_brand' => $item->produk->merk,
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'subtotal' => $item->quantity * $item->price,
+                        'formatted_price' => 'Rp ' . number_format($item->price, 0, ',', '.'),
+                        'formatted_subtotal' => 'Rp ' . number_format($item->quantity * $item->price, 0, ',', '.')
+                    ];
+                })
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => config('app.debug') ? $e->getTraceAsString() : 'Hidden in production'
+            ], 500);
+        }
+    })->name('debug.cart');
+
+    // Debug User Status
+    Route::get('/debug/user-status', function() {
+        try {
+            return response()->json([
+                'authenticated' => auth()->check(),
+                'user' => auth()->check() ? [
+                    'id' => auth()->user()->id,
+                    'name' => auth()->user()->name,
+                    'email' => auth()->user()->email,
+                    'type' => auth()->user()->type,
+                ] : null,
+                'session_id' => session()->getId(),
+                'timestamp' => '2025-06-13 06:53:38'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    })->name('debug.user-status');
+    
+    // NEW: Test Cart Addition Route
+    Route::get('/debug/add-test-items', function() {
+        try {
+            if (!auth()->check()) {
+                return response()->json([
+                    'error' => 'Please login first'
+                ], 401);
+            }
+
+            $user = auth()->user();
+            
+            // Get some products to add
+            $products = \App\Models\Produk::take(3)->get();
+            
+            if ($products->count() === 0) {
+                return response()->json([
+                    'error' => 'No products available to add to cart'
+                ], 404);
+            }
+
+            $cartItems = [];
+            foreach ($products as $product) {
+                $cartItem = \App\Models\Cart::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'produk_id' => $product->id,
+                    ],
+                    [
+                        'quantity' => 2,
+                        'price' => $product->harga ?? 0,
+                    ]
+                );
+                $cartItems[] = $cartItem;
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Test items added to cart',
+                'items_added' => count($cartItems),
+                'total_cart_items' => \App\Models\Cart::where('user_id', $user->id)->count(),
+                'timestamp' => '2025-06-13 06:53:38'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    })->middleware(['auth'])->name('debug.add-test-items');
+    
+    // NEW: QR Debug Route
+    Route::get('/debug/qr-test', function() {
+        try {
+            $settings = \App\Models\PaymentSetting::where('status', 'active')->first();
+            
+            if (!$settings) {
+                return response()->json([
+                    'error' => 'No payment settings found'
+                ], 404);
+            }
+            
+            $qrInfo = [
+                'settings_id' => $settings->id,
+                'qr_img_exists' => $settings->qr_img ? true : false,
+                'qr_img_size' => $settings->qr_img ? strlen($settings->qr_img) : 0,
+                'qr_image_flag' => $settings->qr_image ?? 'not_set'
+            ];
+            
+            if ($settings->qr_img) {
+                $qrInfo['base64_preview'] = 'data:image/png;base64,' . base64_encode($settings->qr_img);
+                $qrInfo['base64_length'] = strlen(base64_encode($settings->qr_img));
+            }
+            
+            // Check QrisImage table
+            $qrisRecord = \App\Models\QrisImage::where('status', 'active')->first();
+            if ($qrisRecord) {
+                $qrInfo['qris_record'] = [
+                    'id' => $qrisRecord->id,
+                    'name' => $qrisRecord->name,
+                    'image_path' => $qrisRecord->image_path,
+                    'file_exists' => $qrisRecord->image_path ? file_exists(public_path('storage/' . $qrisRecord->image_path)) : false
+                ];
+            }
+            
+            return response()->json([
+                'success' => true,
+                'qr_debug_info' => $qrInfo,
+                'timestamp' => '2025-06-13 06:53:38',
+                'user' => 'Aliester10'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    })->name('debug.qr-test');
 });
 
 // Member Routes (Authenticated Users with "member" role)
@@ -196,6 +484,96 @@ Route::middleware(['auth', 'user-access:member'])->group(function () {
         Route::put('/portal/cart/update', [PortalController::class, 'updateCart'])->name('member.cart.update');
         Route::delete('/portal/cart/remove', [PortalController::class, 'removeFromCart'])->name('member.cart.remove');
         Route::post('/portal/order/submit', [PortalController::class, 'submitOrder'])->name('member.order.submit');
+
+        // Member Payment Routes - UPDATED
+        Route::prefix('portal/payment')->name('member.payment.')->group(function () {
+            Route::get('/instructions/{orderId?}', [MemberPaymentController::class, 'paymentInstructions'])->name('instructions');
+            Route::get('/status', [MemberPaymentController::class, 'paymentStatus'])->name('status');
+            Route::get('/status/{id}', [MemberPaymentController::class, 'paymentDetail'])->name('detail');
+            Route::post('/upload-proof/{id}', [MemberPaymentController::class, 'uploadPaymentProof'])->name('upload-proof');
+            Route::post('/create-from-order/{orderId}', [MemberPaymentController::class, 'createPaymentFromOrder'])->name('create-from-order');
+        });
+        
+        // UPDATED Payment Settings API Route - WITH BLOB QR SUPPORT
+        Route::get('/portal/payment/get-settings', function() {
+            try {
+                $settings = \App\Models\PaymentSetting::where('status', 'active')->first();
+                
+                if (!$settings) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'No active payment settings found',
+                        'data' => [
+                            'bank_name' => null,
+                            'account_number' => null,
+                            'account_name' => null,
+                            'payment_instructions' => 'Payment settings not configured',
+                            'qr_image' => null,
+                            'status' => 'inactive'
+                        ]
+                    ]);
+                }
+
+                $qrImage = null;
+                
+                // Priority 1: QrisImage file
+                $qrImageRecord = \App\Models\QrisImage::where('status', 'active')->first();
+                if ($qrImageRecord && $qrImageRecord->image_path && file_exists(public_path('storage/' . $qrImageRecord->image_path))) {
+                    $qrImage = [
+                        'id' => $qrImageRecord->id,
+                        'name' => $qrImageRecord->name,
+                        'image_path' => $qrImageRecord->image_path,
+                        'full_url' => asset('storage/' . $qrImageRecord->image_path),
+                        'source' => 'file',
+                        'timestamp' => '2025-06-13 06:53:38',
+                        'user' => 'Aliester10'
+                    ];
+                }
+                // Priority 2: BLOB data
+                elseif ($settings->qr_img) {
+                    $qrImage = [
+                        'id' => $settings->id,
+                        'name' => 'QR Payment (Database BLOB)',
+                        'image_path' => null,
+                        'full_url' => 'data:image/png;base64,' . base64_encode($settings->qr_img),
+                        'source' => 'blob',
+                        'blob_size' => strlen($settings->qr_img),
+                        'timestamp' => '2025-06-13 06:53:38',
+                        'user' => 'Aliester10'
+                    ];
+                }
+                
+                $data = [
+                    'bank_name' => $settings->bank_name,
+                    'account_number' => $settings->account_number,
+                    'account_name' => $settings->account_name,
+                    'payment_instructions' => $settings->payment_instructions,
+                    'qr_image' => $qrImage,
+                    'status' => $settings->status
+                ];
+                
+                return response()->json([
+                    'success' => true,
+                    'data' => $data,
+                    'timestamp' => '2025-06-13 06:53:38',
+                    'debug_info' => [
+                        'user' => 'Aliester10',
+                        'qr_source' => $qrImage ? $qrImage['source'] : 'none',
+                        'blob_available' => $settings->qr_img ? true : false
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => true,
+                    'message' => $e->getMessage(),
+                    'data' => null,
+                    'timestamp' => '2025-06-13 06:53:38'
+                ], 500);
+            }
+        })->name('member.payment.get-settings');
+        
+        // Checkout route - UPDATED
+        Route::post('/portal/checkout', [PortalController::class, 'checkout'])->name('member.checkout');
 
         Route::get('/portal/tickets', [TicketMemberController::class, 'index'])->name('tickets.index');
         Route::get('/portal/tickets/create', [TicketMemberController::class, 'create'])->name('tickets.create');
@@ -369,6 +747,27 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         Route::get('/invoices/create/{proformaInvoiceId}', [InvoiceAdminController::class, 'create'])->name('invoices.create');
         Route::post('/invoices/store/{proformaInvoiceId}', [InvoiceAdminController::class, 'store'])->name('invoices.store');
         Route::get('/invoices/{id}', [InvoiceAdminController::class, 'show'])->name('invoices.show');
+
+        // Admin Payment Management Routes - UPDATED
+        Route::prefix('admin/payment')->name('Admin.Payment.')->group(function () {
+            // Payment Settings
+            Route::prefix('settings')->name('settings.')->group(function () {
+                Route::get('/', [PaymentSettingsController::class, 'index'])->name('index');
+                Route::get('/edit', [PaymentSettingsController::class, 'edit'])->name('edit');
+                Route::put('/update', [PaymentSettingsController::class, 'update'])->name('update');
+                Route::post('/upload-qris', [PaymentSettingsController::class, 'uploadQris'])->name('upload-qris');
+                Route::delete('/delete-qris/{id}', [PaymentSettingsController::class, 'deleteQris'])->name('delete-qris');
+            });
+            
+            // Payment Status Management
+            Route::prefix('status')->name('status.')->group(function () {
+                Route::get('/', [PaymentStatusController::class, 'index'])->name('index');
+                Route::get('/{id}', [PaymentStatusController::class, 'show'])->name('show');
+                Route::get('/{id}/edit', [PaymentStatusController::class, 'edit'])->name('edit');
+                Route::put('/{id}', [PaymentStatusController::class, 'updateStatus'])->name('update');
+                Route::delete('/{id}', [PaymentStatusController::class, 'destroy'])->name('destroy');
+            });
+        });
 
         // Other Admin Routes
         Route::get('/admin/visitors', [VisitorController::class, 'index'])->name('admin.visitors');

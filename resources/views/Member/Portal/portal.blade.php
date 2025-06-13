@@ -31,6 +31,10 @@
         --teal-500: #14b8a6;
         --teal-600: #0d9488;
         
+        --indigo-50: #eef2ff;
+        --indigo-500: #6366f1;
+        --indigo-600: #4f46e5;
+        
         --gray-50: #f9fafb;
         --gray-100: #f3f4f6;
         --gray-200: #e5e7eb;
@@ -80,7 +84,7 @@
             linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, transparent 30%),
             linear-gradient(225deg, rgba(168, 85, 247, 0.02) 0%, transparent 30%),
             var(--gray-50);
-        padding-top: 2.5rem; /* Updated to 2.5rem */
+        padding-top: 2.5rem;
     }
 
     /* Hero Section */
@@ -211,6 +215,7 @@
     .visual-card:nth-child(4)::before { background: linear-gradient(135deg, var(--purple-500), var(--purple-600)); }
     .visual-card:nth-child(5)::before { background: linear-gradient(135deg, var(--pink-500), var(--pink-600)); }
     .visual-card:nth-child(6)::before { background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); }
+    .visual-card:nth-child(7)::before { background: linear-gradient(135deg, var(--indigo-500), var(--indigo-600)); }
 
     .visual-card i {
         position: relative;
@@ -224,6 +229,7 @@
     .visual-card:nth-child(4) { animation-delay: 1.5s; }
     .visual-card:nth-child(5) { animation-delay: 2s; }
     .visual-card:nth-child(6) { animation-delay: 2.5s; }
+    .visual-card:nth-child(7) { animation-delay: 3s; }
 
     @keyframes float {
         0%, 100% { transform: translateY(0px); }
@@ -260,10 +266,10 @@
         margin: 0 auto;
     }
 
-    /* Masonry Grid */
+    /* Services Grid - Updated for 7 items */
     .services-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         gap: 24px;
         grid-auto-rows: min-content;
     }
@@ -309,6 +315,7 @@
     .service-item:nth-child(4)::before { background: var(--purple-500); }
     .service-item:nth-child(5)::before { background: var(--pink-500); }
     .service-item:nth-child(6)::before { background: var(--teal-500); }
+    .service-item:nth-child(7)::before { background: var(--indigo-500); }
 
     .service-top {
         margin-bottom: 20px;
@@ -333,6 +340,7 @@
     .service-item:nth-child(4) .service-icon { background: linear-gradient(135deg, var(--purple-500), var(--purple-600)); }
     .service-item:nth-child(5) .service-icon { background: linear-gradient(135deg, var(--pink-500), var(--pink-600)); }
     .service-item:nth-child(6) .service-icon { background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); }
+    .service-item:nth-child(7) .service-icon { background: linear-gradient(135deg, var(--indigo-500), var(--indigo-600)); }
 
     .service-header h3 {
         font-size: 20px;
@@ -386,6 +394,7 @@
     .service-item:nth-child(4) .service-link { color: var(--purple-600); }
     .service-item:nth-child(5) .service-link { color: var(--pink-600); }
     .service-item:nth-child(6) .service-link { color: var(--teal-600); }
+    .service-item:nth-child(7) .service-link { color: var(--indigo-600); }
 
     .service-link:hover {
         transform: translateX(3px);
@@ -468,7 +477,7 @@
     /* Responsive */
     @media (max-width: 768px) {
         .page-wrapper {
-            padding-top: 1.5rem; /* Adjusted for mobile */
+            padding-top: 1.5rem;
         }
         
         .hero-grid {
@@ -501,6 +510,7 @@
         
         .visual-grid {
             transform: none;
+            grid-template-columns: repeat(2, 1fr);
         }
         
         .metrics-grid {
@@ -537,6 +547,7 @@
     .service-item:nth-child(4) { animation-delay: 0.25s; }
     .service-item:nth-child(5) { animation-delay: 0.3s; }
     .service-item:nth-child(6) { animation-delay: 0.35s; }
+    .service-item:nth-child(7) { animation-delay: 0.4s; }
 
     @keyframes fadeIn {
         to {
@@ -566,6 +577,9 @@
                 
                 <div class="hero-visual">
                     <div class="visual-grid">
+                        <div class="visual-card">
+                            <i class='bx bx-credit-card'></i>
+                        </div>
                         <div class="visual-card">
                             <i class='bx bx-package'></i>
                         </div>
@@ -601,6 +615,29 @@
             </div>
 
             <div class="services-grid">
+                <!-- Payment Status - NEW MENU -->
+                <div class="service-item fade-in">
+                    <div class="service-top">
+                        <div class="service-icon">
+                            <i class='bx bx-credit-card'></i>
+                        </div>
+                        <div class="service-header">
+                            <h3>Payment Status</h3>
+                            <span class="service-category">Payment Management</span>
+                        </div>
+                    </div>
+                    <p class="service-description">
+                        Monitor dan kelola status pembayaran Anda dengan tracking real-time, upload bukti transfer, dan notifikasi otomatis untuk transparansi penuh dalam setiap transaksi.
+                    </p>
+                    <div class="service-bottom">
+                        <a href="{{ route('member.payment.status') }}" class="service-link">
+                            <span>Cek Status</span>
+                            <i class='bx bx-arrow-right'></i>
+                        </a>
+                        <span class="service-badge">REAL-TIME</span>
+                    </div>
+                </div>
+
                 <!-- My Product -->
                 <div class="service-item fade-in">
                     <div class="service-top">
@@ -613,7 +650,7 @@
                         </div>
                     </div>
                     <p class="service-description">
-                        Kelola dan monitor seluruh portfolio produk digital Anda dengan dashboard analytics yang komprehensif, real-time insights, dan tools optimasi untuk performa maksimal yang dapat diakses kapan saja.
+                        Kelola dan monitor seluruh portfolio produk digital Anda dengan dashboard analytics yang komprehensif, real-time insights, dan tools optimasi untuk performa maksimal.
                     </p>
                     <div class="service-bottom">
                         <a href="{{ route('portal.user-product') }}" class="service-link">
@@ -647,7 +684,7 @@
                     </div>
                 </div>
 
-                <!-- Document -->
+                <!-- Document & Certification -->
                 <div class="service-item fade-in">
                     <div class="service-top">
                         <div class="service-icon">
@@ -670,7 +707,7 @@
                     </div>
                 </div>
 
-                <!-- Tutorials -->
+                <!-- Tutorials Video -->
                 <div class="service-item fade-in">
                     <div class="service-top">
                         <div class="service-icon">
@@ -693,7 +730,7 @@
                     </div>
                 </div>
 
-                <!-- Q&A -->
+                <!-- Question & Answer -->
                 <div class="service-item fade-in">
                     <div class="service-top">
                         <div class="service-icon">
@@ -716,7 +753,7 @@
                     </div>
                 </div>
 
-                <!-- Ticketing -->
+                <!-- Support Ticketing -->
                 <div class="service-item fade-in">
                     <div class="service-top">
                         <div class="service-icon">
@@ -748,7 +785,7 @@
                 </div>
                 <div class="metrics-grid">
                     <div class="metric-card">
-                        <span class="metric-value">06</span>
+                        <span class="metric-value">07</span>
                         <span class="metric-label">Total Services</span>
                     </div>
                     <div class="metric-card">
