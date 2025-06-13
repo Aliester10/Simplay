@@ -32,135 +32,140 @@
         <div id="backgroundSlider" class="wave-bg"></div>
         
         <div class="container-fluid p-0">
-            <div class="row g-0">
-                <!-- REDESIGNED LEFT CATEGORIES SECTION -->
-                <div class="col-lg-auto col-md-auto category-sidebar-redesigned">
-                    <div class="categories-panel">
-                        <!-- Categories Header -->
-                        <div class="categories-header">
-                            <div class="header-grid-icon">
-                                <div class="grid-squares">
-                                    <div class="square"></div>
-                                    <div class="square"></div>
-                                    <div class="square"></div>
-                                    <div class="square"></div>
+            <div class="row g-0 h-100">
+                <!-- MODERN FLOATING CATEGORIES SECTION -->
+                <div class="col-lg-auto col-md-auto category-sidebar-modern">
+                    <div class="categories-floating-panel">
+                        <!-- Categories Header with Grid Icon -->
+                        <div class="categories-floating-header">
+                            <div class="floating-grid-icon">
+                                <div class="grid-dots">
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
+                                    <span class="dot"></span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Categories List -->
-                        <div class="categories-list">
+                        <div class="categories-floating-list">
                             <!-- Computer & Laptop -->
-                            <div class="category-item active" data-category="1">
-                                <div class="category-icon">
+                            <div class="category-floating-item active" data-category="1">
+                                <div class="category-floating-icon">
                                     <i class="fas fa-laptop"></i>
                                 </div>
-                                <div class="category-details">
-                                    <a href="{{ route('filterByCategory', 1) }}" class="category-link">
-                                        <span class="category-title">Computer & Laptop</span>
+                                <div class="category-floating-content">
+                                    <a href="{{ route('filterByCategory', 1) }}" class="category-floating-link">
+                                        <span class="category-floating-name">Computer & Laptop</span>
                                     </a>
                                 </div>
-                                <div class="category-chevron">
+                                <div class="category-floating-arrow">
                                     <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
 
                             <!-- Printer & Scanner -->
-                            <div class="category-item" data-category="2">
-                                <div class="category-icon">
+                            <div class="category-floating-item" data-category="2">
+                                <div class="category-floating-icon">
                                     <i class="fas fa-print"></i>
                                 </div>
-                                <div class="category-details">
-                                    <a href="{{ route('filterByCategory', 2) }}" class="category-link">
-                                        <span class="category-title">Printer & Scanner</span>
+                                <div class="category-floating-content">
+                                    <a href="{{ route('filterByCategory', 2) }}" class="category-floating-link">
+                                        <span class="category-floating-name">Printer & Scanner</span>
                                     </a>
                                 </div>
-                                <div class="category-chevron">
+                                <div class="category-floating-arrow">
                                     <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
 
                             <!-- Air Conditioner -->
-                            <div class="category-item" data-category="3">
-                                <div class="category-icon">
+                            <div class="category-floating-item" data-category="3">
+                                <div class="category-floating-icon">
                                     <i class="fas fa-wind"></i>
                                 </div>
-                                <div class="category-details">
-                                    <a href="{{ route('filterByCategory', 3) }}" class="category-link">
-                                        <span class="category-title">Air Conditioner</span>
+                                <div class="category-floating-content">
+                                    <a href="{{ route('filterByCategory', 3) }}" class="category-floating-link">
+                                        <span class="category-floating-name">Air Conditioner</span>
                                     </a>
                                 </div>
-                                <div class="category-chevron">
+                                <div class="category-floating-arrow">
                                     <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
 
                             <!-- Television & Video -->
-                            <div class="category-item" data-category="4">
-                                <div class="category-icon">
+                            <div class="category-floating-item" data-category="4">
+                                <div class="category-floating-icon">
                                     <i class="fas fa-tv"></i>
                                 </div>
-                                <div class="category-details">
-                                    <a href="{{ route('filterByCategory', 4) }}" class="category-link">
-                                        <span class="category-title">Television & Video</span>
+                                <div class="category-floating-content">
+                                    <a href="{{ route('filterByCategory', 4) }}" class="category-floating-link">
+                                        <span class="category-floating-name">Television & Video</span>
                                     </a>
                                 </div>
-                                <div class="category-chevron">
+                                <div class="category-floating-arrow">
                                     <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
 
                             <!-- Camera & Photography -->
-                            <div class="category-item" data-category="5">
-                                <div class="category-icon">
+                            <div class="category-floating-item" data-category="5">
+                                <div class="category-floating-icon">
                                     <i class="fas fa-camera"></i>
                                 </div>
-                                <div class="category-details">
-                                    <a href="{{ route('filterByCategory', 5) }}" class="category-link">
-                                        <span class="category-title">Camera & Photography</span>
+                                <div class="category-floating-content">
+                                    <a href="{{ route('filterByCategory', 5) }}" class="category-floating-link">
+                                        <span class="category-floating-name">Camera & Photography</span>
                                     </a>
                                 </div>
-                                <div class="category-chevron">
+                                <div class="category-floating-arrow">
                                     <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
 
                             <!-- Networking -->
-                            <div class="category-item" data-category="6">
-                                <div class="category-icon">
+                            <div class="category-floating-item" data-category="6">
+                                <div class="category-floating-icon">
                                     <i class="fas fa-network-wired"></i>
                                 </div>
-                                <div class="category-details">
-                                    <a href="{{ route('filterByCategory', 6) }}" class="category-link">
-                                        <span class="category-title">Networking</span>
+                                <div class="category-floating-content">
+                                    <a href="{{ route('filterByCategory', 6) }}" class="category-floating-link">
+                                        <span class="category-floating-name">Networking</span>
                                     </a>
                                 </div>
-                                <div class="category-chevron">
+                                <div class="category-floating-arrow">
                                     <i class="fas fa-chevron-right"></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Categories Footer -->
-                        <div class="categories-footer">
-                            <a href="{{ route('product.index') }}" class="view-all-link">
-                                <div class="view-all-icon">
-                                    <div class="grid-icon-mini">
-                                        <div class="mini-square"></div>
-                                        <div class="mini-square"></div>
-                                        <div class="mini-square"></div>
-                                        <div class="mini-square"></div>
+                        <div class="categories-floating-footer">
+                            <a href="{{ route('product.index') }}" class="view-all-floating">
+                                <div class="view-all-floating-icon">
+                                    <div class="mini-grid-dots">
+                                        <span class="mini-dot"></span>
+                                        <span class="mini-dot"></span>
+                                        <span class="mini-dot"></span>
+                                        <span class="mini-dot"></span>
                                     </div>
                                 </div>
-                                <span class="view-all-text">View All Categories</span>
-                                <div class="view-all-arrow">
+                                <span class="view-all-floating-text">View All Categories</span>
+                                <div class="view-all-floating-arrow">
                                     <i class="fas fa-arrow-right"></i>
                                 </div>
                             </a>
                         </div>
                     </div>
                 </div>
-                <!-- END REDESIGNED LEFT CATEGORIES SECTION -->
+                <!-- END MODERN FLOATING CATEGORIES SECTION -->
                 
                 <!-- Middle Content Section -->
                 <div class="col header-content">
@@ -487,7 +492,7 @@
     </section>
     @endif
 
-    <!-- COMPLETE REDESIGNED CSS STYLING -->
+    <!-- MODERN FLOATING DESIGN CSS STYLING -->
     <style>
         /* ===== GLOBAL VARIABLES & RESET ===== */
         :root {
@@ -509,6 +514,9 @@
             --shadow-glass: 0 8px 32px rgba(31, 38, 135, 0.37);
             --border-radius: 12px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --pink-accent: #e91e63;
+            --floating-bg: rgba(255, 255, 255, 0.15);
+            --floating-border: rgba(255, 255, 255, 0.25);
         }
 
         * {
@@ -545,11 +553,6 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        @keyframes glassShine {
-            0% { transform: translateX(-100%) skewX(-15deg); }
-            100% { transform: translateX(200%) skewX(-15deg); }
-        }
-
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -558,6 +561,16 @@
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-5px); }
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.9); }
+        }
+
+        @keyframes floatingShine {
+            0% { transform: translateX(-100%) skewX(-15deg); }
+            100% { transform: translateX(200%) skewX(-15deg); }
         }
 
         /* ===== ALERTS ===== */
@@ -580,43 +593,49 @@
             border: 1px solid #4ade80;
         }
 
-        /* ===== REDESIGNED CATEGORIES SECTION ===== */
-        /* MODIFIED: Added styles to center the category sidebar vertically */
+        /* ===== MODERN FLOATING CATEGORIES SECTION ===== */
         .modern-header {
             position: relative;
             min-height: 800px;
             overflow: hidden;
             margin-bottom: 0;
-            display: flex; /* Added for vertical centering */
-            align-items: center; /* Added for vertical centering */
+            display: flex;
+            align-items: center;
         }
 
-        .category-sidebar-redesigned {
-            width: 260px;
+        .modern-header .row {
+            height: 100%;
+            align-items: center;
+        }
+
+        .category-sidebar-modern {
+            width: 200px;
             position: relative;
             z-index: 3;
             display: flex;
-            align-items: flex-start;
-            padding: 20px 0 20px 20px;
-            align-self: center; /* Added for vertical centering */
-            margin-top: 0; /* Reset original top margin */
-            padding-top: 0; /* Reset original top padding */
-            padding-bottom: 0; /* Reset original bottom padding */
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            height: 100%;
         }
 
-        .categories-panel {
+        .categories-floating-panel {
             width: 100%;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            max-width: 180px;
+            background: var(--floating-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 2px solid var(--floating-border);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: var(--shadow-glass);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 10px 20px rgba(255, 255, 255, 0.1) inset;
             position: relative;
+            transition: var(--transition);
         }
 
-        .categories-panel::before {
+        .categories-floating-panel::before {
             content: '';
             position: absolute;
             top: 0;
@@ -629,305 +648,275 @@
                 rgba(255, 255, 255, 0.1),
                 transparent
             );
-            transition: left 0.5s ease;
+            transition: left 0.6s ease;
+            pointer-events: none;
         }
 
-        .categories-panel:hover::before {
+        .categories-floating-panel:hover::before {
             left: 100%;
         }
 
-        /* Categories Header */
-        .categories-header {
-            background: linear-gradient(135deg, 
-                rgba(124, 58, 237, 0.9) 0%, 
-                rgba(236, 72, 153, 0.9) 100%);
-            padding: 20px;
+        .categories-floating-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.15),
+                0 15px 30px rgba(255, 255, 255, 0.15) inset;
+        }
+
+        /* Categories Header with Grid Dots */
+        .categories-floating-header {
+            background: linear-gradient(135deg, var(--pink-accent), #ad1457);
+            padding: 15px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: center;
             position: relative;
             overflow: hidden;
         }
 
-        .categories-header::after {
+        .categories-floating-header::after {
             content: '';
             position: absolute;
             top: -50%;
             right: -20px;
-            width: 100px;
-            height: 150px;
+            width: 80px;
+            height: 120px;
             background: radial-gradient(
                 ellipse,
-                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.15) 0%,
                 transparent 70%
             );
-            animation: float 3s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
         }
 
-        .header-grid-icon {
+        .floating-grid-icon {
             position: relative;
             z-index: 2;
         }
 
-        .grid-squares {
+        .grid-dots {
             display: grid;
-            grid-template-columns: repeat(2, 8px);
-            grid-template-rows: repeat(2, 8px);
-            gap: 2px;
+            grid-template-columns: repeat(3, 6px);
+            grid-template-rows: repeat(3, 6px);
+            gap: 3px;
         }
 
-        .square {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 2px;
-            transition: var(--transition);
-        }
-
-        .categories-count {
-            position: absolute;
-            top: -5px;
-            right: 0;
-            width: 22px;
-            height: 22px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
+            transition: var(--transition);
+            animation: dotPulse 2s ease-in-out infinite;
         }
 
-        .count-number {
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        .dot:nth-child(4) { animation-delay: 0.6s; }
+        .dot:nth-child(5) { animation-delay: 0.8s; }
+        .dot:nth-child(6) { animation-delay: 1s; }
+        .dot:nth-child(7) { animation-delay: 1.2s; }
+        .dot:nth-child(8) { animation-delay: 1.4s; }
+        .dot:nth-child(9) { animation-delay: 1.6s; }
+
+        .categories-floating-panel:hover .dot {
+            background: white;
+            transform: scale(1.2);
         }
 
         /* Categories List */
-        .categories-list {
+        .categories-floating-list {
             padding: 0;
         }
 
-        .category-item {
+        .category-floating-item {
             display: flex;
             align-items: center;
-            padding: 18px 20px;
+            padding: 12px 15px;
             cursor: pointer;
             transition: var(--transition);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            overflow: hidden;
+            background: transparent;
         }
 
-        .category-item:last-child {
+        .category-floating-item:last-child {
             border-bottom: none;
         }
 
-        .category-item::before {
+        .category-floating-item::before {
             content: '';
             position: absolute;
             left: 0;
             top: 0;
             width: 3px;
             height: 100%;
-            background: linear-gradient(180deg, var(--purple-light), var(--pink-light));
+            background: linear-gradient(180deg, var(--pink-accent), #ad1457);
             transform: scaleY(0);
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
             transform-origin: bottom;
+            border-radius: 0 3px 3px 0;
         }
 
-        .category-item.active::before,
-        .category-item:hover::before {
+        .category-floating-item.active::before,
+        .category-floating-item:hover::before {
             transform: scaleY(1);
         }
 
-        .category-item::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-                rgba(124, 58, 237, 0.05) 0%,
-                rgba(236, 72, 153, 0.05) 100%
-            );
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .category-item.active::after,
-        .category-item:hover::after {
-            opacity: 1;
-        }
-
-        .category-icon {
-            width: 40px;
-            height: 40px;
+        .category-floating-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-floating-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+        }
+
+        .category-floating-icon {
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: rgba(255, 255, 255, 0.8);
-            font-size: 1rem;
+            font-size: 0.85rem;
+            margin-right: 12px;
             transition: var(--transition);
-            position: relative;
-            z-index: 2;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .category-item.active .category-icon,
-        .category-item:hover .category-icon {
-            background: rgba(255, 255, 255, 0.2);
+        .category-floating-item:hover .category-floating-icon,
+        .category-floating-item.active .category-floating-icon {
             color: white;
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            background: var(--pink-accent);
+            border-color: var(--pink-accent);
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
         }
 
-        .category-details {
+        .category-floating-content {
             flex: 1;
-            margin-left: 15px;
-            position: relative;
-            z-index: 2;
+            min-width: 0;
         }
 
-        .category-link {
+        .category-floating-link {
             text-decoration: none;
             display: block;
         }
 
-        .category-title {
+        .category-floating-name {
             color: rgba(255, 255, 255, 0.9);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 2px;
             transition: var(--transition);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
         }
 
-        .category-subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.75rem;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .category-item.active .category-title,
-        .category-item:hover .category-title {
+        .category-floating-item:hover .category-floating-name,
+        .category-floating-item.active .category-floating-name {
             color: white;
-            transform: translateX(5px);
+            text-shadow: 0 2px 10px rgba(233, 30, 99, 0.3);
         }
 
-        .category-item.active .category-subtitle,
-        .category-item:hover .category-subtitle {
-            color: rgba(255, 255, 255, 0.8);
-            transform: translateX(5px);
-        }
-
-        .category-chevron {
-            width: 30px;
-            height: 30px;
+        .category-floating-arrow {
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             transition: var(--transition);
-            position: relative;
-            z-index: 2;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
         }
 
-        .category-item.active .category-chevron,
-        .category-item:hover .category-chevron {
+        .category-floating-item:hover .category-floating-arrow {
             color: white;
-            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(3px) scale(1.1);
         }
 
         /* Categories Footer */
-        .categories-footer {
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.1);
+        .categories-floating-footer {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .view-all-link {
+        .view-all-floating {
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            padding: 12px 16px;
-            border-radius: 10px;
+            font-size: 0.75rem;
             font-weight: 600;
-            font-size: 0.85rem;
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .view-all-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            transition: left 0.5s ease;
-        }
-
-        .view-all-link:hover::before {
-            left: 100%;
-        }
-
-        .view-all-link:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
+        .view-all-floating:hover {
             color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .view-all-icon {
-            position: relative;
+        .view-all-floating-icon {
+            flex-shrink: 0;
         }
 
-        .grid-icon-mini {
+        .mini-grid-dots {
             display: grid;
-            grid-template-columns: repeat(2, 6px);
-            grid-template-rows: repeat(2, 6px);
-            gap: 1px;
+            grid-template-columns: repeat(2, 4px);
+            grid-template-rows: repeat(2, 4px);
+            gap: 2px;
         }
 
-        .mini-square {
+        .mini-dot {
+            width: 4px;
+            height: 4px;
             background: rgba(255, 255, 255, 0.7);
-            border-radius: 1px;
+            border-radius: 50%;
             transition: var(--transition);
         }
 
-        .view-all-link:hover .mini-square {
+        .view-all-floating:hover .mini-dot {
             background: white;
+            transform: scale(1.2);
         }
 
-        .view-all-text {
+        .view-all-floating-text {
             flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .view-all-arrow {
+        .view-all-floating-arrow {
+            font-size: 0.65rem;
             transition: var(--transition);
+            flex-shrink: 0;
         }
 
-        .view-all-link:hover .view-all-arrow {
+        .view-all-floating:hover .view-all-floating-arrow {
             transform: translateX(3px);
         }
 
         /* ===== BANNER SECTION ===== */
-        /* Note: Some .modern-header styles were moved up and modified for vertical centering */
         .wave-bg {
             position: absolute;
             top: 0;
@@ -967,17 +956,19 @@
         }
         
         .header-content {
-            padding: 130px 30px 60px;
+            padding: 60px 30px;
             position: relative;
             z-index: 2;
             flex: 1;
             display: flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
         }
         
         .content-wrapper {
-            max-width: 680px;
-            padding-left: 30px;
+            max-width: 600px;
+            width: 100%;
         }
         
         .design-tagline {
@@ -1006,6 +997,8 @@
             line-height: 1.6;
             margin-top: 20px;
             max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .explore-btn {
@@ -1035,7 +1028,7 @@
         }
         
         .featured-product {
-            padding: 130px 30px 60px;
+            padding: 60px 30px;
             position: relative;
             z-index: 2;
             display: flex;
@@ -1684,7 +1677,7 @@
             transition: var(--transition);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content:             center;
             gap: 8px;
             font-size: 0.875rem;
         }
@@ -1717,8 +1710,12 @@
 
         /* ===== RESPONSIVE DESIGN ===== */
         @media (max-width: 1199px) {
-            .category-sidebar-redesigned {
-                width: 240px;
+            .category-sidebar-modern {
+                width: 180px;
+            }
+            
+            .categories-floating-panel {
+                max-width: 160px;
             }
             
             .section-title-elegant {
@@ -1732,18 +1729,25 @@
         }
 
         @media (max-width: 991px) {
-            /* Modified for category sidebar vertical centering */
-            .category-sidebar-redesigned {
+            .category-sidebar-modern {
                 width: 100%;
-                max-width: 300px;
+                max-width: 200px;
                 margin: 0 auto 30px;
                 order: 3;
                 padding: 20px;
-                align-self: flex-start; /* Reset vertical centering for mobile view */
+                height: auto;
             }
             
-            .categories-panel {
-                margin: 0 auto;
+            .categories-floating-panel {
+                max-width: 100%;
+            }
+            
+            .modern-header {
+                display: block;
+            }
+            
+            .modern-header .row {
+                height: auto;
             }
             
             .section-title-elegant {
@@ -1763,10 +1767,9 @@
                 grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
                 gap: 20px;
             }
-            
+
             .modern-header {
                 min-height: 600px;
-                display: block; /* Reset flex for mobile */
             }
             
             .header-content {
@@ -1779,43 +1782,60 @@
         }
 
         @media (max-width: 768px) {
-            .category-sidebar-redesigned {
+            .category-sidebar-modern {
                 width: 100%;
                 max-width: none;
                 margin-bottom: 20px;
                 padding: 15px;
-                align-self: flex-start; /* Reset vertical centering for mobile view */
             }
             
-            .categories-panel {
-                border-radius: 12px;
+            .categories-floating-panel {
+                border-radius: 15px;
             }
             
-            .category-item {
-                padding: 16px;
+            .categories-floating-header {
+                padding: 12px;
             }
             
-            .category-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 0.9rem;
+            .grid-dots {
+                grid-template-columns: repeat(3, 5px);
+                grid-template-rows: repeat(3, 5px);
+                gap: 2px;
             }
             
-            .category-title {
-                font-size: 0.85rem;
+            .dot {
+                width: 5px;
+                height: 5px;
             }
             
-            .category-subtitle {
+            .category-floating-item {
+                padding: 10px 12px;
+            }
+            
+            .category-floating-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 0.75rem;
+                margin-right: 10px;
+            }
+            
+            .category-floating-name {
+                font-size: 0.75rem;
+            }
+            
+            .category-floating-arrow {
+                width: 18px;
+                height: 18px;
+                font-size: 0.65rem;
+            }
+            
+            .categories-floating-footer {
+                padding: 10px 12px;
+            }
+            
+            .view-all-floating {
                 font-size: 0.7rem;
-            }
-            
-            .categories-footer {
-                padding: 16px;
-            }
-            
-            .view-all-link {
-                padding: 10px 14px;
-                font-size: 0.8rem;
+                padding: 6px 8px;
             }
             
             .section-header-elegant {
@@ -1874,7 +1894,7 @@
             
             .modern-header {
                 min-height: 500px;
-                display: block; /* Reset flex for mobile */
+                display: block;
             }
             
             .header-content {
@@ -1883,7 +1903,6 @@
             }
             
             .content-wrapper {
-                padding-left: 0;
                 max-width: 100%;
             }
             
@@ -1901,56 +1920,69 @@
         }
 
         @media (max-width: 576px) {
-            .category-sidebar-redesigned {
+            .category-sidebar-modern {
                 padding: 10px;
             }
             
-            .categories-panel {
-                border-radius: 10px;
+            .categories-floating-panel {
+                border-radius: 12px;
             }
             
-            .categories-header {
-                padding: 14px;
+            .categories-floating-header {
+                padding: 10px;
             }
             
-            .header-title {
-                font-size: 0.9rem;
+            .grid-dots {
+                grid-template-columns: repeat(3, 4px);
+                grid-template-rows: repeat(3, 4px);
+                gap: 2px;
             }
             
-            .categories-count {
-                width: 20px;
-                height: 20px;
+            .dot {
+                width: 4px;
+                height: 4px;
             }
             
-            .count-number {
+            .category-floating-item {
+                padding: 8px 10px;
+            }
+            
+            .category-floating-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 0.7rem;
+                margin-right: 8px;
+            }
+            
+            .category-floating-name {
+                font-size: 0.7rem;
+            }
+            
+            .category-floating-arrow {
+                width: 16px;
+                height: 16px;
+                font-size: 0.6rem;
+            }
+            
+            .categories-floating-footer {
+                padding: 8px 10px;
+            }
+            
+            .view-all-floating {
                 font-size: 0.65rem;
+                padding: 5px 6px;
+                gap: 6px;
             }
             
-            .category-item {
-                padding: 14px;
+            .mini-grid-dots {
+                grid-template-columns: repeat(2, 3px);
+                grid-template-rows: repeat(2, 3px);
+                gap: 1px;
             }
             
-            .category-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 0.85rem;
-            }
-            
-            .category-title {
-                font-size: 0.8rem;
-            }
-            
-            .category-subtitle {
-                font-size: 0.65rem;
-            }
-            
-            .categories-footer {
-                padding: 14px;
-            }
-            
-            .view-all-link {
-                padding: 8px 12px;
-                font-size: 0.75rem;
+            .mini-dot {
+                width: 3px;
+                height: 3px;
             }
             
             .section-header-elegant {
@@ -2103,74 +2135,71 @@
 
         /* ===== DARK MODE SUPPORT ===== */
         @media (prefers-color-scheme: dark) {
-            .categories-panel {
-                background: rgba(0, 0, 0, 0.3);
-                border: 1px solid rgba(255, 255, 255, 0.1);
+            .categories-floating-panel {
+                background: rgba(0, 0, 0, 0.9);
+                border: 2px solid rgba(255, 255, 255, 0.2);
             }
             
-            .category-title {
+            .category-floating-name {
                 color: #f1f5f9;
             }
             
-            .category-subtitle {
+            .category-floating-icon {
                 color: #94a3b8;
+                background: rgba(0, 0, 0, 0.3);
+                border-color: rgba(255, 255, 255, 0.2);
             }
             
-            .category-icon {
-                background: rgba(0, 0, 0, 0.2);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                color: #94a3b8;
+            .categories-floating-footer {
+                background: rgba(0, 0, 0, 0.4);
+                border-top: 1px solid rgba(255, 255, 255, 0.15);
             }
             
-            .categories-footer {
-                background: rgba(0, 0, 0, 0.2);
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .view-all-link {
-                background: rgba(0, 0, 0, 0.2);
-                border: 1px solid rgba(255, 255, 255, 0.1);
+            .view-all-floating {
+                color: rgba(255, 255, 255, 0.8);
+                background: rgba(0, 0, 0, 0.3);
+                border-color: rgba(255, 255, 255, 0.2);
             }
         }
 
         /* ===== ACCESSIBILITY IMPROVEMENTS ===== */
-        .category-item:focus-within {
-            outline: 2px solid rgba(124, 58, 237, 0.8);
+        .category-floating-item:focus-within {
+            outline: 2px solid var(--pink-accent);
             outline-offset: -2px;
             border-radius: 8px;
         }
 
-        .category-link:focus {
+        .category-floating-link:focus {
             outline: none;
         }
 
-        .view-all-link:focus {
-            outline: 2px solid rgba(255, 255, 255, 0.8);
+        .view-all-floating:focus {
+            outline: 2px solid var(--pink-accent);
             outline-offset: 2px;
         }
 
         /* ===== REDUCED MOTION ===== */
         @media (prefers-reduced-motion: reduce) {
-            .category-item,
-            .category-icon,
-            .category-title,
-            .category-subtitle,
-            .category-chevron,
-            .view-all-link,
-            .view-all-arrow {
+            .category-floating-item,
+            .category-floating-icon,
+            .category-floating-name,
+            .category-floating-arrow,
+            .view-all-floating,
+            .view-all-floating-arrow,
+            .dot,
+            .mini-dot {
                 transition: none !important;
                 animation: none !important;
             }
             
-            .categories-header::after,
-            .square {
+            .categories-floating-panel::before {
                 animation: none !important;
             }
         }
 
         /* ===== PRINT STYLES ===== */
         @media print {
-            .category-sidebar-redesigned {
+            .category-sidebar-modern {
                 display: none;
             }
         }
@@ -2185,9 +2214,80 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* ===== FLOATING PANEL SPECIAL EFFECTS ===== */
+        .categories-floating-panel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .categories-floating-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 100%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .categories-floating-list,
+        .categories-floating-header,
+        .categories-floating-footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== ENHANCED FLOATING ANIMATIONS ===== */
+        @keyframes floatingGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 20px 40px rgba(0, 0, 0, 0.1),
+                    0 10px 20px rgba(255, 255, 255, 0.1) inset;
+            }
+            50% { 
+                box-shadow: 
+                    0 25px 50px rgba(0, 0, 0, 0.15),
+                    0 15px 30px rgba(255, 255, 255, 0.15) inset,
+                    0 0 20px rgba(233, 30, 99, 0.1);
+            }
+        }
+
+        .categories-floating-panel:hover {
+            animation: floatingGlow 2s ease-in-out infinite;
+        }
+
+        /* ===== CATEGORY ITEM LOADING STATE ===== */
+        .category-floating-loading {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .category-floating-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(233, 30, 99, 0.1) 50%,
+                transparent 100%
+            );
+            animation: floatingShine 1s ease-in-out infinite;
+        }
     </style>
 
-    <!-- COMPLETE REDESIGNED JAVASCRIPT -->
+    <!-- MODERN FLOATING DESIGN JAVASCRIPT -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Preloader
@@ -2205,49 +2305,48 @@
             initSliderContent();
             initProductCarousel();
             initElegantSectionHeaders();
-            initRedesignedCategories();
+            initFloatingCategories();
             initFilterTabs();
             initScrollAnimations();
             initWishlistHandlers();
             initPerformanceOptimizations();
-            centerCategoriesSidebar(); // Add new function to center categories
 
-            // Redesigned Categories Initialization - UPDATED FOR DIRECT NAVIGATION
-            function initRedesignedCategories() {
-                const categoryItems = document.querySelectorAll('.category-item');
-                const categoriesPanel = document.querySelector('.categories-panel');
+            // Modern Floating Categories Initialization
+            function initFloatingCategories() {
+                const categoryItems = document.querySelectorAll('.category-floating-item');
+                const floatingPanel = document.querySelector('.categories-floating-panel');
                 
-                // Add entrance animation with glass effect
-                if (categoriesPanel) {
-                    categoriesPanel.style.opacity = '0';
-                    categoriesPanel.style.transform = 'translateX(-40px) scale(0.95)';
+                // Add magical entrance animation
+                if (floatingPanel) {
+                    floatingPanel.style.opacity = '0';
+                    floatingPanel.style.transform = 'translateY(30px) scale(0.9)';
                     
                     setTimeout(() => {
-                        categoriesPanel.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-                        categoriesPanel.style.opacity = '1';
-                        categoriesPanel.style.transform = 'translateX(0) scale(1)';
+                        floatingPanel.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                        floatingPanel.style.opacity = '1';
+                        floatingPanel.style.transform = 'translateY(0) scale(1)';
                     }, 300);
                 }
                 
-                // Enhanced category interactions
+                // Enhanced category interactions with floating effects
                 categoryItems.forEach((item, index) => {
-                    // Add staggered entrance animation
+                    // Add staggered floating entrance animation
                     item.style.opacity = '0';
-                    item.style.transform = 'translateX(-30px)';
+                    item.style.transform = 'translateX(-20px)';
                     
                     setTimeout(() => {
                         item.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
                         item.style.opacity = '1';
                         item.style.transform = 'translateX(0)';
-                    }, 400 + (index * 80));
+                    }, 500 + (index * 80));
                     
                     // Get the category link
-                    const categoryLink = item.querySelector('.category-link');
+                    const categoryLink = item.querySelector('.category-floating-link');
                     
-                    // Enhanced click handling with direct navigation
+                    // Enhanced click handling with floating animation
                     item.addEventListener('click', function(e) {
                         // If the click is directly on the link, let the default behavior work
-                        if (e.target.closest('.category-link')) {
+                        if (e.target.closest('.category-floating-link')) {
                             return;
                         }
                         
@@ -2260,11 +2359,11 @@
                         // Add active class to clicked item
                         this.classList.add('active');
                         
-                        // Create glass ripple effect
-                        createGlassRipple(this, e);
+                        // Create floating ripple effect
+                        createFloatingRipple(this);
                         
-                        // Add loading state with glass effect
-                        addGlassLoadingState(this);
+                        // Add floating loading state
+                        addFloatingLoadingState(this);
                         
                         // Store selected category
                         sessionStorage.setItem('selectedCategory', this.dataset.category);
@@ -2272,68 +2371,110 @@
                         // Analytics tracking
                         trackCategorySelection(this);
                         
-                        // Navigate to the category page
+                        // Navigate to the category page with floating transition
                         if (categoryLink && categoryLink.href) {
-                            window.location.href = categoryLink.href;
+                            setTimeout(() => {
+                                window.location.href = categoryLink.href;
+                            }, 400);
                         }
                     });
                     
-                    // Enhanced hover effects with glass morphism
+                    // Enhanced floating hover effects
                     item.addEventListener('mouseenter', function() {
-                        this.style.transform = 'translateX(8px) scale(1.02)';
-                        this.style.background = 'rgba(255, 255, 255, 0.15)';
-                        this.style.backdropFilter = 'blur(25px)';
+                        if (!this.classList.contains('active')) {
+                            this.style.background = 'rgba(255, 255, 255, 0.1)';
+                            this.style.backdropFilter = 'blur(10px)';
+                        }
                         
-                        // Add glow effect to icon
-                        const icon = this.querySelector('.category-icon');
+                        // Animate icon with floating effect
+                        const icon = this.querySelector('.category-floating-icon');
                         if (icon) {
-                            icon.style.boxShadow = '0 8px 32px rgba(124, 58, 237, 0.4)';
-                            icon.style.background = 'rgba(255, 255, 255, 0.25)';
+                            icon.style.color = 'white';
+                            icon.style.background = 'var(--pink-accent)';
+                            icon.style.borderColor = 'var(--pink-accent)';
+                            icon.style.transform = 'scale(1.1) rotate(5deg)';
+                            icon.style.boxShadow = '0 4px 15px rgba(233, 30, 99, 0.4)';
                         }
                         
-                        // Animate chevron
-                        const chevron = this.querySelector('.category-chevron');
-                        if (chevron) {
-                            chevron.style.transform = 'translateX(8px) rotate(90deg)';
+                        // Animate arrow with floating motion
+                        const arrow = this.querySelector('.category-floating-arrow');
+                        if (arrow) {
+                            arrow.style.transform = 'translateX(3px) scale(1.1)';
+                            arrow.style.color = 'white';
+                            arrow.style.background = 'rgba(255, 255, 255, 0.15)';
                         }
+                        
+                        // Animate text with floating glow
+                        const name = this.querySelector('.category-floating-name');
+                        if (name) {
+                            name.style.color = 'white';
+                            name.style.textShadow = '0 2px 10px rgba(233, 30, 99, 0.3)';
+                        }
+                        
+                        // Add floating animation to the entire item
+                        this.style.transform = 'translateY(-2px)';
                     });
                     
                     item.addEventListener('mouseleave', function() {
                         if (!this.classList.contains('active')) {
-                            this.style.transform = 'translateX(0) scale(1)';
-                            this.style.background = '';
+                            this.style.background = 'transparent';
                             this.style.backdropFilter = '';
                         }
                         
-                        const icon = this.querySelector('.category-icon');
-                        if (icon) {
-                            icon.style.boxShadow = '';
+                        const icon = this.querySelector('.category-floating-icon');
+                        if (icon && !this.classList.contains('active')) {
+                            icon.style.color = 'rgba(255, 255, 255, 0.8)';
                             icon.style.background = 'rgba(255, 255, 255, 0.1)';
+                            icon.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                            icon.style.transform = 'scale(1) rotate(0deg)';
+                            icon.style.boxShadow = 'none';
                         }
                         
-                        const chevron = this.querySelector('.category-chevron');
-                        if (chevron) {
-                            chevron.style.transform = 'translateX(0) rotate(0deg)';
+                        const arrow = this.querySelector('.category-floating-arrow');
+                        if (arrow) {
+                            arrow.style.transform = 'translateX(0) scale(1)';
+                            arrow.style.color = 'rgba(255, 255, 255, 0.5)';
+                            arrow.style.background = 'rgba(255, 255, 255, 0.05)';
                         }
+                        
+                        const name = this.querySelector('.category-floating-name');
+                        if (name && !this.classList.contains('active')) {
+                            name.style.color = 'rgba(255, 255, 255, 0.9)';
+                            name.style.textShadow = 'none';
+                        }
+                        
+                        this.style.transform = 'translateY(0)';
                     });
                     
-                    // Keyboard navigation support - UPDATED FOR DIRECT NAVIGATION
+                    // Keyboard navigation with floating effects
                     item.addEventListener('keydown', function(e) {
                         if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
                             
-                            // Navigate directly to category page
-                            if (categoryLink && categoryLink.href) {
-                                window.location.href = categoryLink.href;
-                            }
+                            // Add floating click effect
+                            this.style.transform = 'scale(0.98) translateY(1px)';
+                            setTimeout(() => {
+                                this.style.transform = '';
+                                
+                                // Navigate to category page
+                                if (categoryLink && categoryLink.href) {
+                                    window.location.href = categoryLink.href;
+                                }
+                            }, 200);
                         } else if (e.key === 'ArrowDown') {
                             e.preventDefault();
                             const nextItem = this.nextElementSibling;
-                            if (nextItem) nextItem.focus();
+                            if (nextItem) {
+                                nextItem.focus();
+                                nextItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }
                         } else if (e.key === 'ArrowUp') {
                             e.preventDefault();
                             const prevItem = this.previousElementSibling;
-                            if (prevItem) prevItem.focus();
+                            if (prevItem) {
+                                prevItem.focus();
+                                prevItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            }
                         }
                     });
                     
@@ -2341,70 +2482,63 @@
                     item.setAttribute('tabindex', '0');
                     item.setAttribute('role', 'button');
                     item.setAttribute('aria-label', 
-                        `Select ${item.querySelector('.category-title').textContent} category`);
+                        `Select ${item.querySelector('.category-floating-name').textContent} category`);
                 });
                 
-                // Initialize grid icon animations
-                initGridIconAnimations();
-                
-                // Initialize category counters
-                initCategoryCounters();
-                
-                // Restore selected category
+                // Restore selected category with floating styling
                 restoreSelectedCategory();
                 
-                // Initialize view all button
-                initViewAllButton();
+                // Initialize floating view all button
+                initViewAllButtonFloating();
+                
+                // Add floating scroll animations
+                initFloatingScrollAnimations();
+                
+                // Initialize dot animations
+                initDotAnimations();
             }
             
-            // Create enhanced glass ripple effect
-            function createGlassRipple(element, event) {
+            // Create floating ripple effect
+            function createFloatingRipple(element) {
                 const ripple = document.createElement('div');
-                const rect = element.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height) * 1.2;
-                
-                let x, y;
-                if (event && event.clientX !== undefined) {
-                    x = event.clientX - rect.left - size / 2;
-                    y = event.clientY - rect.top - size / 2;
-                } else {
-                    x = rect.width / 2 - size / 2;
-                    y = rect.height / 2 - size / 2;
-                }
                 
                 ripple.style.cssText = `
                     position: absolute;
-                    border-radius: 50%;
-                    background: radial-gradient(circle, 
-                        rgba(255, 255, 255, 0.3) 0%, 
-                        rgba(124, 58, 237, 0.2) 40%,
-                        transparent 70%);
-                    width: ${size}px;
-                    height: ${size}px;
-                    left: ${x}px;
-                    top: ${y}px;
-                    transform: scale(0);
-                    animation: glass-ripple 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, 
+                        transparent 0%, 
+                        rgba(233, 30, 99, 0.3) 30%,
+                        rgba(255, 255, 255, 0.2) 50%,
+                        rgba(233, 30, 99, 0.3) 70%,
+                        transparent 100%);
+                    transform: translateX(-100%);
+                    animation: floatingRipple 0.8s ease;
                     pointer-events: none;
                     z-index: 1;
+                    border-radius: 8px;
                 `;
                 
-                // Add glass ripple animation keyframes
-                if (!document.querySelector('#glass-ripple-styles')) {
+                // Add floating ripple animation keyframes
+                if (!document.querySelector('#floating-ripple-styles')) {
                     const style = document.createElement('style');
-                    style.id = 'glass-ripple-styles';
+                    style.id = 'floating-ripple-styles';
                     style.textContent = `
-                        @keyframes glass-ripple {
+                        @keyframes floatingRipple {
                             0% {
-                                transform: scale(0);
+                                transform: translateX(-100%);
+                                opacity: 0;
+                            }
+                            30% {
                                 opacity: 1;
                             }
-                            50% {
-                                transform: scale(0.8);
-                                opacity: 0.6;
+                            70% {
+                                opacity: 1;
                             }
                             100% {
-                                transform: scale(1.5);
+                                transform: translateX(100%);
                                 opacity: 0;
                             }
                         }
@@ -2418,101 +2552,37 @@
                 setTimeout(() => ripple.remove(), 800);
             }
             
-            // Add glass loading state
-            function addGlassLoadingState(element) {
-                const chevron = element.querySelector('.category-chevron i');
-                const icon = element.querySelector('.category-icon');
+            // Add floating loading state
+            function addFloatingLoadingState(element) {
+                const arrow = element.querySelector('.category-floating-arrow i');
+                const icon = element.querySelector('.category-floating-icon');
                 
-                if (chevron) {
-                    const originalClass = chevron.className;
-                    chevron.className = 'fas fa-spinner fa-spin';
-                    chevron.style.color = 'rgba(255, 255, 255, 0.9)';
+                if (arrow) {
+                    const originalClass = arrow.className;
+                    arrow.className = 'fas fa-circle-notch fa-spin';
+                    arrow.style.color = 'var(--pink-accent)';
                     
                     setTimeout(() => {
-                        chevron.className = originalClass;
-                        chevron.style.color = '';
-                    }, 1200);
+                        arrow.className = originalClass;
+                        arrow.style.color = '';
+                    }, 1000);
                 }
                 
                 if (icon) {
-                    icon.style.animation = 'pulse 0.6s ease-in-out 2';
+                    icon.style.animation = 'pulse 0.8s ease infinite';
+                    setTimeout(() => {
+                        icon.style.animation = '';
+                    }, 1000);
                 }
+                
+                // Add floating loading class
+                element.classList.add('category-floating-loading');
+                setTimeout(() => {
+                    element.classList.remove('category-floating-loading');
+                }, 1000);
             }
             
-            // Initialize grid icon animations
-            function initGridIconAnimations() {
-                const gridSquares = document.querySelectorAll('.square, .mini-square');
-                
-                gridSquares.forEach((square, index) => {
-                    square.addEventListener('mouseenter', () => {
-                        square.style.animation = `pulse 0.4s ease ${index * 0.1}s`;
-                    });
-                    
-                    square.addEventListener('animationend', () => {
-                        square.style.animation = '';
-                    });
-                });
-                
-                // Auto animate grid periodically
-                setInterval(() => {
-                    const headerSquares = document.querySelectorAll('.grid-squares .square');
-                    headerSquares.forEach((square, index) => {
-                        setTimeout(() => {
-                            square.style.animation = 'pulse 0.4s ease';
-                        }, index * 200);
-                    });
-                }, 8000);
-            }
-            
-            // Initialize category counters with enhanced animation
-            function initCategoryCounters() {
-                const counters = document.querySelectorAll('.category-subtitle');
-                
-                const observerOptions = {
-                    threshold: 0.5,
-                    rootMargin: '0px 0px -50px 0px'
-                };
-                
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            animateCounter(entry.target);
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, observerOptions);
-                
-                counters.forEach(counter => observer.observe(counter));
-            }
-            
-            // Enhanced counter animation
-            function animateCounter(element) {
-                const text = element.textContent;
-                const match = text.match(/(\d+)/);
-                
-                if (match) {
-                    const number = parseInt(match[0]);
-                    const prefix = text.substring(0, match.index);
-                    const suffix = text.substring(match.index + match[0].length);
-                    
-                    let current = 0;
-                    const increment = number / 40;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= number) {
-                            element.textContent = prefix + number + suffix;
-                            clearInterval(timer);
-                            
-                            // Add completion animation
-                            element.style.animation = 'fadeInUp 0.3s ease';
-                        } else {
-                            element.textContent = prefix + Math.floor(current) + suffix;
-                        }
-                    }, 40);
-                }
-            }
-            
-            // Restore selected category
+            // Restore selected category with floating styling
             function restoreSelectedCategory() {
                 const selectedCategory = sessionStorage.getItem('selectedCategory');
                 if (selectedCategory) {
@@ -2520,48 +2590,146 @@
                     if (categoryItem) {
                         categoryItem.classList.add('active');
                         
-                        // Add visual feedback
+                        // Add floating visual feedback
                         categoryItem.style.background = 'rgba(255, 255, 255, 0.15)';
-                        categoryItem.style.transform = 'translateX(8px) scale(1.02)';
+                        categoryItem.style.backdropFilter = 'blur(15px)';
+                        
+                        const icon = categoryItem.querySelector('.category-floating-icon');
+                        if (icon) {
+                            icon.style.color = 'white';
+                            icon.style.background = 'var(--pink-accent)';
+                            icon.style.borderColor = 'var(--pink-accent)';
+                        }
+                        
+                        const name = categoryItem.querySelector('.category-floating-name');
+                        if (name) {
+                            name.style.color = 'white';
+                        }
                     }
                 }
             }
             
-            // Initialize view all button
-            function initViewAllButton() {
-                const viewAllBtn = document.querySelector('.view-all-link');
+            // Initialize floating view all button
+            function initViewAllButtonFloating() {
+                const viewAllBtn = document.querySelector('.view-all-floating');
                 if (viewAllBtn) {
                     viewAllBtn.addEventListener('click', function(e) {
-                        // Add click animation
-                        this.style.transform = 'scale(0.95)';
+                        // Add floating click animation
+                        this.style.transform = 'scale(0.95) translateY(2px)';
                         
-                        // Add loading state
+                        // Add enhanced floating loading state
                         const originalHTML = this.innerHTML;
                         const loadingHTML = `
-                            <div class="view-all-icon">
-                                <i class="fas fa-spinner fa-spin"></i>
+                            <div class="view-all-floating-icon">
+                                <div class="mini-grid-dots">
+                                    <span class="mini-dot"></span>
+                                    <span class="mini-dot"></span>
+                                    <span class="mini-dot"></span>
+                                    <span class="mini-dot"></span>
+                                </div>
                             </div>
-                            <span class="view-all-text">Loading...</span>
-                            <div class="view-all-arrow">
-                                <i class="fas fa-arrow-right"></i>
+                            <span class="view-all-floating-text">Loading...</span>
+                            <div class="view-all-floating-arrow">
+                                <i class="fas fa-circle-notch fa-spin"></i>
                             </div>
                         `;
                         
                         this.innerHTML = loadingHTML;
+                        this.style.color = 'var(--pink-accent)';
                         
                         setTimeout(() => {
                             this.style.transform = '';
                             this.innerHTML = originalHTML;
-                        }, 1500);
+                            this.style.color = '';
+                        }, 1200);
                     });
                     
-                    // Add hover animation for mini squares
+                    // Add enhanced floating hover animation
                     viewAllBtn.addEventListener('mouseenter', function() {
-                        const miniSquares = this.querySelectorAll('.mini-square');
-                        miniSquares.forEach((square, index) => {
+                        this.style.transform = 'translateY(-2px)';
+                        
+                        const arrow = this.querySelector('.view-all-floating-arrow');
+                        if (arrow) {
+                            arrow.style.transform = 'translateX(3px)';
+                        }
+                        
+                        const dots = this.querySelectorAll('.mini-dot');
+                        dots.forEach((dot, index) => {
                             setTimeout(() => {
-                                square.style.animation = 'pulse 0.3s ease';
+                                dot.style.transform = 'scale(1.2)';
+                                dot.style.background = 'white';
                             }, index * 100);
+                        });
+                    });
+                    
+                    viewAllBtn.addEventListener('mouseleave', function() {
+                        this.style.transform = '';
+                        
+                        const arrow = this.querySelector('.view-all-floating-arrow');
+                        if (arrow) {
+                            arrow.style.transform = 'translateX(0)';
+                        }
+                        
+                        const dots = this.querySelectorAll('.mini-dot');
+                        dots.forEach(dot => {
+                            dot.style.transform = 'scale(1)';
+                            dot.style.background = 'rgba(255, 255, 255, 0.7)';
+                        });
+                    });
+                }
+            }
+            
+            // Initialize floating scroll animations
+            function initFloatingScrollAnimations() {
+                const floatingPanel = document.querySelector('.categories-floating-panel');
+                if (!floatingPanel) return;
+                
+                let lastScrollY = window.scrollY;
+                
+                window.addEventListener('scroll', () => {
+                    const currentScrollY = window.scrollY;
+                    const scrollDiff = currentScrollY - lastScrollY;
+                    
+                    if (currentScrollY > 100) {
+                        floatingPanel.style.transform = `translateY(-${Math.min(scrollDiff * 0.05, 2)}px) scale(1.02)`;
+                        floatingPanel.style.boxShadow = `
+                            0 30px 60px rgba(0, 0, 0, 0.15),
+                            0 15px 30px rgba(255, 255, 255, 0.15) inset,
+                            0 0 30px rgba(233, 30, 99, 0.1)
+                        `;
+                    } else {
+                        floatingPanel.style.transform = 'translateY(0) scale(1)';
+                        floatingPanel.style.boxShadow = `
+                            0 20px 40px rgba(0, 0, 0, 0.1),
+                            0 10px 20px rgba(255, 255, 255, 0.1) inset
+                        `;
+                    }
+                    
+                    lastScrollY = currentScrollY;
+                }, { passive: true });
+            }
+            
+            // Initialize dot animations
+            function initDotAnimations() {
+                const dots = document.querySelectorAll('.dot');
+                const floatingPanel = document.querySelector('.categories-floating-panel');
+                
+                if (floatingPanel) {
+                    floatingPanel.addEventListener('mouseenter', () => {
+                        dots.forEach((dot, index) => {
+                            setTimeout(() => {
+                                dot.style.background = 'white';
+                                dot.style.transform = 'scale(1.2)';
+                                dot.style.boxShadow = '0 2px 8px rgba(233, 30, 99, 0.3)';
+                            }, index * 50);
+                        });
+                    });
+                    
+                    floatingPanel.addEventListener('mouseleave', () => {
+                        dots.forEach(dot => {
+                            dot.style.background = 'rgba(255, 255, 255, 0.9)';
+                            dot.style.transform = 'scale(1)';
+                            dot.style.boxShadow = 'none';
                         });
                     });
                 }
@@ -2569,7 +2737,7 @@
             
             // Track category selection for analytics
             function trackCategorySelection(categoryItem) {
-                const categoryName = categoryItem.querySelector('.category-title').textContent;
+                const categoryName = categoryItem.querySelector('.category-floating-name').textContent;
                 const categoryId = categoryItem.dataset.category;
                 
                 // Google Analytics tracking
@@ -2773,39 +2941,29 @@
                     clearTimeout(resizeTimeout);
                     resizeTimeout = setTimeout(() => {
                         handleResponsiveChanges();
-                        centerCategoriesSidebar(); // Re-center on resize
                     }, 250);
                 });
             }
 
             // Handle scroll-based animations
             function handleScrollAnimations() {
-                const scrollTop = window.pageYOffset;
-                const categoriesPanel = document.querySelector('.categories-panel');
-                
-                if (categoriesPanel && scrollTop > 100) {
-                    categoriesPanel.style.transform = 'translateY(-5px) scale(1.02)';
-                    categoriesPanel.style.boxShadow = '0 25px 50px rgba(31, 38, 135, 0.5)';
-                } else if (categoriesPanel) {
-                    categoriesPanel.style.transform = 'translateY(0) scale(1)';
-                    categoriesPanel.style.boxShadow = '0 8px 32px rgba(31, 38, 135, 0.37)';
-                }
+                // Additional scroll-based effects can be added here
             }
 
             // Handle responsive changes
             function handleResponsiveChanges() {
-                const categoriesPanel = document.querySelector('.categories-panel');
-                const sidebar = document.querySelector('.category-sidebar-redesigned');
+                const floatingPanel = document.querySelector('.categories-floating-panel');
+                const sidebar = document.querySelector('.category-sidebar-modern');
                 
                 if (window.innerWidth <= 768) {
                     if (sidebar) sidebar.style.padding = '15px';
-                    if (categoriesPanel) categoriesPanel.style.borderRadius = '12px';
+                    if (floatingPanel) floatingPanel.style.borderRadius = '15px';
                 } else if (window.innerWidth <= 991) {
                     if (sidebar) sidebar.style.padding = '20px';
-                    if (categoriesPanel) categoriesPanel.style.borderRadius = '16px';
+                    if (floatingPanel) floatingPanel.style.borderRadius = '20px';
                 } else {
-                    if (sidebar) sidebar.style.padding = '20px 0 20px 20px';
-                    if (categoriesPanel) categoriesPanel.style.borderRadius = '16px';
+                    if (sidebar) sidebar.style.padding = '0 10px';
+                    if (floatingPanel) floatingPanel.style.borderRadius = '20px';
                 }
             }
 
@@ -2890,31 +3048,6 @@
                     console.error('Development Error:', e.message);
                 }
             });
-            
-            // Center categories sidebar vertically
-            function centerCategoriesSidebar() {
-                const header = document.querySelector('.modern-header');
-                const sidebar = document.querySelector('.category-sidebar-redesigned');
-                
-                if (header && sidebar && window.innerWidth > 991) {
-                    const headerHeight = header.offsetHeight;
-                    const sidebarHeight = sidebar.offsetHeight;
-                    let topMargin = (headerHeight - sidebarHeight) / 2;
-                    
-                    // Ensure we don't go too low with the sidebar
-                    topMargin = Math.min(topMargin, 120); 
-                    
-                    // Only apply if it would move it downward
-                    if (topMargin > 20) {
-                        sidebar.style.marginTop = topMargin + 'px';
-                    }
-                } else if (sidebar) {
-                    sidebar.style.marginTop = ''; // Reset on mobile
-                }
-            }
-            
-            // Call the function on window resize
-            window.addEventListener('resize', centerCategoriesSidebar);
         });
 
         // Add to Cart Function
