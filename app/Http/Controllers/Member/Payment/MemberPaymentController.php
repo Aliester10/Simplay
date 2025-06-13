@@ -1,121 +1,161 @@
 <?php
-// app/Http/Controllers/Member/Payment/MemberPaymentController.php - PATH FIX INTEGRATED
+// app/Http/Controllers/Member/Payment/MemberPaymentController.php - SIMPLIFIED 3 STATUS VERSION
 
 namespace App\Http\Controllers\Member\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Models\PaymentStatus;
 use App\Models\PaymentSetting;
+use App\Models\QrisImage;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class MemberPaymentController extends Controller
 {
     /**
-     * Display payment status list - ENHANCED WITH PATH FIX
+     * 🔥 SIMPLIFIED: Display payment status list - 3 STATUS ONLY
      */
     public function paymentStatus()
     {
         try {
-            if (!auth()->check()) {
-                return redirect()->route('login')->with('error', 'Please login to view payment status');
-            }
-
             $user = auth()->user();
             
-            // ENHANCED: Get user's payment records with better query
-            $payments = PaymentStatus::where(function($query) use ($user) {
-                    $query->where('customer_email', $user->email)
-                          ->orWhere('customer_name', $user->name);
-                })
+            // Get all payments for current user
+            $payments = PaymentStatus::where('customer_email', $user->email)
                 ->with(['order', 'approvedBy'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
 
-            // DEBUG: Log payment proof info for path debugging
-            foreach ($payments as $payment) {
-                if ($payment->payment_proof) {
-                    Log::info('Payment proof path debug', [
-                        'payment_id' => $payment->id,
-                        'file' => $payment->payment_proof,
-                        'url' => $payment->payment_proof_url,
-                        'exists' => $payment->payment_proof_exists,
-                        'timestamp' => '2025-06-13 18:28:03'
-                    ]);
-                }
-            }
+            // SIMPLIFIED statistics - 3 STATUS ONLY
+            $statistics = [
+                'total_payments' => PaymentStatus::where('customer_email', $user->email)->count(),
+                'pending_payments' => PaymentStatus::where('customer_email', $user->email)->where('status', 'pending')->count(),
+                'approved_payments' => PaymentStatus::where('customer_email', $user->email)->where('status', 'approved')->count(),
+                'rejected_payments' => PaymentStatus::where('customer_email', $user->email)->where('status', 'rejected')->count()
+            ];
 
-            // ENHANCED: Get payment settings with better error handling
-            $paymentSettings = PaymentSetting::where('status', 'active')->first();
+            // Recent activity (last 10 status changes)
+            $recentActivity = PaymentStatus::where('customer_email', $user->email)
+                ->whereNotNull('updated_at')
+                ->orderBy('updated_at', 'desc')
+                ->take(10)
+                ->get();
 
-            Log::info('Payment status viewed - PATH FIX', [
-                'user_id' => $user->id,
+            Log::info('Member payment status page viewed - SIMPLIFIED', [
                 'user_email' => $user->email,
                 'payments_count' => $payments->count(),
-                'payments_with_proof' => $payments->filter(fn($p) => $p->payment_proof)->count(),
-                'has_payment_settings' => $paymentSettings ? true : false,
-                'timestamp' => '2025-06-13 18:28:03',
-                'version' => 'path_fix_v1'
+                'total_payments' => $statistics['total_payments'],
+                'pending_payments' => $statistics['pending_payments'],
+                'approved_payments' => $statistics['approved_payments'],
+                'rejected_payments' => $statistics['rejected_payments'],
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
 
-            return view('Member.Payment.status', compact('payments', 'paymentSettings'));
+            return view('Member.Payment.status', compact('payments', 'statistics', 'recentActivity'));
             
         } catch (\Exception $e) {
-            Log::error('Payment status error - PATH FIX:', [
+            Log::error('Member payment status error - SIMPLIFIED:', [
+                'user_email' => auth()->user()->email,
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'user' => auth()->check() ? auth()->user()->email : 'guest',
-                'timestamp' => '2025-06-13 18:28:03'
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
             
-            return redirect()->route('portal')->with('error', 'Unable to load payment status. Please try again.');
+            return redirect()->route('portal')->with('error', 'Unable to load payment status.');
         }
     }
 
     /**
-     * Display specific payment detail - ENHANCED WITH PATH FIX
+     * 🔥 SIMPLIFIED: Show detailed payment information - 3 STATUS TIMELINE
      */
     public function paymentDetail($id)
     {
         try {
-            if (!auth()->check()) {
-                return redirect()->route('login');
-            }
-
             $user = auth()->user();
             
-            $payment = PaymentStatus::where('id', $id)
-                ->where(function($query) use ($user) {
-                    $query->where('customer_email', $user->email)
-                          ->orWhere('customer_name', $user->name);
-                })
+            $payment = PaymentStatus::where('customer_email', $user->email)
                 ->with(['order', 'approvedBy'])
-                ->firstOrFail();
+                ->findOrFail($id);
 
-            $paymentSettings = PaymentSetting::where('status', 'active')->first();
+            // SIMPLIFIED payment timeline - 3 STATUS ONLY
+            $timeline = [
+                [
+                    'status' => 'created',
+                    'label' => 'Payment Created',
+                    'description' => 'Payment record created, waiting for proof upload',
+                    'date' => $payment->created_at,
+                    'completed' => true,
+                    'icon' => 'fa-plus-circle',
+                    'color' => 'info'
+                ],
+                [
+                    'status' => 'pending',
+                    'label' => 'Proof Uploaded - Pending Review',
+                    'description' => 'Payment proof uploaded and waiting for admin review',
+                    'date' => $payment->payment_date,
+                    'completed' => in_array($payment->status, ['pending', 'approved', 'rejected']),
+                    'icon' => 'fa-clock',
+                    'color' => 'warning'
+                ]
+            ];
 
-            Log::info('Payment detail viewed - PATH FIX', [
+            // Add final status
+            if ($payment->status == 'approved') {
+                $timeline[] = [
+                    'status' => 'approved',
+                    'label' => 'Payment Approved',
+                    'description' => 'Payment has been approved by admin',
+                    'date' => $payment->approved_at,
+                    'completed' => true,
+                    'icon' => 'fa-check-circle',
+                    'color' => 'success'
+                ];
+            } elseif ($payment->status == 'rejected') {
+                $timeline[] = [
+                    'status' => 'rejected',
+                    'label' => 'Payment Rejected',
+                    'description' => 'Payment was rejected: ' . ($payment->reject_reason ?? 'No reason provided'),
+                    'date' => $payment->rejected_at,
+                    'completed' => true,
+                    'icon' => 'fa-times-circle',
+                    'color' => 'danger'
+                ];
+            } else {
+                // Still pending
+                $timeline[] = [
+                    'status' => 'final',
+                    'label' => 'Waiting for Admin Review',
+                    'description' => 'Admin will review and approve/reject your payment',
+                    'date' => null,
+                    'completed' => false,
+                    'icon' => 'fa-hourglass',
+                    'color' => 'secondary'
+                ];
+            }
+
+            Log::info('Member payment detail viewed - SIMPLIFIED', [
                 'payment_id' => $id,
                 'user_email' => $user->email,
                 'payment_status' => $payment->status,
+                'payment_amount' => $payment->amount,
                 'has_proof' => $payment->payment_proof ? true : false,
-                'proof_file' => $payment->payment_proof,
-                'proof_exists' => $payment->payment_proof_exists,
-                'timestamp' => '2025-06-13 18:28:03'
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
 
-            return view('Member.Payment.detail', compact('payment', 'paymentSettings'));
+            return view('Member.Payment.detail', compact('payment', 'timeline'));
             
         } catch (\Exception $e) {
-            Log::error('Payment detail error - PATH FIX:', [
+            Log::error('Member payment detail error - SIMPLIFIED:', [
                 'payment_id' => $id,
+                'user_email' => auth()->user()->email,
                 'error' => $e->getMessage(),
-                'user' => auth()->check() ? auth()->user()->email : 'guest',
-                'timestamp' => '2025-06-13 18:28:03'
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
             
             return redirect()->route('member.payment.status')->with('error', 'Payment not found.');
@@ -123,166 +163,134 @@ class MemberPaymentController extends Controller
     }
 
     /**
-     * Upload payment proof - ENHANCED WITH BETTER PATH HANDLING
+     * Display payment instructions page
+     */
+    public function paymentInstructions($orderId = null)
+    {
+        try {
+            $user = auth()->user();
+            $paymentStatus = null;
+            $order = null;
+
+            // If orderId is provided, get the order and related payment
+            if ($orderId) {
+                $order = Order::where('user_id', $user->id)->findOrFail($orderId);
+                $paymentStatus = PaymentStatus::where('order_id', $orderId)
+                    ->where('customer_email', $user->email)
+                    ->first();
+            }
+
+            // Get payment settings with enhanced QR support
+            $paymentSettings = $this->getPaymentSettingsData();
+
+            Log::info('Member payment instructions viewed', [
+                'user_email' => $user->email,
+                'order_id' => $orderId,
+                'has_payment_status' => $paymentStatus ? true : false,
+                'timestamp' => '2025-06-13 19:49:34'
+            ]);
+
+            return view('Member.Payment.instructions', compact('paymentStatus', 'order', 'paymentSettings'));
+            
+        } catch (\Exception $e) {
+            Log::error('Member payment instructions error:', [
+                'user_email' => auth()->user()->email,
+                'order_id' => $orderId,
+                'error' => $e->getMessage(),
+                'timestamp' => '2025-06-13 19:49:34'
+            ]);
+            
+            return redirect()->route('portal')->with('error', 'Unable to load payment instructions.');
+        }
+    }
+
+    /**
+     * 🔥 SIMPLIFIED: Upload payment proof - DIRECTLY TO PENDING STATUS
      */
     public function uploadPaymentProof(Request $request, $id)
     {
         try {
-            if (!auth()->check()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please login first'
-                ], 401);
-            }
-
-            Log::info('Payment proof upload started - PATH FIX', [
-                'payment_id' => $id,
-                'user' => auth()->user()->email,
-                'timestamp' => '2025-06-13 18:28:03'
-            ]);
-
-            // ENHANCED VALIDATION
             $request->validate([
-                'payment_proof' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
-                'notes' => 'nullable|string|max:1000'
+                'payment_proof' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240', // 10MB max
+                'payment_notes' => 'nullable|string|max:500'
             ]);
 
             $user = auth()->user();
-            
-            $payment = PaymentStatus::where('id', $id)
-                ->where(function($query) use ($user) {
-                    $query->where('customer_email', $user->email)
-                          ->orWhere('customer_name', $user->name);
-                })
-                ->firstOrFail();
+            $payment = PaymentStatus::where('customer_email', $user->email)->findOrFail($id);
+
+            // Check if payment can receive proof upload
+            if (!in_array($payment->status, ['pending', 'rejected'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment proof can only be uploaded for new payments or rejected payments.',
+                    'current_status' => $payment->status
+                ], 400);
+            }
 
             if ($request->hasFile('payment_proof')) {
+                // Delete old proof if exists
+                if ($payment->payment_proof) {
+                    $this->deletePaymentProofFile($payment->payment_proof);
+                }
+
+                // Generate unique filename
                 $file = $request->file('payment_proof');
+                $timestamp = now()->timestamp;
+                $filename = $timestamp . '_payment_proof_' . $file->getClientOriginalName();
                 
-                // ENHANCED: Generate unique filename with timestamp
-                $timestamp = now()->format('Ymd_His');
-                $filename = "payment_proof_{$id}_{$timestamp}.{$file->getClientOriginalExtension()}";
-                
-                // PATH FIX: Use consistent path structure (payment/proofs/ to match existing)
-                $uploadPath = 'payment/proofs';
-                if (!Storage::disk('public')->exists($uploadPath)) {
-                    Storage::disk('public')->makeDirectory($uploadPath);
-                    Log::info('Created payment/proofs directory');
-                }
+                // Store file in payment-proofs directory
+                $path = $file->storeAs('payment-proofs', $filename, 'public');
 
-                // ENHANCED: Store file with better error handling
-                $storedPath = $file->storeAs($uploadPath, $filename, 'public');
-                
-                if (!$storedPath) {
-                    throw new \Exception('Failed to store file to disk');
-                }
-
-                // Verify file was actually stored
-                $verificationPaths = [
-                    storage_path('app/public/' . $storedPath),
-                    public_path('storage/' . $storedPath)
-                ];
-                
-                $fileStored = false;
-                foreach ($verificationPaths as $path) {
-                    if (file_exists($path)) {
-                        $fileStored = true;
-                        Log::info('File verified at: ' . $path);
-                        break;
-                    }
-                }
-
-                if (!$fileStored) {
-                    throw new \Exception('File upload verification failed - file not found after storage');
-                }
-
-                Log::info('File stored and verified successfully - PATH FIX', [
-                    'stored_path' => $storedPath,
-                    'filename' => $filename,
-                    'file_size' => $file->getSize(),
-                    'mime_type' => $file->getMimeType(),
-                    'verification_passed' => $fileStored
+                // 🔥 IMPORTANT: Set status to 'pending' after upload
+                $payment->update([
+                    'payment_proof' => $path,
+                    'payment_date' => now(),
+                    'status' => 'pending', // 🔥 DIRECTLY TO PENDING
+                    'payment_notes' => $request->payment_notes,
+                    'rejected_at' => null, // Clear rejection data if re-uploading
+                    'reject_reason' => null
                 ]);
 
-                // ENHANCED: Delete old payment proof if exists
-                if ($payment->payment_proof) {
-                    $this->deleteOldProof($payment->payment_proof);
-                }
-
-                // PATH FIX: Store with full path to maintain consistency
-                $updateData = [
-                    'payment_proof' => $storedPath, // Store full path: payment/proofs/filename.ext
-                    'status' => 'uploaded',
-                    'payment_date' => now()
-                ];
-
-                // Store notes in correct field
-                if ($request->notes) {
-                    $updateData['admin_notes'] = $request->notes;
-                }
-
-                $payment->update($updateData);
-
-                // ENHANCED: Verify file exists after update
-                $payment = $payment->fresh();
-                $fileExists = $payment->payment_proof_exists;
-
-                Log::info('Payment proof uploaded successfully - PATH FIX', [
-                    'payment_id' => $payment->id,
-                    'invoice_id' => $payment->invoice_id,
+                Log::info('Member payment proof uploaded - SIMPLIFIED TO PENDING', [
+                    'payment_id' => $id,
                     'user_email' => $user->email,
-                    'filename' => $filename,
-                    'stored_path' => $storedPath,
+                    'file_name' => $filename,
+                    'file_path' => $path,
                     'file_size' => $file->getSize(),
-                    'final_exists_check' => $fileExists,
-                    'new_status' => $payment->status,
-                    'url_generated' => $payment->payment_proof_url,
-                    'timestamp' => '2025-06-13 18:28:03'
+                    'mime_type' => $file->getMimeType(),
+                    'payment_notes' => $request->payment_notes,
+                    'new_status' => 'pending',
+                    'timestamp' => '2025-06-13 19:49:34'
                 ]);
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Payment proof uploaded successfully',
+                    'message' => 'Payment proof uploaded successfully! Status changed to pending review.',
                     'data' => [
                         'payment_id' => $payment->id,
-                        'filename' => $filename,
-                        'url' => $payment->payment_proof_url,
-                        'file_exists' => $fileExists,
-                        'file_size' => $this->formatFileSize($file->getSize()),
-                        'status' => $payment->status
+                        'status' => $payment->status,
+                        'file_path' => $path,
+                        'file_url' => asset('storage/' . $path),
+                        'upload_date' => $payment->payment_date->format('d/m/Y H:i:s')
                     ]
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'No file uploaded'
+                'message' => 'No file uploaded.'
             ], 400);
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::warning('Payment proof upload validation failed - PATH FIX', [
-                'payment_id' => $id,
-                'errors' => $e->errors(),
-                'user' => auth()->user()->email
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
-
         } catch (\Exception $e) {
-            Log::error('Upload payment proof error - PATH FIX:', [
+            Log::error('Member upload payment proof error - SIMPLIFIED:', [
                 'payment_id' => $id,
+                'user_email' => auth()->user()->email,
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'user' => auth()->check() ? auth()->user()->email : 'guest',
-                'timestamp' => '2025-06-13 18:28:03'
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error uploading payment proof: ' . $e->getMessage()
@@ -291,329 +299,258 @@ class MemberPaymentController extends Controller
     }
 
     /**
-     * Payment instructions - ENHANCED
+     * 🔥 SIMPLIFIED: Create payment record from order - STARTS WITH PENDING STATUS
      */
-    public function paymentInstructions($orderId = null)
+    public function createPaymentFromOrder($orderId)
     {
         try {
-            $paymentSettings = PaymentSetting::where('status', 'active')->first();
-            
-            Log::info('Payment instructions accessed - PATH FIX', [
-                'order_id' => $orderId,
-                'user' => auth()->check() ? auth()->user()->email : 'guest',
-                'has_settings' => $paymentSettings ? true : false,
-                'timestamp' => '2025-06-13 18:28:03'
-            ]);
-            
-            return view('Member.Payment.instructions', compact('paymentSettings', 'orderId'));
-            
-        } catch (\Exception $e) {
-            Log::error('Payment instructions error - PATH FIX:', [
-                'error' => $e->getMessage(),
-                'order_id' => $orderId,
-                'timestamp' => '2025-06-13 18:28:03'
-            ]);
-            
-            return redirect()->route('portal')->with('error', 'Unable to load payment instructions.');
-        }
-    }
+            $user = auth()->user();
+            $order = Order::where('user_id', $user->id)->findOrFail($orderId);
 
-    /**
-     * Create payment from order - ENHANCED
-     */
-    public function createPaymentFromOrder(Request $request, $orderId)
-    {
-        try {
-            if (!auth()->check()) {
+            // Check if payment already exists
+            $existingPayment = PaymentStatus::where('order_id', $orderId)
+                ->where('customer_email', $user->email)
+                ->first();
+
+            if ($existingPayment) {
                 return response()->json([
-                    'success' => false,
-                    'message' => 'Please login first'
-                ], 401);
+                    'success' => true,
+                    'message' => 'Payment record already exists.',
+                    'payment_id' => $existingPayment->id,
+                    'redirect_url' => route('member.payment.instructions', $existingPayment->id)
+                ]);
             }
 
-            $user = auth()->user();
+            // Create new payment record with pending status
+            $invoiceId = 'INV-ORD-' . $orderId . '-' . time();
             
-            // ENHANCED: Validate request data
-            $request->validate([
-                'amount' => 'required|numeric|min:0.01'
-            ]);
-
-            // ENHANCED: Generate unique invoice ID
-            $invoiceId = 'INV-ORD-' . $orderId . '-' . time() . '-' . rand(1000, 9999);
-            
-            // Create payment status
             $payment = PaymentStatus::create([
                 'invoice_id' => $invoiceId,
+                'order_id' => $orderId,
                 'customer_name' => $user->name,
                 'customer_email' => $user->email,
-                'amount' => $request->amount,
-                'payment_method' => $request->payment_method ?? 'qris',
-                'status' => 'pending',
-                'payment_date' => now(),
-                'order_id' => $orderId
+                'amount' => $order->total_amount,
+                'payment_method' => 'qris', // Default to QRIS
+                'status' => 'pending', // 🔥 START WITH PENDING (no proof yet)
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
-            Log::info('Payment created from order - PATH FIX', [
+            Log::info('Member payment created from order - SIMPLIFIED', [
                 'payment_id' => $payment->id,
-                'invoice_id' => $invoiceId,
                 'order_id' => $orderId,
+                'invoice_id' => $invoiceId,
                 'user_email' => $user->email,
-                'amount' => $request->amount,
-                'timestamp' => '2025-06-13 18:28:03'
+                'amount' => $order->total_amount,
+                'initial_status' => 'pending',
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Payment created successfully',
-                'data' => [
-                    'payment_id' => $payment->id,
-                    'invoice_id' => $invoiceId,
-                    'amount' => $payment->amount,
-                    'status' => $payment->status
-                ]
+                'message' => 'Payment record created successfully!',
+                'payment_id' => $payment->id,
+                'invoice_id' => $invoiceId,
+                'redirect_url' => route('member.payment.instructions', $payment->id)
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Create payment from order error - PATH FIX:', [
+            Log::error('Member create payment from order error - SIMPLIFIED:', [
                 'order_id' => $orderId,
+                'user_email' => auth()->user()->email,
                 'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'user' => auth()->check() ? auth()->user()->email : 'guest',
-                'timestamp' => '2025-06-13 18:28:03'
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating payment: ' . $e->getMessage()
+                'message' => 'Error creating payment record: ' . $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Get payment settings with QR support - ENHANCED
+     * Get payment settings with BLOB QR support
      */
     public function getPaymentSettings()
     {
         try {
-            $settings = PaymentSetting::where('status', 'active')->first();
-            
-            if (!$settings) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No active payment settings found',
-                    'data' => null
-                ], 404);
-            }
-
-            $qrImage = null;
-            
-            // Priority 1: File-based QR from QrisImage table
-            $qrImageRecord = \App\Models\QrisImage::where('status', 'active')->first();
-            if ($qrImageRecord && $qrImageRecord->image_path && file_exists(public_path('storage/' . $qrImageRecord->image_path))) {
-                $qrImage = [
-                    'id' => $qrImageRecord->id,
-                    'name' => $qrImageRecord->name,
-                    'image_path' => $qrImageRecord->image_path,
-                    'full_url' => asset('storage/' . $qrImageRecord->image_path),
-                    'source' => 'file'
-                ];
-            }
-            // Priority 2: BLOB data from PaymentSetting
-            elseif ($settings->qr_img) {
-                $qrImage = [
-                    'id' => $settings->id,
-                    'name' => 'QR Payment (Database BLOB)',
-                    'image_path' => null,
-                    'full_url' => 'data:image/png;base64,' . base64_encode($settings->qr_img),
-                    'source' => 'blob',
-                    'blob_size' => strlen($settings->qr_img)
-                ];
-            }
+            $data = $this->getPaymentSettingsData();
             
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'bank_name' => $settings->bank_name,
-                    'account_number' => $settings->account_number,
-                    'account_name' => $settings->account_name,
-                    'payment_instructions' => $settings->payment_instructions,
-                    'qr_image' => $qrImage,
-                    'status' => $settings->status
-                ],
-                'timestamp' => '2025-06-13 18:28:03'
+                'data' => $data,
+                'timestamp' => '2025-06-13 19:49:34',
+                'debug_info' => [
+                    'user' => 'Aliester10',
+                    'qr_source' => $data['qr_image'] ? $data['qr_image']['source'] : 'none',
+                    'blob_available' => isset($data['qr_image']['blob_size'])
+                ]
             ]);
-
+            
         } catch (\Exception $e) {
-            Log::error('Get payment settings error - PATH FIX:', [
+            Log::error('Member get payment settings error - SIMPLIFIED:', [
                 'error' => $e->getMessage(),
-                'timestamp' => '2025-06-13 18:28:03'
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error retrieving payment settings: ' . $e->getMessage()
+                'message' => $e->getMessage(),
+                'data' => null,
+                'timestamp' => '2025-06-13 19:49:34'
             ], 500);
         }
     }
 
     /**
-     * Show payment proof image - FIXED FOR EXISTING PATH STRUCTURE
+     * Show payment proof image
      */
     public function showPaymentProof($id)
     {
         try {
-            $payment = PaymentStatus::findOrFail($id);
-            
-            // Check user permission
-            if (auth()->check()) {
-                $user = auth()->user();
-                if ($payment->customer_email !== $user->email && $payment->customer_name !== $user->name) {
-                    abort(403, 'Unauthorized access');
-                }
-            }
+            $user = auth()->user();
+            $payment = PaymentStatus::where('customer_email', $user->email)->findOrFail($id);
             
             if (!$payment->payment_proof) {
+                Log::warning('Member tried to access non-existent payment proof', [
+                    'payment_id' => $id,
+                    'user_email' => $user->email,
+                    'timestamp' => '2025-06-13 19:49:34'
+                ]);
                 abort(404, 'No payment proof found');
             }
 
-            Log::info('Showing payment proof - PATH FIX', [
+            Log::info('Member accessing payment proof', [
                 'payment_id' => $id,
                 'file' => $payment->payment_proof,
-                'user' => auth()->user()->email ?? 'guest',
-                'timestamp' => '2025-06-13 18:28:03'
+                'user_email' => $user->email,
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
 
-            // PATH FIX: Handle existing path structure
-            if (strpos($payment->payment_proof, 'payment/proofs/') !== false) {
-                // File already includes the full path
-                $possiblePaths = [
-                    storage_path('app/public/' . $payment->payment_proof),
-                    public_path('storage/' . $payment->payment_proof),
-                    storage_path('app/public/' . str_replace('payment/proofs/', 'payment_proofs/', $payment->payment_proof)),
-                    public_path('storage/' . str_replace('payment/proofs/', 'payment_proofs/', $payment->payment_proof))
-                ];
-            } else {
-                $possiblePaths = [
-                    storage_path('app/public/payment_proofs/' . $payment->payment_proof),
-                    storage_path('app/public/payment/proofs/' . $payment->payment_proof),
-                    public_path('storage/payment_proofs/' . $payment->payment_proof),
-                    public_path('storage/payment/proofs/' . $payment->payment_proof)
-                ];
-            }
+            // Try multiple possible file locations
+            $possiblePaths = [
+                storage_path('app/public/' . $payment->payment_proof),
+                storage_path('app/public/payment-proofs/' . basename($payment->payment_proof)),
+                storage_path('app/public/payment_proofs/' . basename($payment->payment_proof)),
+                public_path('storage/' . $payment->payment_proof),
+                public_path('storage/payment-proofs/' . basename($payment->payment_proof)),
+                public_path('storage/payment_proofs/' . basename($payment->payment_proof))
+            ];
 
             foreach ($possiblePaths as $path) {
-                if (file_exists($path)) {
-                    Log::info('Payment proof file found at - PATH FIX: ' . $path);
+                if (file_exists($path) && is_readable($path)) {
+                    Log::info('Member payment proof file found', [
+                        'payment_id' => $id,
+                        'path' => $path,
+                        'file_size' => filesize($path),
+                        'timestamp' => '2025-06-13 19:49:34'
+                    ]);
+                    
                     return response()->file($path);
                 }
             }
 
-            Log::error('Payment proof file not found in any location - PATH FIX', [
+            Log::error('Member payment proof file not found in any location', [
                 'payment_id' => $id,
                 'file' => $payment->payment_proof,
-                'checked_paths' => $possiblePaths
+                'checked_paths' => $possiblePaths,
+                'user_email' => $user->email,
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
 
-            abort(404, 'Payment proof file not found');
+            abort(404, 'Payment proof file not found on server');
 
         } catch (\Exception $e) {
-            Log::error('Show payment proof error - PATH FIX:', [
+            Log::error('Member show payment proof error:', [
                 'payment_id' => $id,
                 'error' => $e->getMessage(),
-                'timestamp' => '2025-06-13 18:28:03'
+                'user_email' => auth()->user()->email,
+                'timestamp' => '2025-06-13 19:49:34'
             ]);
             
-            abort(404, 'Payment proof not accessible');
+            abort(404, 'Payment proof not accessible: ' . $e->getMessage());
         }
     }
 
-    // HELPER METHODS
+    /**
+     * Get payment settings data with enhanced QR support
+     */
+    private function getPaymentSettingsData()
+    {
+        $settings = PaymentSetting::where('status', 'active')->first();
+        
+        if (!$settings) {
+            return [
+                'bank_name' => null,
+                'account_number' => null,
+                'account_name' => null,
+                'payment_instructions' => 'Payment settings not configured',
+                'qr_image' => null,
+                'status' => 'inactive'
+            ];
+        }
+
+        $qrImage = null;
+        
+        // Priority 1: QrisImage file
+        $qrImageRecord = QrisImage::where('status', 'active')->first();
+        if ($qrImageRecord && $qrImageRecord->image_path && file_exists(public_path('storage/' . $qrImageRecord->image_path))) {
+            $qrImage = [
+                'id' => $qrImageRecord->id,
+                'name' => $qrImageRecord->name,
+                'image_path' => $qrImageRecord->image_path,
+                'full_url' => asset('storage/' . $qrImageRecord->image_path),
+                'source' => 'file',
+                'timestamp' => '2025-06-13 19:49:34',
+                'user' => 'Aliester10'
+            ];
+        }
+        // Priority 2: BLOB data
+        elseif ($settings->qr_img) {
+            $qrImage = [
+                'id' => $settings->id,
+                'name' => 'QR Payment (Database BLOB)',
+                'image_path' => null,
+                'full_url' => 'data:image/png;base64,' . base64_encode($settings->qr_img),
+                'source' => 'blob',
+                'blob_size' => strlen($settings->qr_img),
+                'timestamp' => '2025-06-13 19:49:34',
+                'user' => 'Aliester10'
+            ];
+        }
+        
+        return [
+            'bank_name' => $settings->bank_name,
+            'account_number' => $settings->account_number,
+            'account_name' => $settings->account_name,
+            'payment_instructions' => $settings->payment_instructions,
+            'qr_image' => $qrImage,
+            'status' => $settings->status
+        ];
+    }
 
     /**
-     * Delete old payment proof file - ENHANCED WITH PATH FIX
+     * Delete payment proof file helper
      */
-    private function deleteOldProof($filename)
+    private function deletePaymentProofFile($filename)
     {
         try {
-            // PATH FIX: Handle both old and new path structures
-            if (strpos($filename, 'payment/proofs/') !== false) {
-                $paths = [
-                    $filename, // Full path already included
-                    str_replace('payment/proofs/', 'payment_proofs/', $filename)
-                ];
-            } else {
-                $paths = [
-                    'payment_proofs/' . $filename,
-                    'payment/proofs/' . $filename,
-                    'payment_proofs/thumbnails/thumb_' . $filename
-                ];
-            }
+            $possiblePaths = [
+                'payment-proofs/' . basename($filename),
+                'payment_proofs/' . basename($filename),
+                'payment/proofs/' . basename($filename),
+                $filename // If full path is stored
+            ];
 
-            foreach ($paths as $path) {
+            foreach ($possiblePaths as $path) {
                 if (Storage::disk('public')->exists($path)) {
                     Storage::disk('public')->delete($path);
-                    Log::info('Deleted old payment proof - PATH FIX: ' . $path);
+                    Log::info('Deleted old payment proof file: ' . $path);
                 }
             }
         } catch (\Exception $e) {
-            Log::warning('Failed to delete old payment proof - PATH FIX: ' . $e->getMessage());
+            Log::warning('Failed to delete payment proof file: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Verify if uploaded file exists - ENHANCED WITH PATH FIX
-     */
-    private function verifyFileExists($filename)
-    {
-        $possiblePaths = [
-            storage_path('app/public/payment_proofs/' . $filename),
-            storage_path('app/public/payment/proofs/' . $filename),
-            public_path('storage/payment_proofs/' . $filename),
-            public_path('storage/payment/proofs/' . $filename)
-        ];
-
-        foreach ($possiblePaths as $path) {
-            if (file_exists($path)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get payment proof URL - ENHANCED WITH PATH FIX
-     */
-    private function getPaymentProofUrl($filename)
-    {
-        // Try multiple path structures
-        $pathsToTry = [
-            'payment_proofs/' . $filename,
-            'payment/proofs/' . $filename
-        ];
-
-        foreach ($pathsToTry as $path) {
-            if (Storage::disk('public')->exists($path)) {
-                return Storage::disk('public')->url($path);
-            }
-        }
-        
-        // Fallback to asset URL
-        return asset('storage/payment/proofs/' . $filename);
-    }
-
-    /**
-     * Format file size for display
-     */
-    private function formatFileSize($bytes)
-    {
-        if ($bytes >= 1048576) {
-            return round($bytes / 1048576, 2) . ' MB';
-        } elseif ($bytes >= 1024) {
-            return round($bytes / 1024, 2) . ' KB';
-        }
-        
-        return $bytes . ' bytes';
     }
 }
