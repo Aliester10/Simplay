@@ -103,40 +103,43 @@
                 </div>
             @endif
 
-            <!-- Filter Section -->
-            <div class="filter-section" data-aos="fade-up" data-aos-delay="300">
-                <div class="filter-header">
-                    <h3>Browse by Category</h3>
-                    <p>Find the perfect role that matches your expertise</p>
-                </div>
-                <div class="filter-pills">
-                    <button class="filter-pill active" data-category="all">
-                        <span class="pill-icon">🎯</span>
-                        <span class="pill-text">All Jobs</span>
-                        <span class="pill-count">{{ $positions->count() }}</span>
-                    </button>
-                    <button class="filter-pill" data-category="Engineering">
-                        <span class="pill-icon">💻</span>
-                        <span class="pill-text">Engineering</span>
-                        <span class="pill-count">{{ $positions->where('category', 'Engineering')->count() }}</span>
-                    </button>
-                    <button class="filter-pill" data-category="Marketing">
-                        <span class="pill-icon">📈</span>
-                        <span class="pill-text">Marketing</span>
-                        <span class="pill-count">{{ $positions->where('category', 'Marketing')->count() }}</span>
-                    </button>
-                    <button class="filter-pill" data-category="Design">
-                        <span class="pill-icon">🎨</span>
-                        <span class="pill-text">Design</span>
-                        <span class="pill-count">{{ $positions->where('category', 'Design')->count() }}</span>
-                    </button>
-                    <button class="filter-pill" data-category="Research">
-                        <span class="pill-icon">🔬</span>
-                        <span class="pill-text">Research</span>
-                        <span class="pill-count">{{ $positions->where('category', 'Research')->count() }}</span>
-                    </button>
-                </div>
+<!-- Filter Section -->
+<!-- Filter Section with Dropdown and Search -->
+<div class="filter-section" data-aos="fade-up" data-aos-delay="300">
+    <div class="filter-header">
+        <h3>Find Your Perfect Role</h3>
+        <p>Search and filter jobs by category</p>
+    </div>
+    
+    <div class="filter-controls">
+        <div class="filter-control-group">
+            <div class="dropdown-wrapper">
+                <i class="fas fa-tag"></i>
+                <select id="category-dropdown" class="category-dropdown">
+                    <option value="all">All Categories ({{ $positions->total() }})</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->category }}">{{ $cat->category }} ({{ $positions->where('category', $cat->category)->count() }})</option>
+                    @endforeach
+                </select>
+                <i class="fas fa-chevron-down dropdown-icon"></i>
             </div>
+        </div>
+        
+        <div class="filter-control-group">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="job-search" placeholder="Search for positions..." class="search-input">
+                <button type="button" id="clear-search" class="clear-search-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="filter-tags" id="active-filters">
+        <!-- Active filters will appear here -->
+    </div>
+</div>
 
             <!-- Jobs List -->
             <div class="jobs-container">
@@ -195,17 +198,15 @@
                                         </button>
                                     </div>
                                 </div>
+                                @php
+                                    $skills = $position->job_footer ? array_filter(array_map('trim', explode(',', $position->job_footer))) : [];
+                                @endphp
                                 <div class="job-footer">
                                     <div class="skills-preview">
-                                        <span class="skill-tag">PHP</span>
-                                        <span class="skill-tag">Laravel</span>
-                                        <span class="skill-tag">JavaScript</span>
-                                        <span class="skill-tag more-skills">+3 more</span>
+                                         @foreach($skills as $skill)
+                                            <span class="skill-tag">{{ $skill }}</span>
+                                        @endforeach
                                     </div>
-                                    <button class="apply-quick-btn" onclick="scrollToApplication('{{ $position->id }}')">
-                                        <span>Quick Apply</span>
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
                                 </div>
                             </div>
 
@@ -860,26 +861,386 @@
     }
 
     /* Filter Section */
+/* Enhanced Filter Section with Modern UI */
+.filter-section {
+    margin-bottom: 40px;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 
+                0 6px 10px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(229, 231, 235, 0.7);
+    background-image: linear-gradient(to bottom right, rgba(255, 255, 255, 1), rgba(249, 250, 251, 0.8));
+}
+
+.filter-header {
+    margin-bottom: 28px;
+}
+
+.filter-header h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.filter-header p {
+    color: var(--gray-600);
+    font-size: 1.05rem;
+}
+
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-control-group {
+    flex: 1;
+    min-width: 240px;
+}
+
+/* Dropdown Styling */
+.dropdown-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.dropdown-wrapper:hover {
+    transform: translateY(-2px);
+}
+
+.dropdown-wrapper i:first-child {
+    position: absolute;
+    left: 20px;
+    color: var(--primary-color);
+    z-index: 2;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.dropdown-icon {
+    position: absolute;
+    right: 20px;
+    color: var(--gray-500);
+    pointer-events: none;
+    transition: transform 0.3s ease;
+}
+
+.category-dropdown {
+    width: 100%;
+    padding: 16px 20px 16px 54px;
+    appearance: none;
+    background: var(--white);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    border-radius: 16px;
+    font-size: 1.05rem;
+    color: var(--gray-800);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    font-weight: 500;
+}
+
+.category-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+
+.category-dropdown:focus + .dropdown-icon {
+    color: var(--primary-color);
+    transform: rotate(180deg);
+}
+
+/* Search Bar Styling */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.search-wrapper:hover {
+    transform: translateY(-2px);
+}
+
+.search-wrapper i {
+    position: absolute;
+    left: 20px;
+    color: #8b5cf6;
+    z-index: 2;
+    pointer-events: none;
+    font-size: 18px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 50px 16px 54px;
+    background: var(--white);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    border-radius: 16px;
+    font-size: 1.05rem;
+    color: var(--gray-800);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.search-input::placeholder {
+    color: #a1a1aa;
+    font-weight: 400;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+}
+
+.search-input:focus + i {
+    color: #8b5cf6;
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 20px;
+    background: rgba(243, 244, 246, 0.7);
+    border: none;
+    color: #71717a;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+}
+
+.clear-search-btn:hover {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+    transform: scale(1.1);
+}
+
+.clear-search-btn.visible {
+    display: flex;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* Active Filters */
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 30px;
+    margin-top: 10px;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(124, 58, 237, 0.9));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
+    animation: slideIn 0.3s ease;
+}
+
+.filter-tag:hover {
+    box-shadow: 0 6px 8px rgba(139, 92, 246, 0.25);
+    transform: translateY(-2px);
+}
+
+.filter-tag i {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-tag i:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* No Results Styling */
+.no-results-message {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #ffffff, #f9fafb);
+    border-radius: 20px;
+    border: 1px solid rgba(229, 231, 235, 0.7);
+    margin: 40px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.no-results-message .empty-illustration {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f3f4f6, #f9fafb);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 28px;
+    color: #8b5cf6;
+    font-size: 32px;
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+.no-results-message h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+}
+
+.no-results-message p {
+    color: var(--gray-600);
+    margin-bottom: 28px;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.reset-filters-btn {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 6px 15px rgba(139, 92, 246, 0.25);
+    font-size: 0.95rem;
+}
+
+.reset-filters-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+}
+
+.reset-filters-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(139, 92, 246, 0.2);
+}
+
+/* Animations */
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Add a fancy gradient background to the entire filter section */
+.filter-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 20px;
+    background: 
+        radial-gradient(circle at 10% 90%, rgba(139, 92, 246, 0.03) 0%, transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(79, 70, 229, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .filter-section {
-        margin-bottom: 40px;
+        padding: 24px;
+        border-radius: 16px;
     }
-
-    .filter-header {
-        text-align: center;
-        margin-bottom: 32px;
+    
+    .filter-controls {
+        flex-direction: column;
+        gap: 16px;
     }
-
+    
+    .filter-control-group {
+        width: 100%;
+    }
+    
+    .category-dropdown,
+    .search-input {
+        font-size: 0.95rem;
+        padding: 14px 16px 14px 48px;
+    }
+    
+    .dropdown-wrapper i:first-child,
+    .search-wrapper i {
+        left: 16px;
+        font-size: 16px;
+    }
+    
     .filter-header h3 {
         font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--gray-900);
-        margin-bottom: 8px;
     }
-
+    
     .filter-header p {
-        color: var(--gray-600);
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
+}
+
+@media (max-width: 480px) {
+    .filter-section {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .filter-header {
+        margin-bottom: 20px;
+    }
+    
+    .filter-header h3 {
+        font-size: 1.35rem;
+    }
+    
+    .category-dropdown,
+    .search-input {
+        border-radius: 14px;
+    }
+}
 
     .filter-pills {
         display: flex;
@@ -982,24 +1343,9 @@
         letter-spacing: 0.5px;
     }
 
-    .category-badge.engineering {
+    .category-badge {
         background: #dbeafe;
-        color: #1e40af;
-    }
-
-    .category-badge.marketing {
-        background: #ecfdf5;
-        color: #059669;
-    }
-
-    .category-badge.design {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .category-badge.research {
-        background: #f3e8ff;
-        color: #7c3aed;
+        color:rgb(0, 0, 0);
     }
 
     .type-badge {
@@ -1979,6 +2325,227 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Filter by category dropdown
+    const categoryDropdown = document.getElementById('category-dropdown');
+    const jobItems = document.querySelectorAll('.job-item');
+    const searchInput = document.getElementById('job-search');
+    const clearSearchBtn = document.getElementById('clear-search');
+    const activeFilters = document.getElementById('active-filters');
+    
+    // Function to filter jobs
+    function filterJobs() {
+        const selectedCategory = categoryDropdown.value;
+        const searchText = searchInput.value.toLowerCase().trim();
+        
+        // Update active filters
+        updateActiveFilters(selectedCategory, searchText);
+        
+        // Apply filters
+        jobItems.forEach(item => {
+            const itemCategory = item.getAttribute('data-category');
+            const itemTitle = item.querySelector('.job-title').textContent.toLowerCase();
+            const itemSummary = item.querySelector('.job-summary').textContent.toLowerCase();
+            
+            // Check if item matches both category and search filters
+            const matchesCategory = selectedCategory === 'all' || itemCategory === selectedCategory;
+            const matchesSearch = searchText === '' || 
+                                  itemTitle.includes(searchText) || 
+                                  itemSummary.includes(searchText);
+            
+            if (matchesCategory && matchesSearch) {
+                item.style.display = 'block';
+                // Add entrance animation for newly visible items
+                item.style.animation = 'fadeIn 0.5s ease forwards';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        // Check if no results
+        checkNoResults();
+    }
+    
+    // Function to update active filters display
+    function updateActiveFilters(category, searchText) {
+        activeFilters.innerHTML = '';
+        
+        // Add category filter tag if not "all"
+        if (category !== 'all') {
+            const categoryTag = document.createElement('div');
+            categoryTag.className = 'filter-tag';
+            categoryTag.innerHTML = `
+                <span>Category: ${category}</span>
+                <i class="fas fa-times" data-filter="category"></i>
+            `;
+            activeFilters.appendChild(categoryTag);
+        }
+        
+        // Add search filter tag if not empty
+        if (searchText) {
+            const searchTag = document.createElement('div');
+            searchTag.className = 'filter-tag';
+            searchTag.innerHTML = `
+                <span>Search: ${searchText}</span>
+                <i class="fas fa-times" data-filter="search"></i>
+            `;
+            activeFilters.appendChild(searchTag);
+        }
+        
+        // Add event listeners to filter tag close buttons
+        const closeButtons = activeFilters.querySelectorAll('i[data-filter]');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const filterType = this.getAttribute('data-filter');
+                
+                if (filterType === 'category') {
+                    categoryDropdown.value = 'all';
+                } else if (filterType === 'search') {
+                    searchInput.value = '';
+                    clearSearchBtn.classList.remove('visible');
+                }
+                
+                filterJobs();
+            });
+        });
+    }
+    
+    // Function to check if no results and display message
+    function checkNoResults() {
+        const visibleJobs = Array.from(jobItems).filter(item => item.style.display !== 'none');
+        const jobsContainer = document.querySelector('.jobs-container');
+        let noResultsEl = document.querySelector('.no-results-message');
+        
+        if (visibleJobs.length === 0) {
+            if (!noResultsEl) {
+                noResultsEl = document.createElement('div');
+                noResultsEl.className = 'no-results-message';
+                noResultsEl.innerHTML = `
+                    <div class="empty-illustration">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>No Matching Positions</h3>
+                    <p>We couldn't find any positions matching your criteria. Try adjusting your filters.</p>
+                    <button class="reset-filters-btn" onclick="resetFilters()">
+                        <i class="fas fa-redo-alt"></i>
+                        Reset Filters
+                    </button>
+                `;
+                jobsContainer.appendChild(noResultsEl);
+                
+                // Animate entrance
+                setTimeout(() => {
+                    noResultsEl.style.opacity = '1';
+                    noResultsEl.style.transform = 'translateY(0)';
+                }, 100);
+            }
+        } else if (noResultsEl) {
+            noResultsEl.remove();
+        }
+    }
+    
+    // Event listeners
+    categoryDropdown.addEventListener('change', filterJobs);
+    
+    searchInput.addEventListener('input', function() {
+        // Show/hide clear button
+        if (this.value.length > 0) {
+            clearSearchBtn.classList.add('visible');
+        } else {
+            clearSearchBtn.classList.remove('visible');
+        }
+        
+        // Apply filters
+        filterJobs();
+    });
+    
+    // Clear search button
+    clearSearchBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        this.classList.remove('visible');
+        filterJobs();
+        searchInput.focus();
+    });
+    
+    // Function to reset all filters
+    window.resetFilters = function() {
+        categoryDropdown.value = 'all';
+        searchInput.value = '';
+        clearSearchBtn.classList.remove('visible');
+        filterJobs();
+    };
+    
+    // Add animation keyframes to document
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .no-results-message {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            margin: 40px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .no-results-message .empty-illustration {
+            width: 70px;
+            height: 70px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            color: var(--gray-500);
+            font-size: 28px;
+        }
+        
+        .no-results-message h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+        }
+        
+        .no-results-message p {
+            color: var(--gray-600);
+            margin-bottom: 24px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .reset-filters-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-base);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .reset-filters-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+    `;
+    document.head.appendChild(style);
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize AOS
     AOS.init({

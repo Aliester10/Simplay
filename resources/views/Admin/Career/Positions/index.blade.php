@@ -35,9 +35,9 @@
                 <thead>
                     <tr>
                         <th>Title</th>
+                        <th>Job Footer</th>
                         <th>Category</th>
                         <th>Status</th>
-                        <th>Applications</th>
                         <th>Created</th>
                         <th>Actions</th>
                     </tr>
@@ -46,6 +46,7 @@
                     @forelse($positions as $position)
                         <tr>
                             <td>{{ $position->title }}</td>
+                            <td><span class="badge bg-info">{{ $position->job_footer }}</span></td>
                             <td><span class="badge bg-info">{{ $position->category }}</span></td>
                             <td>
                                 @if($position->is_active)
@@ -53,11 +54,6 @@
                                 @else
                                     <span class="badge bg-danger">Inactive</span>
                                 @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('Admin.Career.Applications.index', ['position_id' => $position->id]) }}">
-                                    {{ $position->applications_count }} Applications
-                                </a>
                             </td>
                             <td>{{ $position->created_at->format('M d, Y') }}</td>
                             <td>

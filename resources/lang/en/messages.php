@@ -27,7 +27,7 @@ return [
     'activity' => 'Activity',
     'products' => 'Products',
     'ecommerce' => 'E-Commerce',
-    'portal_member' => 'Member Portal',
+    'portal_member' => 'Member Services',
     'bahasa' => 'Bahasa',
     'english' => 'English',
     'our_products' => 'Our Product',

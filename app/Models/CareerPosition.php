@@ -27,6 +27,7 @@ class CareerPosition extends Model
         'salary_range',
         'application_deadline',
         'is_active',
+        'job_footer',
     ];
 
     /**

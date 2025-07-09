@@ -211,11 +211,13 @@
                                     <span class="sub-item">Career Positions</span>
                                 </a>
                             </li>
+
                             <li>
-                                <a href="{{ route('Admin.Career.Applications.index') }}">
-                                    <span class="sub-item">Career Applications</span>
+                                 <a href="{{ route('Admin.Career.Category.index') }}">
+                                      <span class="sub-item">Career Category</span>
                                 </a>
                             </li>
+
                         </ul>
                     </div>
                 </li>

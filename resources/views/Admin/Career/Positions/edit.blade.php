@@ -37,13 +37,13 @@
                         <div class="form-group mb-3">
                             <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
                             <select class="form-select" id="category" name="category" required>
-                                <option value="" disabled>Select category</option>
-                                <option value="Engineering" {{ old('category', $position->category) == 'Engineering' ? 'selected' : '' }}>Engineering</option>
-                                <option value="Marketing" {{ old('category', $position->category) == 'Marketing' ? 'selected' : '' }}>Marketing</option>
-                                <option value="Design" {{ old('category', $position->category) == 'Design' ? 'selected' : '' }}>Design</option>
-                                <option value="Research" {{ old('category', $position->category) == 'Research' ? 'selected' : '' }}>Research</option>
-                                <!-- Debug: Print category value -->
-                                <!-- {{ $position->category }} -->
+                                <option value="" disabled {{ old('category') ? '' : 'selected' }}>Select a category</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->category }}" 
+                                        {{ (old('category', isset($position) ? $position->category : null) == $cat->category) ? 'selected' : '' }}>
+                                        {{ $cat->category }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

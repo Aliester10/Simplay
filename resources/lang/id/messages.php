@@ -28,7 +28,7 @@ return [
     'activity' => 'Kegiatan',
     'products' => 'Produk',
     'ecommerce' => 'E-Commerce',
-    'portal_member' => 'Portal Member',
+    'portal_member' => 'Layanan Member',
     'bahasa' => 'Bahasa',
     'english' => 'English',
     'our_products' => 'Produk Kami',

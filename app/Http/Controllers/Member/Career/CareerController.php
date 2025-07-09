@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member\Career;
 use App\Http\Controllers\Controller;
 use App\Models\CareerPosition;
 use App\Models\CareerApplication;
+use App\Models\CareerCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -37,11 +38,8 @@ class CareerController extends Controller
                 $query->where('type', $request->type);
             }
             
-            // Get all available categories for filter
-            $categories = CareerPosition::where('is_active', true)
-                ->select('category')
-                ->distinct()
-                ->pluck('category');
+            // Get all available categories from career_categories table
+            $categories = CareerCategory::all();
                 
             // Get all positions
             $positions = $query->orderBy('created_at', 'desc')->paginate(10);
@@ -193,11 +191,8 @@ class CareerController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
                 
-            // Get all available categories for filter
-            $categories = CareerPosition::where('is_active', true)
-                ->select('category')
-                ->distinct()
-                ->pluck('category');
+            // Get all available categories from career_categories table
+            $categories = CareerCategory::all();
                 
             return view('Member.Career.category', compact('positions', 'categories', 'category'));
         } catch (\Exception $e) {
@@ -225,11 +220,8 @@ class CareerController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
                 
-            // Get all available categories for filter
-            $categories = CareerPosition::where('is_active', true)
-                ->select('category')
-                ->distinct()
-                ->pluck('category');
+            // Get all available categories from career_categories table
+            $categories = CareerCategory::all();
                 
             return view('Member.Career.search', compact('positions', 'categories', 'keyword'));
         } catch (\Exception $e) {

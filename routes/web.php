@@ -48,7 +48,7 @@ use App\Http\Controllers\Distribution\Profile\ProfileDistributorController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Member\Career\CareerController;
 use App\Http\Controllers\Admin\Career\CareerPositionController;
-use App\Http\Controllers\Admin\Career\CareerApplicationController;
+use App\Http\Controllers\Admin\Career\CareerCategoryController;
 use App\Http\Controllers\Member\Payment\MemberPaymentController;
 use App\Http\Controllers\Admin\Payment\PaymentSettingsController;
 use App\Http\Controllers\Admin\Payment\PaymentStatusController;
@@ -721,31 +721,31 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
         Route::get('/admin/proforma-invoices/{id}', [ProformaInvoiceAdminController::class, 'show'])->name('admin.proforma-invoices.show');
         Route::put('/admin/proforma-invoices/{id}/approve-reject', [ProformaInvoiceAdminController::class, 'approveRejectPayment'])->name('admin.proforma-invoices.approve-reject');
 
-        // Admin Career Management Routes - UPDATED WITH PROPER NAMING
-        Route::prefix('admin/career')->name('Admin.Career.')->group(function () {
-            // Career dashboard/overview
-            Route::get('/', [CareerPositionController::class, 'dashboard'])->name('index');
-            
-            // Career Positions Management
-            Route::prefix('positions')->name('Positions.')->group(function () {
-                Route::get('/', [CareerPositionController::class, 'index'])->name('index');
-                Route::get('/create', [CareerPositionController::class, 'create'])->name('create');
-                Route::post('/', [CareerPositionController::class, 'store'])->name('store');
-                Route::get('/{id}', [CareerPositionController::class, 'show'])->name('show');
-                Route::get('/{id}/edit', [CareerPositionController::class, 'edit'])->name('edit');
-                Route::put('/{id}', [CareerPositionController::class, 'update'])->name('update');
-                Route::delete('/{id}', [CareerPositionController::class, 'destroy'])->name('destroy');
-                Route::post('/{id}/toggle', [CareerPositionController::class, 'toggleStatus'])->name('toggle');
-            });
-            
-            // Career Applications Management
-            Route::prefix('applications')->name('Applications.')->group(function () {
-                Route::get('/', [CareerApplicationController::class, 'index'])->name('index');
-                Route::get('/{id}', [CareerApplicationController::class, 'show'])->name('show');
-                Route::post('/{id}/status', [CareerApplicationController::class, 'updateStatus'])->name('updateStatus');
-                Route::get('/{id}/cv/download', [CareerApplicationController::class, 'downloadCV'])->name('downloadCV');
-            });
-        });
+       // Admin Career Management Routes - UPDATED WITH PROPER NAMING
+Route::prefix('admin/career')->name('Admin.Career.')->middleware(['auth', 'user-access:admin'])->group(function () {
+    // Career dashboard/overview
+    Route::get('/', [CareerPositionController::class, 'dashboard'])->name('index');
+
+    // Career Category
+    Route::get('/Category', [CareerCategoryController::class, 'index'])->name('Category.index');
+    Route::get('/Category/create', [CareerCategoryController::class, 'create'])->name('Category.create');
+    Route::post('/Category', [CareerCategoryController::class, 'store'])->name('Category.store');
+    Route::get('/Category/{id}/edit', [CareerCategoryController::class, 'edit'])->name('Category.edit');
+    Route::put('/Category/{id}', [CareerCategoryController::class, 'update'])->name('Category.update');
+    Route::delete('/Category/{id}', [CareerCategoryController::class, 'destroy'])->name('Category.destroy');
+
+    // Career Positions Management
+    Route::prefix('positions')->name('Positions.')->group(function () {
+        Route::get('/', [CareerPositionController::class, 'index'])->name('index');
+        Route::get('/create', [CareerPositionController::class, 'create'])->name('create');
+        Route::post('/', [CareerPositionController::class, 'store'])->name('store');
+        Route::get('/{id}', [CareerPositionController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [CareerPositionController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [CareerPositionController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CareerPositionController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/toggle', [CareerPositionController::class, 'toggleStatus'])->name('toggle');
+    });
+});
 
         // Invoice Management Routes
         Route::get('/invoices', [InvoiceAdminController::class, 'index'])->name('invoices.index');

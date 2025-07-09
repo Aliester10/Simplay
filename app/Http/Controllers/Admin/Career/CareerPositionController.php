@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Career;
 use App\Http\Controllers\Controller;
 use App\Models\CareerPosition;
 use App\Models\CareerApplication;
+use App\Models\CareerCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -70,7 +71,8 @@ class CareerPositionController extends Controller
      */
     public function create()
     {
-        return view('Admin.Career.Positions.create');
+        $categories = CareerCategory::all();
+        return view('Admin.Career.Positions.create', compact('categories'));
     }
 
     /**
@@ -92,6 +94,7 @@ class CareerPositionController extends Controller
             'benefits' => 'nullable|string',
             'salary_range' => 'nullable|string|max:100',
             'application_deadline' => 'nullable|date|after:today',
+            'job_footer' => 'nullable|string|max:255',
         ], [
             'title.required' => 'Position title is required.',
             'category.required' => 'Category is required.',
@@ -101,6 +104,7 @@ class CareerPositionController extends Controller
             'requirements.required' => 'Requirements are required.',
             'responsibilities.required' => 'Responsibilities are required.',
             'application_deadline.after' => 'Application deadline must be in the future.',
+            'job_footer.max' => 'Job footer cannot exceed 255 characters.',
         ]);
 
         try {
@@ -122,6 +126,7 @@ class CareerPositionController extends Controller
             $position->benefits = $validated['benefits'] ?? null;
             $position->salary_range = $validated['salary_range'] ?? null;
             $position->application_deadline = $validated['application_deadline'] ?? null;
+            $position->job_footer = $validated['job_footer'] ?? null;
             $position->slug = $validated['slug'];
             $position->is_active = $validated['is_active'];
             $position->save();
@@ -181,15 +186,13 @@ class CareerPositionController extends Controller
     {
         try {
             $position = CareerPosition::findOrFail($id);
-            
-            // Debug: Log position data
+            $categories = CareerCategory::all(); // Ambil semua kategori!
             Log::info('Position in edit:', [
                 'id' => $position->id,
                 'title' => $position->title,
                 'category' => $position->category
             ]);
-            
-            return view('Admin.Career.Positions.edit', compact('position'));
+            return view('Admin.Career.Positions.edit', compact('position', 'categories'));
         } catch (\Exception $e) {
             Log::error('Error loading career position for edit: ' . $e->getMessage());
             return redirect()->route('Admin.Career.Positions.index')

@@ -38,10 +38,12 @@
                             <label for="category" class="form-label">Category</label>
                             <select class="form-select" id="category" name="category" required>
                                 <option value="" disabled {{ old('category') ? '' : 'selected' }}>Select a category</option>
-                                <option value="Engineering" {{ old('category') == 'Engineering' ? 'selected' : '' }}>Engineering</option>
-                                <option value="Marketing" {{ old('category') == 'Marketing' ? 'selected' : '' }}>Marketing</option>
-                                <option value="Design" {{ old('category') == 'Design' ? 'selected' : '' }}>Design</option>
-                                <option value="Research" {{ old('category') == 'Research' ? 'selected' : '' }}>Research</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->category }}" 
+                                        {{ (old('category', isset($position) ? $position->category : null) == $cat->category) ? 'selected' : '' }}>
+                                        {{ $cat->category }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -69,6 +71,14 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                              <label for="job_footer" class="form-label">Job Footer</label>
+                              <input type="text" class="form-control" id="job_footer" name="job_footer" value="{{ old('job_footer', isset($position) ? $position->job_footer : '') }}">
+                        </div>
+                    </div>
 
                 <div class="mb-3">
                     <label for="description" class="form-label">Job Description</label>
