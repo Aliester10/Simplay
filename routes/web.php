@@ -52,6 +52,11 @@ use App\Http\Controllers\Admin\Career\CareerCategoryController;
 use App\Http\Controllers\Member\Payment\MemberPaymentController;
 use App\Http\Controllers\Admin\Payment\PaymentSettingsController;
 use App\Http\Controllers\Admin\Payment\PaymentStatusController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CareerApplicationMail;
+use App\Models\CareerApplication;
+use App\Models\CareerPosition;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -122,6 +127,17 @@ Route::prefix('id/admin')->middleware(['auth', 'user-access:admin'])->group(func
     Route::delete('/admin/produk/{produk}', [ProdukController::class, 'destroy'])->name('Admin.Produk.destroy');
 });
 
+
+Route::get('/test-email', function () {
+    $application = \App\Models\CareerApplication::latest()->first();
+    $position = \App\Models\CareerPosition::find($application->position_id);
+
+    Mail::to('aliesterrrr@gmail.com')->send(new CareerApplicationMail($application, $position));
+    
+
+    return '✅ Email berhasil dikirim (jika tidak error). Cek inbox kamu.';
+});
+
 // Guest Routes (No Authentication Required)
 Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -130,8 +146,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
     // Career Routes - PUBLIC ACCESS for all users
     Route::prefix('career')->name('member.career.')->group(function () {
         Route::get('/', [CareerController::class, 'index'])->name('index');
-        Route::post('/apply', [CareerController::class, 'apply'])->name('apply');
+        Route::post('/apply', [CareerController::class, 'apply'])->name('apply'); // CUKUP INI SAJA
     });
+    
     
     // Product Routes
     Route::get('/products', [ProdukMemberController::class, 'index'])->name('product.index');
@@ -841,6 +858,10 @@ Route::get('/storage-direct/payment-proofs/{filename}', function($filename) {
         abort(500, 'Error accessing payment proof: ' . $e->getMessage());
     }
 })->name('storage.direct.payment.proof');
+
+// Mail Routes
+Route::post('/apply', [CareerController::class, 'apply'])->name('career.apply');
+
 
 // 🔥 ENHANCED: ADMIN PAYMENT PROOF DEBUGGING ROUTE
 Route::get('/debug/admin-payment-proof/{id}', function($id) {

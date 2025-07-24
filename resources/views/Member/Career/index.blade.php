@@ -126,10 +126,10 @@
         </div>
         
         <div class="filter-control-group">
-            <div class="search-wrapper">
+            <div class="search2-wrapper">
                 <i class="fas fa-search"></i>
-                <input type="text" id="job-search" placeholder="Search for positions..." class="search-input">
-                <button type="button" id="clear-search" class="clear-search-btn">
+                <input type="text" id="job-search" placeholder="Search for positions..." class="search-input2">
+                <button type="button" id="clear-search2" class="clear-search2-btn">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -958,18 +958,18 @@
 }
 
 /* Search Bar Styling */
-.search-wrapper {
+.search2-wrapper {
     position: relative;
     display: flex;
     align-items: center;
     transition: all 0.3s ease;
 }
 
-.search-wrapper:hover {
+.search2-wrapper:hover {
     transform: translateY(-2px);
 }
 
-.search-wrapper i {
+.search2-wrapper i {
     position: absolute;
     left: 20px;
     color: #8b5cf6;
@@ -978,7 +978,7 @@
     font-size: 18px;
 }
 
-.search-input {
+.search-input2 {
     width: 100%;
     padding: 16px 50px 16px 54px;
     background: var(--white);
@@ -990,22 +990,22 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
-.search-input::placeholder {
+.search-input2::placeholder {
     color: #a1a1aa;
     font-weight: 400;
 }
 
-.search-input:focus {
+.search-input2:focus {
     outline: none;
     border-color: #8b5cf6;
     box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
 }
 
-.search-input:focus + i {
+.search-input2:focus + i {
     color: #8b5cf6;
 }
 
-.clear-search-btn {
+.clear-search2-btn {
     position: absolute;
     right: 20px;
     background: rgba(243, 244, 246, 0.7);
@@ -1022,13 +1022,13 @@
     opacity: 0.8;
 }
 
-.clear-search-btn:hover {
+.clear-search2-btn:hover {
     background: rgba(139, 92, 246, 0.2);
     color: #8b5cf6;
     transform: scale(1.1);
 }
 
-.clear-search-btn.visible {
+.clear-search2-btn.visible {
     display: flex;
     animation: fadeIn 0.3s ease forwards;
 }
@@ -1202,13 +1202,13 @@
     }
     
     .category-dropdown,
-    .search-input {
+    .search-input2 {
         font-size: 0.95rem;
         padding: 14px 16px 14px 48px;
     }
     
     .dropdown-wrapper i:first-child,
-    .search-wrapper i {
+    .search2-wrapper i {
         left: 16px;
         font-size: 16px;
     }
@@ -1237,7 +1237,7 @@
     }
     
     .category-dropdown,
-    .search-input {
+    .search-input2 {
         border-radius: 14px;
     }
 }
@@ -2330,7 +2330,7 @@
     const categoryDropdown = document.getElementById('category-dropdown');
     const jobItems = document.querySelectorAll('.job-item');
     const searchInput = document.getElementById('job-search');
-    const clearSearchBtn = document.getElementById('clear-search');
+    const clearSearchBtn = document.getElementById('clear-search2');
     const activeFilters = document.getElementById('active-filters');
     
     // Function to filter jobs
