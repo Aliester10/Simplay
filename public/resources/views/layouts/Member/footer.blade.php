@@ -104,9 +104,16 @@
     padding-right: 30px;
 }
 
+.footer-brand-logos {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+}
+
 .footer-logo {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 0;
     max-width: 200px; /* Control logo width */
 }
 
@@ -120,6 +127,18 @@
     font-size: 13px;
     margin-bottom: 30px; /* Increased spacing */
     font-style: italic;
+}
+
+.inaproc-badge a {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.inaproc-badge img {
+    width: 130px;
+    height: auto;
+    object-fit: contain;
 }
 
 .company-title {
@@ -434,9 +453,16 @@
             <div class="footer-grid">
                 <!-- Company Info Column -->
                 <div class="footer-company-info">
-                    <a href="#" class="footer-logo">
-                        <img src="{{ asset('assets/img/Logo.png') }}" alt="Simplay">
-                    </a>
+                    <div class="footer-brand-logos">
+                        <a href="#" class="footer-logo">
+                            <img src="{{ asset('assets/img/Logo.png') }}" alt="Simplay">
+                        </a>
+                        <div class="inaproc-badge">
+                            <a href="https://katalog.inaproc.id/pt-simplay-abyakta-mediatek" target="_blank" rel="noopener noreferrer" aria-label="Kunjungi katalog Inaproc Simplay">
+                                <img src="https://katalog.inaproc.id/_next/static/media/logo-katalog-elektronik-v2.ab40371f.webp" alt="Logo Inaproc">
+                            </a>
+                        </div>
+                    </div>
                     <p class="company-tagline">YOUR FLIGHT BUDDY, YOUR SOLUTION</p>
                     
                     <h4 class="company-title section-heading">COMPANY</h4>
