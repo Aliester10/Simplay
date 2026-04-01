@@ -68,11 +68,6 @@
                     
                     <h1 class="product-title">{{ $produk->nama }}</h1>
                     
-                    <!-- Menampilkan harga produk -->
-                    <div class="product-price mb-3">
-                        Rp {{ number_format($produk->harga, 0, ',', '.') }}
-                    </div>
-                    
                     <div class="product-meta d-flex align-items-center mt-2 mb-4">
                         <div class="product-brand">
                             <span class="meta-label">Brand:</span>
@@ -270,10 +265,6 @@
                                         <a href="{{ route('product.show', $similarProduct->id) }}">{{ $similarProduct->nama }}</a>
                                     </h5>
                                     <div class="product-brand">{{ $similarProduct->merk }}</div>
-                                    <!-- Menampilkan harga produk serupa -->
-                                    <div class="product-price">
-                                        Rp {{ number_format($similarProduct->harga, 0, ',', '.') }}
-                                    </div>
                                 </div>
                             </div>
                         </div>

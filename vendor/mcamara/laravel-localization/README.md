@@ -1,8 +1,8 @@
 # Laravel Localization
 
-[![Join the chat at https://gitter.im/mcamara/laravel-localization](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mcamara/laravel-localization?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Latest Stable Version](https://poser.pugx.org/mcamara/laravel-localization/version.png)](https://packagist.org/packages/mcamara/laravel-localization) [![Total Downloads](https://poser.pugx.org/mcamara/laravel-localization/d/total.png)](https://packagist.org/packages/mcamara/laravel-localization) [![Build Status](https://travis-ci.org/mcamara/laravel-localization.png)](https://travis-ci.org/mcamara/laravel-localization)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/mcamara/laravel-localization.svg?style=flat-square)](https://packagist.org/packages/mcamara/laravel-localization)
+[![Total Downloads](https://img.shields.io/packagist/dt/mcamara/laravel-localization.svg?style=flat-square)](https://packagist.org/packages/mcamara/laravel-localization)
+![GitHub Actions](https://github.com/mcamara/laravel-localization/actions/workflows/run-tests.yml/badge.svg)
 [![Open Source Helpers](https://www.codetriage.com/mcamara/laravel-localization/badges/users.svg)](https://www.codetriage.com/mcamara/laravel-localization)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
@@ -46,7 +46,7 @@ The package offers the following:
  5.2.x-5.4.x (PHP 7 not required)  | 1.2.
  5.2.0-6.x (PHP version >= 7 required) | 1.4.x
  6.x-10.x (PHP version >= 7 required) | 1.8.x
- 10.x-11.x (PHP version >= 8.2 required) | 2.0.x
+ 10.x-12.x (PHP version >= 8.2 required) | 2.0.x
 
 ## Installation
 
@@ -98,6 +98,23 @@ class Kernel extends HttpKernel {
         'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class
     ];
 }
+```
+
+If you are using Laravel 11, you may register in `bootstrap/app.php` file in closure `withMiddleware`:
+
+```php
+return Application::configure(basePath: dirname(__DIR__))
+    // Other application configurations
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            /**** OTHER MIDDLEWARE ALIASES ****/
+            'localize'                => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
+            'localizationRedirect'    => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
+            'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
+            'localeCookieRedirect'    => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
+            'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
+        ]);
+    })
 ```
 
 ## Usage
@@ -381,10 +398,13 @@ Note that Route Model Binding is supported.
 You may translate your routes. For example, http://url/en/about and http://url/es/acerca (acerca is about in spanish)
 or http://url/en/article/important-article and http://url/es/articulo/important-article (article is articulo in spanish) would be redirected to the same controller/view as follows:
 
-It is necessary that at least the `localize` middleware in loaded in your `Route::group` middleware (See [installation instruction](#LaravelLocalizationRoutes)).
+It is necessary that at least the `localize` middleware in loaded in your `Route::group` middleware (See [installation instruction](#installation)).
 
 For each language, add a `routes.php` into `resources/lang/**/routes.php` folder.
 The file contains an array with all translatable routes. For example, like this:
+
+> Keep in mind: starting from [Laravel 9](https://laravel.com/docs/9.x/upgrade#the-lang-directory), the `resources/lang` folder is now located in the root project folder (`lang`).
+> If your project has `lang` folder in the root, you must add a `routes.php` into `lang/**/routes.php` folder.
 
 ```php
 <?php
@@ -486,6 +506,8 @@ php artisan route:trans:cache
 
 For the route caching solution to work, it is required to make a minor adjustment to your application route provision.
 
+**before laravel 11** 
+
 In your App's `RouteServiceProvider`, use the `LoadsTranslatedCachedRoutes` trait:
 
 ```php
@@ -494,6 +516,26 @@ class RouteServiceProvider extends ServiceProvider
 {
     use \Mcamara\LaravelLocalization\Traits\LoadsTranslatedCachedRoutes;
 ```
+
+**after laravel 11** 
+
+In your App's `AppServiceProvider`, use the `CachedTranslatedRouteLoader` class in register method:
+
+```php
+<?php
+class AppServiceProvider extends ServiceProvider
+{  
+    use \Mcamara\LaravelLocalization\Traits\LoadsTranslatedCachedRoutes;
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        RouteServiceProvider::loadCachedRoutesUsing(fn() => $this->loadCachedRoutes());
+        ...
+    }   
+```
+
 
 
 For more details see [here](CACHING.md).

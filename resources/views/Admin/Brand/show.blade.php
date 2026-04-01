@@ -21,13 +21,13 @@
 
                 <p><strong>Gambar : </strong></p>
                 @if($brandPartner->gambar)
-                    <img src="{{ asset('storage/' . $brandPartner->gambar) }}" alt="Image" width="200">
+                    <img src="{{ asset($brandPartner->gambar) }}" alt="Image" width="200">
                 @else
                     <p>Tidak ada gambar tersedia</p>
                 @endif
             </div>
         </div>
 
-        <a href="{{ route('admin.brand_partner.index') }}" class="btn btn-secondary mt-3">Kembali ke Daftar</a>
+        <a href="{{ route('admin.brand.index') }}" class="btn btn-secondary mt-3">Kembali ke Daftar</a>
     </div>
 @endsection

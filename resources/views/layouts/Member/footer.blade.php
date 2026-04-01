@@ -1,8 +1,3 @@
-@php
-    $compro = \App\Models\CompanyParameter::first();
-    $brand = \App\Models\BrandPartner::where('type', 'brand', 'nama')->get();
-@endphp
-
 <style>
 /* Footer Container */
 .footer-container {
@@ -446,10 +441,15 @@
                     
                     <h4 class="company-title section-heading">COMPANY</h4>
                     <p class="company-address">
-                        Rajawali Selatan Raya Blok A No.33 Gunung<br>
-                        Sahari Utara Sawah Besar Kota Adm.<br>
-                        Jakarta Pusat DKI Jakarta 10720
+                        {{ $compro->alamat ?? '-' }}
                     </p>
+                    <p class="company-address">Telp: {{ $compro->no_telepon ?? '-' }}</p>
+                    @if(!empty($compro->ekatalog))
+                        <p class="company-address">
+                            Inaproc:
+                            <a href="{{ $compro->ekatalog }}" target="_blank" rel="noopener noreferrer">{{ $compro->ekatalog }}</a>
+                        </p>
+                    @endif
                     <p class="copyright-text">Status: © 2020-2023. All Rights Reserved</p>
                     <div class="social-icons">
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -512,8 +512,6 @@
 <script src="{{ asset('assets/lib/tempusdominus/js/moment.min.js') }}"></script>
 <script src="{{ asset('assets/lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
 <script src="{{ asset('assets/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-<link href="{{ asset('assets/lib/boxicons-master/css/boxicons.min.css')}}" rel="stylesheet">
-<link href="{{ asset('assets/lib/flickity/css/flickity.min.css')}}" rel="stylesheet">
 
 <!-- Template Javascript -->
 <script src="{{ asset('assets/js/member/main.js') }}"></script>

@@ -76,20 +76,27 @@ class CartController extends Controller
                 ], 404);
             }
 
-            // Update or create cart item
-            $cartItem = Cart::updateOrCreate(
-                [
+
+            // Cek apakah produk sudah ada di cart
+            $cartItem = Cart::where('user_id', $user->id)
+                ->where('produk_id', $request->product_id)
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity += $request->quantity;
+                $cartItem->price = $product->harga ?? 0;
+                $cartItem->save();
+            } else {
+                $cartItem = Cart::create([
                     'user_id' => $user->id,
                     'produk_id' => $request->product_id,
-                ],
-                [
-                    'quantity' => DB::raw("quantity + {$request->quantity}"),
+                    'quantity' => $request->quantity,
                     'price' => $product->harga ?? 0,
-                ]
-            );
+                ]);
+            }
 
             $cartCount = Cart::where('user_id', $user->id)->count();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Product added to cart successfully!',

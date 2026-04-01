@@ -187,7 +187,6 @@
                                     <div class="product-info">
                                         <h3>{{ $featuredProduct->nama }}</h3>
                                         <p>{{ Str::limit($featuredProduct->deskripsi, 80) }}</p>
-                                        <div class="product-price">IDR {{ number_format($featuredProduct->harga, 0, ',', '.') }}</div>
                                         <div class="product-actions">
                                             <a href="{{ route('product.show', $featuredProduct->id) }}" class="add-to-cart">READ MORE</a>
                                             <button class="cart-icon"><i class="fas fa-shopping-cart"></i></button>
@@ -213,7 +212,6 @@
                             <div class="product-info">
                                 <h3>JUDUL PRODUK</h3>
                                 <p>DESKRIPSI PRODUK</p>
-                                <div class="product-price">IDR 1,000</div>
                                 <div class="product-actions">
                                     <button class="add-to-cart">READ MORE</button>
                                     <button class="cart-icon"><i class="fas fa-shopping-cart"></i></button>
@@ -308,13 +306,6 @@
                             <a href="{{ route('product.show', $product->id) }}">{{ Str::limit($product->nama, 50) }}</a>
                         </h3>
                         
-                        <div class="product-price">
-                            @if($index % 4 == 0)
-                            <span class="original-price">IDR {{ number_format($product->harga * 1.3, 0, ',', '.') }}</span>
-                            @endif
-                            <span class="current-price">IDR {{ number_format($product->harga, 0, ',', '.') }}</span>
-                        </div>
-                        
                         <div class="product-actions">
                             <button class="btn-add-cart" onclick="addToCart(this)">
                                 <i class="fas fa-shopping-cart"></i>
@@ -385,7 +376,7 @@
                     </div>
                     
                     <div class="product-info">
-                        <div class="product-category">{{ $freshProduct->category->nama ?? 'Technology' }}</div>
+                        <div class="product-category">{{ $freshProduct->kategori->nama ?? 'Technology' }}</div>
                         <h3 class="product-name">
                             <a href="{{ route('product.show', $freshProduct->id) }}">{{ Str::limit($freshProduct->nama, 50) }}</a>
                         </h3>
@@ -393,10 +384,6 @@
                         <div class="product-features">
                             <span class="feature-item">✓ Latest Innovation</span>
                             <span class="feature-item">✓ Premium Build</span>
-                        </div>
-                        
-                        <div class="product-price">
-                            <span class="current-price">IDR {{ number_format($freshProduct->harga, 0, ',', '.') }}</span>
                         </div>
                         
                         <div class="product-actions">
@@ -470,14 +457,10 @@
                     </div>
                     
                     <div class="product-info">
-                        <div class="product-category">{{ $bestSeller->category->nama ?? 'Electronics' }}</div>
+                        <div class="product-category">{{ $bestSeller->kategori->nama ?? 'Electronics' }}</div>
                         <h3 class="product-name">
                             <a href="{{ route('product.show', $bestSeller->id) }}">{{ Str::limit($bestSeller->nama, 50) }}</a>
                         </h3>
-                        
-                        <div class="product-price">
-                            <span class="current-price">IDR {{ number_format($bestSeller->harga, 0, ',', '.') }}</span>
-                        </div>
                         
                         <div class="product-actions">
                             <button class="btn-add-cart" onclick="addToCart(this)">

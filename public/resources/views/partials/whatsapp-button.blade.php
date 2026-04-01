@@ -1,7 +1,3 @@
-@php 
-    $compro = \App\Models\CompanyParameter::first();
-@endphp
-
 <!-- WhatsApp Icon -->
 <div id="whatsapp-icon" onclick="toggleChatBox()">
     <i class="fab fa-whatsapp"></i>
@@ -34,7 +30,10 @@
     }
 
     function openWhatsApp() {
-        const phoneNumber = '{{ $compro->no_wa }}';
+        const phoneNumber = '{{ $compro->no_wa ?? '' }}';
+        if (!phoneNumber) {
+            return;
+        }
         const formattedPhoneNumber = phoneNumber.replace(/\D/g, ''); // Remove non-numeric characters
         window.open(`https://wa.me/${formattedPhoneNumber}`, '_blank');
     }

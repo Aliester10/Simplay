@@ -30,7 +30,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $produks = Produk::take(6)->get(); 
+        $produks = Produk::with([
+            'images:id,produk_id,gambar',
+            'kategori:id,nama',
+        ])->take(6)->get();
         $sliders = Slider::all(); 
         $company = CompanyParameter::first(); // Single object, not a collection
         $brand = BrandPartner::where('type', 'brand')->get();

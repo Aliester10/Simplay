@@ -1,8 +1,3 @@
-@php
-    $compro = \App\Models\CompanyParameter::first();
-    $brand = \App\Models\BrandPartner::where('type', 'brand', 'nama')->get();
-@endphp
-
 <style>
 /* Footer Container */
 .footer-container {

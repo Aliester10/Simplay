@@ -5,8 +5,12 @@
     <meta charset="utf-8">
     <title>SIMPLAY</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <meta content="simplay, solusi digital, perangkat elektronik, ekatalog, inaproc" name="keywords">
+    <meta content="SIMPLAY menyediakan solusi digital, perangkat elektronik, dan layanan pendukung untuk kebutuhan bisnis Anda." name="description">
+    <meta property="og:title" content="SIMPLAY">
+    <meta property="og:description" content="Solusi digital dan perangkat elektronik untuk bisnis modern.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ asset('assets/img/Logo.png') }}">
     <link href="{{ asset('assets/img/icon.png') }}" rel="icon">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +27,8 @@
     <link href="{{ asset('assets/css/member/style.css')}}" rel="stylesheet">
     <link href="{{ asset('assets/lib/font-awesome/css/all.min.css')}}" rel="stylesheet">
     <link href="{{ asset('assets/lib/bootstrap-icons-1.4.1/bootstrap-icons.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/lib/boxicons-master/css/boxicons.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('assets/lib/flickity/css/flickity.min.css')}}" rel="stylesheet">
     
 
     

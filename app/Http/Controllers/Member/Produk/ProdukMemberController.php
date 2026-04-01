@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use App\Models\Produk;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Quotation;
 
 
@@ -14,15 +13,21 @@ class ProdukMemberController extends Controller
 {
     public function index($categoryId = null)
     {
-        // Ambil semua kategori
-        $kategori = Kategori::all();
+        // Ambil semua kategori beserta jumlah produk
+        $kategori = Kategori::withCount('produk')->get();
 
         // Cek apakah ada kategori yang dipilih, jika iya, filter produk berdasarkan kategori tersebut
         if ($categoryId) {
-            $produks = Produk::where('kategori_id', $categoryId)->paginate(9);
+            $produks = Produk::with([
+                'images:id,produk_id,gambar',
+                'kategori:id,nama',
+            ])->where('kategori_id', $categoryId)->paginate(9);
             $selectedCategory = Kategori::find($categoryId);
         } else {
-            $produks = Produk::paginate(6);
+            $produks = Produk::with([
+                'images:id,produk_id,gambar',
+                'kategori:id,nama',
+            ])->paginate(6);
             $selectedCategory = null;
         }
 
@@ -32,11 +37,14 @@ class ProdukMemberController extends Controller
 
     public function search(Request $request)
     {
-        $kategori = Kategori::all();
+        $kategori = Kategori::withCount('produk')->get();
         $keyword = $request->keyword;
 
         // Ganti get() dengan paginate(9)
-        $produks = Produk::where('nama', 'LIKE', '%' . $keyword . '%')->paginate(9);
+        $produks = Produk::with([
+            'images:id,produk_id,gambar',
+            'kategori:id,nama',
+        ])->where('nama', 'LIKE', '%' . $keyword . '%')->paginate(9);
 
         $selectedCategory = null;
 
@@ -46,10 +54,13 @@ class ProdukMemberController extends Controller
 
     public function filterByCategory($id)
     {
-        $kategori = Kategori::all();
+        $kategori = Kategori::withCount('produk')->get();
 
         // Ganti get() dengan paginate(9)
-        $produks = Produk::where('kategori_id', $id)->paginate(9);
+        $produks = Produk::with([
+            'images:id,produk_id,gambar',
+            'kategori:id,nama',
+        ])->where('kategori_id', $id)->paginate(9);
 
         $selectedCategory = Kategori::find($id);
 
@@ -61,9 +72,15 @@ class ProdukMemberController extends Controller
     public function show($id)
     {
         // Mengambil detail produk berdasarkan ID
-        $produk = Produk::findOrFail($id);
+        $produk = Produk::with([
+            'images:id,produk_id,gambar',
+            'kategori:id,nama',
+        ])->findOrFail($id);
 
-        $produkSerupa = Produk::where('kategori_id', $produk->kategori_id)
+        $produkSerupa = Produk::with([
+                'images:id,produk_id,gambar',
+                'kategori:id,nama',
+            ])->where('kategori_id', $produk->kategori_id)
             ->where('id', '!=', $id) // Exclude the current product
             ->take(4) // Limit to 4 similar products
             ->get();

@@ -30,16 +30,10 @@
                     <div class="filter-section">
                         <div class="category-list">
                             @foreach ($kategori as $kat)
-                                @php
-                                    // Fixed: Count products without using 'active' column
-                                    $productCount = DB::table('produk')
-                                        ->where('kategori_id', $kat->id)
-                                        ->count();
-                                @endphp
                                 <div class="filter-item">
                                     <a href="{{ route('filterByCategory', $kat->id) }}" class="category-link {{ request()->route('id') == $kat->id ? 'active' : '' }}">
                                         <span>{{ $kat->nama }}</span>
-                                        <span class="category-count">{{ $productCount }}</span>
+                                        <span class="category-count">{{ $kat->produk_count ?? 0 }}</span>
                                     </a>
                                 </div>
                             @endforeach

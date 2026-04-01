@@ -128,15 +128,17 @@ Route::prefix('id/admin')->middleware(['auth', 'user-access:admin'])->group(func
 });
 
 
-Route::get('/test-email', function () {
-    $application = \App\Models\CareerApplication::latest()->first();
-    $position = \App\Models\CareerPosition::find($application->position_id);
+if (app()->environment('local')) {
+    Route::get('/test-email', function () {
+        $application = \App\Models\CareerApplication::latest()->first();
+        $position = \App\Models\CareerPosition::find($application->position_id);
 
-    Mail::to('aliesterrrr@gmail.com')->send(new CareerApplicationMail($application, $position));
-    
+        Mail::to('aliesterrrr@gmail.com')->send(new CareerApplicationMail($application, $position));
 
-    return '✅ Email berhasil dikirim (jika tidak error). Cek inbox kamu.';
-});
+
+        return '✅ Email berhasil dikirim (jika tidak error). Cek inbox kamu.';
+    });
+}
 
 // Guest Routes (No Authentication Required)
 Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
@@ -301,8 +303,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
         })->name('api.payment.settings');
     });
 
-    // Debug Routes - FOR TESTING ONLY (remove in production)
-    Route::get('/debug/cart-data', function() {
+    // Debug Routes - FOR TESTING ONLY (local environment)
+    if (app()->environment('local')) {
+        Route::get('/debug/cart-data', function() {
         try {
             if (!auth()->check()) {
                 return response()->json([
@@ -358,10 +361,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
                 'trace' => config('app.debug') ? $e->getTraceAsString() : 'Hidden in production'
             ], 500);
         }
-    })->name('debug.cart');
+        })->name('debug.cart');
 
     // Debug User Status
-    Route::get('/debug/user-status', function() {
+        Route::get('/debug/user-status', function() {
         try {
             return response()->json([
                 'authenticated' => auth()->check(),
@@ -380,10 +383,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
                 'message' => $e->getMessage()
             ], 500);
         }
-    })->name('debug.user-status');
+        })->name('debug.user-status');
     
     // NEW: Test Cart Addition Route
-    Route::get('/debug/add-test-items', function() {
+        Route::get('/debug/add-test-items', function() {
         try {
             if (!auth()->check()) {
                 return response()->json([
@@ -431,10 +434,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
                 'message' => $e->getMessage()
             ], 500);
         }
-    })->middleware(['auth'])->name('debug.add-test-items');
+        })->middleware(['auth'])->name('debug.add-test-items');
     
     // NEW: QR Debug Route
-    Route::get('/debug/qr-test', function() {
+        Route::get('/debug/qr-test', function() {
         try {
             $settings = \App\Models\PaymentSetting::where('status', 'active')->first();
             
@@ -480,7 +483,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale()], function () {
                 'message' => $e->getMessage()
             ], 500);
         }
-    })->name('debug.qr-test');
+        })->name('debug.qr-test');
+    }
 });
 
 // Member Routes (Authenticated Users with "member" role)
@@ -863,64 +867,66 @@ Route::get('/storage-direct/payment-proofs/{filename}', function($filename) {
 Route::post('/apply', [CareerController::class, 'apply'])->name('career.apply');
 
 
-// 🔥 ENHANCED: ADMIN PAYMENT PROOF DEBUGGING ROUTE
-Route::get('/debug/admin-payment-proof/{id}', function($id) {
-    try {
-        if (!auth()->check() || auth()->user()->type != 1) {
-            abort(403, 'Admin access required');
-        }
-        
-        $payment = \App\Models\PaymentStatus::findOrFail($id);
-        
-        $debugInfo = [
-            'payment_id' => $payment->id,
-            'invoice_id' => $payment->invoice_id,
-            'payment_proof' => $payment->payment_proof,
-            'payment_proof_url' => $payment->payment_proof_url,
-            'payment_proof_exists' => $payment->payment_proof_exists,
-            'timestamp' => '2025-06-13 19:28:21',
-            'user' => 'Aliester10'
-        ];
-        
-        if ($payment->payment_proof) {
-            $possiblePaths = [
-                storage_path('app/public/' . $payment->payment_proof),
-                storage_path('app/public/payment/proofs/' . basename($payment->payment_proof)),
-                storage_path('app/public/payment_proofs/' . basename($payment->payment_proof)),
-                public_path('storage/' . $payment->payment_proof),
-                public_path('storage/payment/proofs/' . basename($payment->payment_proof)),
-                public_path('storage/payment_proofs/' . basename($payment->payment_proof))
-            ];
-            
-            $debugInfo['file_checks'] = [];
-            foreach ($possiblePaths as $path) {
-                $debugInfo['file_checks'][] = [
-                    'path' => $path,
-                    'exists' => file_exists($path),
-                    'readable' => file_exists($path) ? is_readable($path) : false,
-                    'size' => file_exists($path) ? filesize($path) : 0
-                ];
+if (app()->environment('local')) {
+    // 🔥 ENHANCED: ADMIN PAYMENT PROOF DEBUGGING ROUTE
+    Route::get('/debug/admin-payment-proof/{id}', function($id) {
+        try {
+            if (!auth()->check() || auth()->user()->type != 1) {
+                abort(403, 'Admin access required');
             }
+
+            $payment = \App\Models\PaymentStatus::findOrFail($id);
+
+            $debugInfo = [
+                'payment_id' => $payment->id,
+                'invoice_id' => $payment->invoice_id,
+                'payment_proof' => $payment->payment_proof,
+                'payment_proof_url' => $payment->payment_proof_url,
+                'payment_proof_exists' => $payment->payment_proof_exists,
+                'timestamp' => '2025-06-13 19:28:21',
+                'user' => 'Aliester10'
+            ];
+
+            if ($payment->payment_proof) {
+                $possiblePaths = [
+                    storage_path('app/public/' . $payment->payment_proof),
+                    storage_path('app/public/payment/proofs/' . basename($payment->payment_proof)),
+                    storage_path('app/public/payment_proofs/' . basename($payment->payment_proof)),
+                    public_path('storage/' . $payment->payment_proof),
+                    public_path('storage/payment/proofs/' . basename($payment->payment_proof)),
+                    public_path('storage/payment_proofs/' . basename($payment->payment_proof))
+                ];
+
+                $debugInfo['file_checks'] = [];
+                foreach ($possiblePaths as $path) {
+                    $debugInfo['file_checks'][] = [
+                        'path' => $path,
+                        'exists' => file_exists($path),
+                        'readable' => file_exists($path) ? is_readable($path) : false,
+                        'size' => file_exists($path) ? filesize($path) : 0
+                    ];
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'debug_info' => $debugInfo,
+                'routes' => [
+                    'admin_proof_route' => route('Admin.Payment.status.proof', $id),
+                    'direct_access_route' => route('admin.payment.proof.direct', $id),
+                    'member_proof_route' => route('payment.proof.show', $id)
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'timestamp' => '2025-06-13 19:28:21'
+            ], 500);
         }
-        
-        return response()->json([
-            'success' => true,
-            'debug_info' => $debugInfo,
-            'routes' => [
-                'admin_proof_route' => route('Admin.Payment.status.proof', $id),
-                'direct_access_route' => route('admin.payment.proof.direct', $id),
-                'member_proof_route' => route('payment.proof.show', $id)
-            ]
-        ]);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => true,
-            'message' => $e->getMessage(),
-            'timestamp' => '2025-06-13 19:28:21'
-        ], 500);
-    }
-})->middleware(['auth'])->name('debug.admin.payment.proof');
+    })->middleware(['auth'])->name('debug.admin.payment.proof');
+}
 
 /*
 |--------------------------------------------------------------------------

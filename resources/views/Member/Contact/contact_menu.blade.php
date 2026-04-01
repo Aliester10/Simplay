@@ -1,10 +1,5 @@
 @extends('layouts.Member.master')
 
-@php
-    $compro = \App\Models\CompanyParameter::first();
-    $brand = \App\Models\BrandPartner::where('type', 'brand', 'nama')->get();
-@endphp
-
 @section('content')
 <!-- Header Start -->
 <div class="container-fluid page-header mb-5 py-5"

@@ -1,13 +1,4 @@
 @php
-    // Fetch the first record from the compro_parameter table
-    $compro = \App\Models\CompanyParameter::first();
-    
-    // Get active metas
-    $activeMetas = \App\Models\Meta::where('start_date', '<=', today())
-        ->where('end_date', '>=', today())
-        ->get()
-        ->groupBy('type');
-    
     // Count cart items based on user type - ONLY DISTRIBUTOR AND MEMBER
     $cartCount = 0;
     if (auth()->check() && in_array(auth()->user()->type, ['distributor', 'member'])) {
@@ -18,11 +9,6 @@
         }
     }
     // No cart access for guests or other user types
-    
-    // Current date and time (UTC)
-    $currentDateTime = "2025-06-04 09:43:42";
-    // Current user's login
-    $currentUserLogin = "Aliester10";
 @endphp
 
 <!-- Main Navigation Bar (Now at top position) -->

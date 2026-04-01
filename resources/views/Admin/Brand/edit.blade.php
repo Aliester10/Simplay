@@ -16,7 +16,7 @@
                         <label for="gambar">Gambar</label>
                         @if($brandPartner->gambar)
                             <div class="mb-3">
-                                <img src="{{ asset('storage/' . $brandPartner->gambar) }}" alt="Image" class="img-thumbnail" style="max-width: 150px;">
+                                <img src="{{ asset($brandPartner->gambar) }}" alt="Image" class="img-thumbnail" style="max-width: 150px;">
                             </div>
                         @endif
                         <input type="file" name="gambar" class="form-control">

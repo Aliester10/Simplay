@@ -23,7 +23,7 @@
                             @foreach($brandPartners as $brandPartner)
                                 <tr>
                                     <td>{{ $brandPartner->id }}</td>
-                                    <td><img src="{{ asset('storage/' . $brandPartner->gambar) }}" alt="Image" class="img-thumbnail" style="max-width: 100px; height: auto;"></td>
+                                    <td><img src="{{ asset($brandPartner->gambar) }}" alt="Image" class="img-thumbnail" style="max-width: 100px; height: auto;"></td>
                                     <td>{{ ucfirst($brandPartner->type) }}</td>
                                     <td>{{ $brandPartner->url ?? 'N/A' }}</td>
                                     <td class="text-center">
